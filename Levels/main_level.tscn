@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5f82kcscwr5w"]
+
+[ext_resource type="PackedScene" uid="uid://cl2y8w4nga0m4" path="res://Entities/Scenes/Player/player.tscn" id="1_s61fy"]
+[ext_resource type="PackedScene" uid="uid://d2mwwrgy2w8as" path="res://interactables/scenes/dead_area.tscn" id="2_oac03"]
+[ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
+[ext_resource type="Script" path="res://UI/ui_scripts/GUI.gd" id="3_ynv6m"]
+
+[node name="main_level" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_s61fy")]
+position = Vector2(200, 152)
+
+[node name="dead_area" parent="." instance=ExtResource("2_oac03")]
+position = Vector2(320, 152)
+
+[node name="GUI" type="CanvasLayer" parent="."]
+script = ExtResource("3_ynv6m")
+
+[node name="heart" type="Sprite2D" parent="GUI"]
+position = Vector2(40, 32)
+scale = Vector2(2, 2)
+texture = ExtResource("3_sggjq")
+hframes = 5
+
+[node name="ammo" type="Label" parent="GUI"]
+offset_left = 16.0
+offset_top = 56.0
+offset_right = 74.0
+offset_bottom = 79.0
+theme_override_font_sizes/font_size = 32
+text = "AMMO:"
+
+[node name="ammo_amount" type="Label" parent="GUI"]
+offset_left = 144.0
+offset_top = 56.0
+offset_right = 184.0
+offset_bottom = 101.0
+theme_override_font_sizes/font_size = 32
