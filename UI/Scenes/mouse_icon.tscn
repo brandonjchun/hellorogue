@@ -5,6 +5,21 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hxcg1"]
 
+[sub_resource type="Animation" id="Animation_rbqxj"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
 [sub_resource type="Animation" id="Animation_q4p33"]
 resource_name = "active"
 length = 0.7
@@ -22,21 +37,6 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3, 4]
 }
 
-[sub_resource type="Animation" id="Animation_rbqxj"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qrjqs"]
 _data = {
 "RESET": SubResource("Animation_rbqxj"),
@@ -44,6 +44,7 @@ _data = {
 }
 
 [node name="mouse_icon" type="Area2D"]
+z_index = 20
 script = ExtResource("1_kgkft")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
