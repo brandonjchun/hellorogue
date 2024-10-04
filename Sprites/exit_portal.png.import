@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eu7u77a6cl65"
-path="res://.godot/imported/key.png-4d56a4a30eaf7af738b1e4480bde0acc.ctex"
+uid="uid://de1x0b1o7y708"
+path="res://.godot/imported/exit_portal.png-9f14ce3657b36f8d481d7049cc44b029.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/Sprites/key.png"
-dest_files=["res://.godot/imported/key.png-4d56a4a30eaf7af738b1e4480bde0acc.ctex"]
+source_file="res://Sprites/exit_portal.png"
+dest_files=["res://.godot/imported/exit_portal.png-9f14ce3657b36f8d481d7049cc44b029.ctex"]
 
 [params]
 

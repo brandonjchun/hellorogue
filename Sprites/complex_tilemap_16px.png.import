@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qh0vvr1gp58s"
-path="res://.godot/imported/ammo.png-77967ecc7e61a75a13e3b7e4f048af5d.ctex"
+uid="uid://c66jb5berp1yn"
+path="res://.godot/imported/complex_tilemap_16px.png-f031a1256593c185bfadfb7d6616f73d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/Sprites/ammo.png"
-dest_files=["res://.godot/imported/ammo.png-77967ecc7e61a75a13e3b7e4f048af5d.ctex"]
+source_file="res://Sprites/complex_tilemap_16px.png"
+dest_files=["res://.godot/imported/complex_tilemap_16px.png-f031a1256593c185bfadfb7d6616f73d.ctex"]
 
 [params]
 

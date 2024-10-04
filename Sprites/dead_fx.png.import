@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3u858w7mg5fe"
-path="res://.godot/imported/HeartSpriteSheet.png-de44e7dd0f7f84d8df99a1d598f6e5d1.ctex"
+uid="uid://cpfxg1q6bv1cv"
+path="res://.godot/imported/dead_fx.png-370f746c7337fecc890317e0fa032e4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/Sprites/HeartSpriteSheet.png"
-dest_files=["res://.godot/imported/HeartSpriteSheet.png-de44e7dd0f7f84d8df99a1d598f6e5d1.ctex"]
+source_file="res://Sprites/dead_fx.png"
+dest_files=["res://.godot/imported/dead_fx.png-370f746c7337fecc890317e0fa032e4b.ctex"]
 
 [params]
 

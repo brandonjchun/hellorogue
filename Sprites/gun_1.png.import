@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgimpv48vtuqc"
-path="res://.godot/imported/coin.png-854576948b403f90e551f66dfd1d2f31.ctex"
+uid="uid://bk3dq3uriy6dm"
+path="res://.godot/imported/gun_1.png-198feda266ef078072a7422a3991f8ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/Sprites/coin.png"
-dest_files=["res://.godot/imported/coin.png-854576948b403f90e551f66dfd1d2f31.ctex"]
+source_file="res://Sprites/gun_1.png"
+dest_files=["res://.godot/imported/gun_1.png-198feda266ef078072a7422a3991f8ee.ctex"]
 
 [params]
 

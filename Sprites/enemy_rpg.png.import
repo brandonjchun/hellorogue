@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://de1x0b1o7y708"
-path="res://.godot/imported/exit_portal.png-de07eb54c703001a1d3f5135a6af1873.ctex"
+uid="uid://dbubm1eru8apj"
+path="res://.godot/imported/enemy_rpg.png-58326e6179cef3316c6441ad9f3953c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Asset/Sprites/exit_portal.png"
-dest_files=["res://.godot/imported/exit_portal.png-de07eb54c703001a1d3f5135a6af1873.ctex"]
+source_file="res://Sprites/enemy_rpg.png"
+dest_files=["res://.godot/imported/enemy_rpg.png-58326e6179cef3316c6441ad9f3953c6.ctex"]
 
 [params]
 
