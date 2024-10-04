@@ -198,7 +198,7 @@ height = 22.0
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 5
 script = ExtResource("1_jdr8l")
-speed = 150
+speed = 100
 
 [node name="player_collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
@@ -229,7 +229,7 @@ debug_color = Color(0.811765, 0.368627, 0.486275, 0.419608)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -10)
-zoom = Vector2(2, 2)
+zoom = Vector2(3.8, 3.8)
 
 [node name="gun_handler" type="Node2D" parent="."]
 position = Vector2(3, 1)
