@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://cruwu3vp7o2ii"]
+
+[ext_resource type="Script" path="res://interactables/interactable_script/exit.gd" id="1_i4awj"]
+[ext_resource type="Texture2D" uid="uid://de1x0b1o7y708" path="res://Sprites/exit_portal.png" id="2_11skf"]
+
+[sub_resource type="Animation" id="Animation_rrfjr"]
+resource_name = "active"
+length = 1.35
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+
+[sub_resource type="Animation" id="Animation_vg6dl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jfir2"]
+_data = {
+"RESET": SubResource("Animation_vg6dl"),
+"active": SubResource("Animation_rrfjr")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qudkg"]
+
+[node name="exit" type="Area2D"]
+collision_layer = 16
+script = ExtResource("1_i4awj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_11skf")
+hframes = 9
+frame = 1
+
+[node name="anim" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_jfir2")
+}
+autoplay = "active"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_qudkg")
+debug_color = Color(0.717647, 0.356863, 0.823529, 0.419608)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
