@@ -78,7 +78,6 @@ func target_mouse():
 		pos = global_position
 		gun.look_at(mouse_movement)
 		rot = rad_to_deg((mouse_movement - pos).angle())
-		
 		if rot >= -90 and rot <= 90:
 			gun_spr.flip_v = false
 			$Sprite2D.flip_h = false
