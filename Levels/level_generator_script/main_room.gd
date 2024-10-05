@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var player_scene = preload("res://Entities/Scenes/Player/player.tscn")
 @onready var exit_scene = preload("res://interactables/scenes/exit.tscn")
+@onready var enemy_scene = preload("res://Entities/Scenes/Enemies/enemy_1.tscn")
 @onready var tilemap = $TileMap
 @export var borders = Rect2(1, 1, 200, 100)
 var walker
@@ -32,6 +33,7 @@ func generate_level():
 	
 	instance_player()
 	instance_exit()
+	instance_enemy()
 	
 func _input(event):
 	if Input.is_action_just_pressed("ui_accept"):
@@ -46,3 +48,10 @@ func instance_exit():
 	var exit = exit_scene.instantiate()
 	add_child(exit)
 	exit.position = walker.get_end_room().position * 16
+
+func instance_enemy():
+	for i in range(10):
+		var enemy = enemy_scene.instantiate()
+		enemy.position = (map.pick_random() * borders.position) * 16
+		add_child(enemy)
+	

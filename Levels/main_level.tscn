@@ -630,6 +630,7 @@ texture = ExtResource("5_e0iff")
 
 [sub_resource type="TileSet" id="TileSet_f2x63"]
 physics_layer_0/collision_layer = 8
+physics_layer_0/collision_mask = 35
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Terrain 0"
 terrain_set_0/terrain_0/color = Color(0.105882, 0.454902, 0.290196, 1)
