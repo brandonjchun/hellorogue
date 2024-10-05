@@ -1,13 +1,19 @@
-[gd_scene load_steps=12 format=3 uid="uid://cl2y8w4nga0m4"]
+[gd_scene load_steps=14 format=3 uid="uid://cl2y8w4nga0m4"]
 
 [ext_resource type="Script" path="res://Entities/entities_script/player.gd" id="1_jdr8l"]
 [ext_resource type="Texture2D" uid="uid://dkusewka3ky1n" path="res://Sprites/Player_metroid.png" id="1_kr4b0"]
+[ext_resource type="Shader" path="res://Shaders/hurt.gdshader" id="2_vds5w"]
 [ext_resource type="Texture2D" uid="uid://bk3dq3uriy6dm" path="res://Sprites/gun_1.png" id="3_rvf6b"]
 [ext_resource type="PackedScene" uid="uid://vauo2uuorfuo" path="res://UI/Scenes/mouse_icon.tscn" id="4_gxmvm"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v0vie"]
 radius = 6.0
 height = 26.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ngbeb"]
+shader = ExtResource("2_vds5w")
+shader_parameter/flash_color = Color(0.858824, 0.8, 0.788235, 0.443137)
+shader_parameter/flash_modifier = 0.0
 
 [sub_resource type="Animation" id="Animation_hsuds"]
 length = 0.001
@@ -208,6 +214,7 @@ disabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 y_sort_enabled = true
+material = SubResource("ShaderMaterial_ngbeb")
 position = Vector2(0, -10)
 texture = ExtResource("1_kr4b0")
 flip_h = true
@@ -222,6 +229,7 @@ autoplay = "idle"
 
 [node name="hitbox" type="Area2D" parent="."]
 position = Vector2(0, -10)
+collision_mask = 32
 
 [node name="hitbox_collider" type="CollisionShape2D" parent="hitbox"]
 position = Vector2(0, 11)
@@ -245,3 +253,10 @@ texture = ExtResource("3_rvf6b")
 position = Vector2(13.3333, 0)
 
 [node name="mouse_icon" parent="." instance=ExtResource("4_gxmvm")]
+
+[node name="trail_timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="timeout" from="trail_timer" to="." method="_on_trail_timer_timeout"]

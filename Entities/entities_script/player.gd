@@ -8,6 +8,7 @@ enum player_states {
 var is_dead = false
 
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/bullet_1.tscn")
+@onready var trail_scene = preload("res://Entities/Scenes/FX/scent_trail.tscn")
 @export var speed: int
 var input_movement = Vector2()
 
@@ -69,8 +70,6 @@ func dead():
 		player_data.health = 5
 		player_data.ammo = 50
 		is_dead = false
-		
-		
 	
 func target_mouse():
 	if is_dead == false:
@@ -95,3 +94,33 @@ func instance_bullet():
 
 func reset_states():
 	current_state = player_states.MOVE
+
+func instance_trail():
+	var trail = trail_scene.instantiate()
+	trail.global_position = global_position
+	get_tree().root.add_child(trail)
+
+func _on_trail_timer_timeout():
+	instance_trail()
+	$trail_timer.start()
+
+
+func _on_hitbox_area_entered(area):
+	if area.is_in_group("enemy"):
+		flash()
+		player_data.health -= 1
+		
+func flash():
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)

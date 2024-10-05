@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b7mmjr2wlpyr5"]
+[gd_scene load_steps=12 format=3 uid="uid://b7mmjr2wlpyr5"]
 
 [ext_resource type="Texture2D" uid="uid://dbubm1eru8apj" path="res://Sprites/enemy_rpg.png" id="1_5ujxc"]
 [ext_resource type="Script" path="res://Entities/entities_script/enemy_1.gd" id="1_nnda6"]
@@ -99,6 +99,8 @@ _data = {
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dt152"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_fej6u"]
+
 [node name="enemy_1" type="CharacterBody2D"]
 collision_layer = 32
 collision_mask = 8
@@ -118,17 +120,25 @@ libraries = {
 "": SubResource("AnimationLibrary_52cra")
 }
 
-[node name="hitbox" type="Area2D" parent="."]
+[node name="hitbox" type="Area2D" parent="." groups=["enemy"]]
 collision_layer = 32
-collision_mask = 2
+collision_mask = 3
 
 [node name="hitbox_collider" type="CollisionShape2D" parent="hitbox"]
 shape = SubResource("CircleShape2D_dt152")
 debug_color = Color(0.811765, 0.380392, 0.415686, 0.419608)
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 2.0
 autostart = true
+
+[node name="chase_box" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="chase_box"]
+scale = Vector2(7, 7)
+shape = SubResource("CircleShape2D_fej6u")
 
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="area_entered" from="chase_box" to="." method="_on_chase_box_area_entered"]
