@@ -59,6 +59,7 @@ shoot={
 2d_physics/layer_4="Tilemap"
 2d_physics/layer_5="Exit"
 2d_physics/layer_6="Enemy"
+2d_physics/layer_7="Scent Trail"
 
 [rendering]
 

@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=3 uid="uid://din7jqt54m8jm"]
+
+[ext_resource type="Script" path="res://interactables/interactable_script/ammo_1.gd" id="1_q6xj7"]
+[ext_resource type="Texture2D" uid="uid://qh0vvr1gp58s" path="res://Sprites/ammo.png" id="2_5barb"]
+
+[sub_resource type="Animation" id="Animation_u0h5p"]
+resource_name = "ammo"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_otlv5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_36bdd"]
+_data = {
+"RESET": SubResource("Animation_otlv5"),
+"ammo": SubResource("Animation_u0h5p")
+}
+
+[node name="ammo_1" type="Area2D"]
+z_index = 2
+y_sort_enabled = true
+script = ExtResource("1_q6xj7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+texture = ExtResource("2_5barb")
+hframes = 5
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="anim" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_36bdd")
+}
+autoplay = "ammo"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
