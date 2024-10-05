@@ -9,6 +9,7 @@ func _process(delta):
 	translate(direction * speed * delta)
 
 func _on_body_entered(body):
+	Globals.camera.screen_shake(1,1,0.01)
 	instance_fx() 
 	queue_free()
 
