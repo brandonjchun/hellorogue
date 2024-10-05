@@ -68,7 +68,7 @@ func dead():
 	if get_tree():
 		get_tree().reload_current_scene()
 		player_data.health = 5
-		player_data.ammo = 50
+		player_data.ammo = 30
 		is_dead = false
 	
 func target_mouse():
