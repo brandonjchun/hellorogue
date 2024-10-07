@@ -279,9 +279,14 @@ position = Vector2(13.3333, 0)
 autostart = true
 
 [node name="melee_reset" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="bullet_reset" type="Timer" parent="."]
+wait_time = 0.5
 
 [connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Camera2D/camera_shake" to="Camera2D" method="_on_camera_shake_timeout"]
 [connection signal="timeout" from="trail_timer" to="." method="_on_trail_timer_timeout"]
 [connection signal="timeout" from="melee_reset" to="." method="_on_melee_reset_timeout"]
+[connection signal="timeout" from="bullet_reset" to="." method="_on_bullet_reset_timeout"]

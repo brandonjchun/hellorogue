@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=3 uid="uid://bfoyjfivdn16p"]
+
+[ext_resource type="Script" path="res://interactables/interactable_script/health_1.gd" id="1_m8k3a"]
+[ext_resource type="Texture2D" uid="uid://cfsx6e2v3r2l7" path="res://Sprites/potionsrealedit4.png" id="2_gmtlc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cm38k"]
+radius = 13.0
+height = 42.0
+
+[sub_resource type="Animation" id="Animation_pxsv4"]
+resource_name = "health"
+length = 0.9
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_iu4fj"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nega1"]
+_data = {
+"RESET": SubResource("Animation_iu4fj"),
+"health": SubResource("Animation_pxsv4")
+}
+
+[node name="health_1" type="Area2D"]
+z_index = 2
+y_sort_enabled = true
+script = ExtResource("1_m8k3a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1
+y_sort_enabled = true
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("2_gmtlc")
+hframes = 9
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.4, 0.4)
+shape = SubResource("CapsuleShape2D_cm38k")
+
+[node name="anim" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_nega1")
+}
+autoplay = "health"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

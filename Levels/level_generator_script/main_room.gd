@@ -53,7 +53,7 @@ func instance_exit():
 	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy():
-	var enemies_count = randi_range(40, 60) % 14
+	var enemies_count = randi_range(10,60)
 	for i in range(enemies_count):
 		var enemy = enemy_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16

@@ -22,12 +22,7 @@ var pos
 var rot
 var facing_right
 var melee_ready = true
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
+var gun_ready = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -54,8 +49,11 @@ func movement(delta):
 		
 	if Input.is_action_just_pressed("shoot"):
 		if player_data.ammo > 0:
-			player_data.ammo -= 1
-			instance_bullet()
+			if gun_ready:
+				gun_ready = false
+				player_data.ammo -= 1
+				$bullet_reset.start()
+				instance_bullet()
 		else:
 			if melee_ready:
 				melee_ready = false
@@ -82,8 +80,8 @@ func dead():
 	await get_tree().create_timer(2).timeout
 	if get_tree():
 		get_tree().reload_current_scene()
-		player_data.health = 5
-		player_data.ammo = 30
+		player_data.health = 12
+		player_data.ammo = 20
 		is_dead = false
 	
 func target_mouse():
@@ -158,5 +156,5 @@ func _on_idle_timer_timeout():
 func _on_melee_reset_timeout():
 	melee_ready = true
 	
-	
-
+func _on_bullet_reset_timeout():
+	gun_ready = true
