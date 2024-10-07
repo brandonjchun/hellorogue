@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
+@onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @export var speed = 20
 
 enum enemy_direction {
@@ -75,11 +76,8 @@ func _on_hitbox_area_entered(area):
 		instance_fx()
 		if ammo_chance():
 			instance_ammo()
-		queue_free()
-		
-	if area.is_in_group("Melee"):
-		if ammo_chance():
-			instance_ammo()
+		elif health_chance():
+			instance_health()
 		queue_free()
 		
 func instance_fx():
@@ -92,8 +90,16 @@ func instance_ammo():
 	ammo.global_position = global_position
 	get_tree().root.add_child(ammo)
 	
+func instance_health():
+	var health = health_scene.instantiate()
+	health.global_position = global_position
+	get_tree().root.add_child(health)
+	
 func ammo_chance():
 	return randi_range(1, 6) == 6
+	
+func health_chance():
+	return randi_range(1, 2) == 1
 	
 func chase_state():
 	var chase_speed = 60

@@ -67,7 +67,7 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d6axq"]
 
-[node name="Area2D" type="Area2D"]
+[node name="Area2D" type="Area2D" groups=["enemy"]]
 script = ExtResource("1_rdsm3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

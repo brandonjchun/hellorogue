@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const HEART_ROW_SIZE = 8
+const HEART_ROW_SIZE = 12
 const HEART_OFFSET = 16
 
 @onready var timer = $"../Timer"

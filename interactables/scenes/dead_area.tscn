@@ -68,7 +68,7 @@ _data = {
 "spikes": SubResource("Animation_tnune")
 }
 
-[node name="dead_area" type="Area2D"]
+[node name="dead_area" type="Area2D" groups=["enemy"]]
 collision_layer = 4
 script = ExtResource("1_88u2x")
 
