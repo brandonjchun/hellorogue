@@ -77,6 +77,11 @@ func _on_hitbox_area_entered(area):
 			instance_ammo()
 		queue_free()
 		
+	if area.is_in_group("Melee"):
+		if ammo_chance():
+			instance_ammo()
+		queue_free()
+		
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position

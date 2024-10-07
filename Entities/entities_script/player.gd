@@ -8,6 +8,8 @@ enum player_states {
 var is_dead = false
 
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/bullet_1.tscn")
+@onready var meleeleft_scene = preload("res://Entities/Scenes/Bullets/melee.tscn")
+@onready var meleeright_scene = preload("res://Entities/Scenes/Bullets/melee_right.tscn")
 @onready var trail_scene = preload("res://Entities/Scenes/FX/scent_trail.tscn")
 @export var speed: int
 var input_movement = Vector2()
@@ -18,6 +20,9 @@ var input_movement = Vector2()
 
 var pos
 var rot
+var facing_right
+var melee_ready = true
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -36,6 +41,7 @@ func _process(delta):
 			movement(delta)
 		player_states.DEAD:
 			dead()
+
 func movement(delta):
 	animations()
 	input_movement = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
@@ -46,16 +52,25 @@ func movement(delta):
 	if input_movement == Vector2.ZERO:
 		velocity = Vector2.ZERO
 		
-	if Input.is_action_just_pressed("shoot") and player_data.ammo > 0:
-		player_data.ammo -= 1
-		instance_bullet()
-		
+	if Input.is_action_just_pressed("shoot"):
+		if player_data.ammo > 0:
+			player_data.ammo -= 1
+			instance_bullet()
+		else:
+			if melee_ready:
+				melee_ready = false
+				$melee_reset.start()
+				if not facing_right:
+					instance_meleeleft()
+				else:
+					instance_meleeright()
+
+			
 	move_and_slide()
 
 func animations():
 	if input_movement != Vector2.ZERO:
 		$anim.play("move")
-	
 	if input_movement == Vector2.ZERO:
 		$anim.play("idle")
 
@@ -80,9 +95,11 @@ func target_mouse():
 		if rot >= -90 and rot <= 90:
 			gun_spr.flip_v = false
 			$Sprite2D.flip_h = false
+			facing_right = true
 		else:
 			gun_spr.flip_v = true
 			$Sprite2D.flip_h = true
+			facing_right = false
 	else:
 		return
 		
@@ -91,6 +108,16 @@ func instance_bullet():
 	bullet.direction = bullet_point.global_position - global_position
 	bullet.global_position = bullet_point.global_position
 	get_tree().root.add_child(bullet)
+	
+func instance_meleeleft():
+	var melee = meleeleft_scene.instantiate()
+	melee.global_position = bullet_point.global_position
+	get_tree().root.add_child(melee)
+	
+func instance_meleeright():
+	var melee = meleeright_scene.instantiate()
+	melee.global_position = bullet_point.global_position
+	get_tree().root.add_child(melee)
 
 func reset_states():
 	current_state = player_states.MOVE
@@ -124,3 +151,12 @@ func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
 	await get_tree().create_timer(0.1).timeout
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+
+func _on_idle_timer_timeout():
+	$anim.play("idle")
+	
+func _on_melee_reset_timeout():
+	melee_ready = true
+	
+	
+

@@ -3,6 +3,8 @@ extends Node2D
 @onready var player_scene = preload("res://Entities/Scenes/Player/player.tscn")
 @onready var exit_scene = preload("res://interactables/scenes/exit.tscn")
 @onready var enemy_scene = preload("res://Entities/Scenes/Enemies/enemy_1.tscn")
+@onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
+@onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var tilemap = $TileMap
 @export var borders = Rect2(1, 1, 200, 100)
 var walker
@@ -34,6 +36,7 @@ func generate_level():
 	instance_player()
 	instance_exit()
 	instance_enemy()
+	instance_spikes()
 	
 func _input(event):
 	if Input.is_action_just_pressed("ui_accept"):
@@ -50,10 +53,24 @@ func instance_exit():
 	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy():
-	for i in range(12):
+	var enemies_count = randi_range(40, 60) % 14
+	for i in range(enemies_count):
 		var enemy = enemy_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 
+func instance_spikes():
+	var silverspikes_count = randi_range(3,8)
+	for i in range(silverspikes_count):
+		var silverspikes = silverspikes_scene.instantiate()
+		silverspikes.position = (map.pick_random() * borders.position) * 16
+		add_child(silverspikes)
+		
+	var redspikes_count = randi_range(2,12)
+	for i in range(redspikes_count):
+		var redspikes = redspikes_scene.instantiate()
+		redspikes.position = (map.pick_random() * borders.position) * 16
+		add_child(redspikes)
+	
 func _on_timer_timeout():
 	get_tree().reload_current_scene()

@@ -1,0 +1,129 @@
+[gd_scene load_steps=8 format=3 uid="uid://dswm1l6iuw0hr"]
+
+[ext_resource type="Texture2D" uid="uid://c4kbcr4w4hfi5" path="res://Sprites/blueslashspritesheetwithemptyframe.png" id="1_ap3tu"]
+[ext_resource type="Script" path="res://Entities/entities_script/melee.gd" id="1_eydo0"]
+
+[sub_resource type="Animation" id="Animation_dumhx"]
+resource_name = "slash"
+length = 1.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../melee_attack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.6, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.4, 0.9, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false, true, true]
+}
+
+[sub_resource type="Animation" id="Animation_mkvxj"]
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../melee_attack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.6, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3, 1, 1.1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false, true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lac4s"]
+_data = {
+"RESET": SubResource("Animation_mkvxj"),
+"slash": SubResource("Animation_dumhx")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l61v3"]
+radius = 5.65685
+height = 31.1127
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_04uu6"]
+radius = 13.3923
+height = 46.641
+
+[node name="melee_left" type="Area2D" groups=["Bullet"]]
+collision_layer = 2
+collision_mask = 32
+script = ExtResource("1_eydo0")
+
+[node name="melee_attack" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_ap3tu")
+hframes = 6
+vframes = 2
+
+[node name="anim" type="AnimationPlayer" parent="."]
+root_node = NodePath("../CollisionShape2D3")
+libraries = {
+"": SubResource("AnimationLibrary_lac4s")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(23, 5)
+rotation = 0.785398
+shape = SubResource("CapsuleShape2D_l61v3")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(3, -8)
+rotation = -0.523599
+shape = SubResource("CapsuleShape2D_04uu6")
+disabled = true
+
+[node name="melee_timer" type="Timer" parent="."]
+wait_time = 1.5
