@@ -1,9 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=16 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
 [ext_resource type="Script" path="res://UI/ui_scripts/GUI.gd" id="3_ynv6m"]
 [ext_resource type="Texture2D" uid="uid://c66jb5berp1yn" path="res://Sprites/complex_tilemap_16px.png" id="5_e0iff"]
+[ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="5_oqekw"]
+[ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="6_d5pin"]
+[ext_resource type="AudioStream" uid="uid://b7djrvrs0blja" path="res://Music/Mercury.wav" id="7_sdjys"]
+[ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_eta0w"]
+[ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
+[ext_resource type="AudioStream" uid="uid://3vsj717apske" path="res://Music/BossMain.wav" id="10_ldjy6"]
+[ext_resource type="AudioStream" path="res://Music/SFX/level_battle_theme/muPlumusLand.wav" id="11_ghp62"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vow2"]
 texture = ExtResource("5_e0iff")
@@ -748,6 +755,22 @@ offset_bottom = 146.0
 theme_override_font_sizes/font_size = 32
 text = "TIME:"
 
+[node name="level" type="Label" parent="GUI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 45.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+text = "L:"
+
+[node name="level_number" type="Label" parent="GUI"]
+offset_left = 1104.0
+offset_right = 1144.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 24
+
 [node name="TileMap" type="TileMap" parent="."]
 z_index = 1
 y_sort_enabled = true
@@ -771,5 +794,29 @@ layer_1/tile_data = PackedInt32Array(-524300, 0, 5, -262156, 65536, 6, -65548, 6
 [node name="Timer" type="Timer" parent="."]
 wait_time = 90.0
 autostart = true
+
+[node name="mapbasic" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(512, 256)
+stream = ExtResource("5_oqekw")
+volume_db = -10.0
+pitch_scale = 0.97
+
+[node name="mars" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_d5pin")
+
+[node name="mercury" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_sdjys")
+
+[node name="goodfight" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_eta0w")
+
+[node name="venus" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_40npo")
+
+[node name="bossmain" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_ldjy6")
+
+[node name="plumus" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_ghp62")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg0ln5pngrwit"]
+[gd_scene load_steps=9 format=3 uid="uid://cg0ln5pngrwit"]
 
 [ext_resource type="Texture2D" uid="uid://c4kbcr4w4hfi5" path="res://Sprites/blueslashspritesheetwithemptyframe.png" id="1_7pvq4"]
 [ext_resource type="Script" path="res://Entities/entities_script/melee_right.gd" id="1_s63mr"]
+[ext_resource type="AudioStream" uid="uid://bf1sdxa8etc6j" path="res://Music/SFX/swoosh.mp3" id="3_tbc32"]
 
 [sub_resource type="Animation" id="Animation_hdsk4"]
 resource_name = "slash"
@@ -130,3 +131,7 @@ disabled = true
 
 [node name="melee_timer" type="Timer" parent="."]
 wait_time = 1.5
+
+[node name="melee_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_tbc32")
+volume_db = -5.0

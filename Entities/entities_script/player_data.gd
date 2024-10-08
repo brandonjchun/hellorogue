@@ -2,5 +2,7 @@ extends Node
 
 class_name player_data
 
-static var health = 12
+static var health = 8
 static var ammo = 20
+static var levels = 0
+static var sound_selecter = 0

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dbmk2w1v5alxb"
+path="res://.godot/imported/The Good Fight (w intro).mp3-8b47150299c3682c4c26f150e8c652f3.mp3str"
+
+[deps]
+
+source_file="res://Music/The Good Fight (w intro).mp3"
+dest_files=["res://.godot/imported/The Good Fight (w intro).mp3-8b47150299c3682c4c26f150e8c652f3.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4
