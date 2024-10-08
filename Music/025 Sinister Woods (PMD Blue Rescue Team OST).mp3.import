@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dc2nbmuw3jru4"
+path="res://.godot/imported/025 Sinister Woods (PMD Blue Rescue Team OST).mp3-2e8031fa87eba3356d8a0ba01ee0a0e8.mp3str"
+
+[deps]
+
+source_file="res://Music/025 Sinister Woods (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/025 Sinister Woods (PMD Blue Rescue Team OST).mp3-2e8031fa87eba3356d8a0ba01ee0a0e8.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

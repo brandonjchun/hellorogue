@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dhvhddp8it84f"
+path="res://.godot/imported/065 Stormy Sea (PMD Blue Rescue Team OST).mp3-6ef66377de7fd48cf48133401cd67670.mp3str"
+
+[deps]
+
+source_file="res://Music/065 Stormy Sea (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/065 Stormy Sea (PMD Blue Rescue Team OST).mp3-6ef66377de7fd48cf48133401cd67670.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cq8g23sdrhdkp"
+path="res://.godot/imported/030 Great Canyon (PMD Blue Rescue Team OST).mp3-23e02f68467298607df42913f9a58997.mp3str"
+
+[deps]
+
+source_file="res://Music/030 Great Canyon (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/030 Great Canyon (PMD Blue Rescue Team OST).mp3-23e02f68467298607df42913f9a58997.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://fhx6rd0ai1nm"
+path="res://.godot/imported/004 Personality Test (PMD Blue Rescue Team OST).mp3-0742a097f11283e15bbfaeefa99c4ee6.mp3str"
+
+[deps]
+
+source_file="res://Music/004 Personality Test (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/004 Personality Test (PMD Blue Rescue Team OST).mp3-0742a097f11283e15bbfaeefa99c4ee6.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

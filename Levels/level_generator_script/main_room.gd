@@ -7,6 +7,7 @@ extends Node2D
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
+@onready var pause_scene = preload("res://Menu/pause_menu.tscn")
 @onready var tilemap = $TileMap
 @export var borders = Rect2(1, 1, 200, 100)
 var walker
@@ -66,15 +67,15 @@ func generate_level():
 	if player_data.levels >= 0:
 		instance_enemy1()
 	if player_data.levels >= 3:
-		instance_enemy2()
+		instance_silverspikes()
 	if player_data.levels >= 6:
 		instance_enemy2()
-	instance_spikes()
-	
-func _input(event):
-	if Input.is_action_just_pressed("ui_cancel"):
-		instance_menu()
+	if player_data.levels >= 9:
+		instance_redspikes()
 		
+#func _input(event):
+	#if Input.is_action_just_pressed("ui_cancel"):
+		#instance_pause()
 		
 func instance_player():
 	var player = player_scene.instantiate()
@@ -101,22 +102,23 @@ func instance_enemy2():
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 
-func instance_spikes():
+func instance_silverspikes():
 	var silverspikes_count = randi_range(3*player_data.levels,8)
 	for i in range(silverspikes_count):
 		var silverspikes = silverspikes_scene.instantiate()
 		silverspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(silverspikes)
 		
+func instance_redspikes():
 	var redspikes_count = randi_range(2*player_data.levels,12)
 	for i in range(redspikes_count):
 		var redspikes = redspikes_scene.instantiate()
 		redspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(redspikes)
 
-func instance_menu():
-	var menu = menu_scene.instantiate()
-	add_child(menu)
+func instance_pause():
+	var pause = pause_scene.instantiate()
+	get_tree().root.add_child(pause)
 
 func _on_timer_timeout():
 	player_data.levels = 0
