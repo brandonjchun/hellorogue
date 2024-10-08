@@ -1,0 +1,115 @@
+[gd_scene load_steps=13 format=3 uid="uid://d3qiwvgy4s62v"]
+
+[ext_resource type="Script" path="res://Menu/menu_scripts/controls_menu.gd" id="1_svc61"]
+[ext_resource type="Texture2D" uid="uid://bxl4ab46h2gbb" path="res://Sprites/tips/tipmovement.jpg" id="2_25h2y"]
+[ext_resource type="Texture2D" uid="uid://bie00suf4k4f5" path="res://Sprites/tips/tipspikes.jpg" id="2_nv6l5"]
+[ext_resource type="Texture2D" uid="uid://b3ld0ra1novpc" path="res://Sprites/tips/tipaim.jpg" id="2_q6j1m"]
+[ext_resource type="Texture2D" uid="uid://sr7s7siqlw77" path="res://Sprites/tips/tipgun.jpg" id="4_jfe2f"]
+[ext_resource type="Texture2D" uid="uid://d147y6hr4f6y8" path="res://Sprites/tips/tipammo.jpg" id="5_dnijw"]
+[ext_resource type="Texture2D" uid="uid://r32ouwe42t3c" path="res://Sprites/tips/tipmelee.jpg" id="6_xbevq"]
+[ext_resource type="Texture2D" uid="uid://bg8m1tksugfti" path="res://Sprites/tips/tipportal.jpg" id="7_vcmnv"]
+[ext_resource type="Texture2D" uid="uid://celuej50qxyk2" path="res://Sprites/tips/tiptime.jpg" id="8_4dfo7"]
+[ext_resource type="Texture2D" uid="uid://bc646mksb2i2w" path="res://Sprites/tips/tipenemy.jpg" id="9_uf1f0"]
+[ext_resource type="Texture2D" uid="uid://dw3r7uafpout2" path="res://Sprites/tips/tiphealth.jpg" id="10_txslc"]
+[ext_resource type="Texture2D" uid="uid://b008ldyfe0x7g" path="res://Sprites/tzKyzs.png" id="12_qhsal"]
+
+[node name="ScrollContainer" type="ScrollContainer"]
+z_index = 1
+y_sort_enabled = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_svc61")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_right = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 50
+
+[node name="Exit_Button" type="Button" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Back"
+
+[node name="CardMenu1" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_25h2y")
+
+[node name="CardMenu2" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_q6j1m")
+
+[node name="CardMenu3" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_jfe2f")
+
+[node name="CardMenu10" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("5_dnijw")
+
+[node name="CardMenu4" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_xbevq")
+
+[node name="CardMenu5" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("7_vcmnv")
+
+[node name="CardMenu6" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("8_4dfo7")
+
+[node name="CardMenu7" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("9_uf1f0")
+
+[node name="CardMenu8" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("10_txslc")
+
+[node name="CardMenu9" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_nv6l5")
+
+[node name="Sprite2D" type="Sprite2D" parent="CenterContainer"]
+visible = false
+z_index = -2
+y_sort_enabled = true
+position = Vector2(608, 352)
+texture = ExtResource("12_qhsal")
+
+[node name="Sprite2D2" type="Sprite2D" parent="CenterContainer"]
+visible = false
+z_index = -2
+y_sort_enabled = true
+position = Vector2(1836, 352)
+texture = ExtResource("12_qhsal")
+
+[node name="Sprite2D3" type="Sprite2D" parent="CenterContainer"]
+visible = false
+z_index = -2
+y_sort_enabled = true
+position = Vector2(3064, 352)
+texture = ExtResource("12_qhsal")
+
+[node name="Sprite2D4" type="Sprite2D" parent="CenterContainer"]
+visible = false
+z_index = -2
+y_sort_enabled = true
+position = Vector2(4292, 353)
+texture = ExtResource("12_qhsal")
+
+[connection signal="pressed" from="CenterContainer/MarginContainer/HBoxContainer/Exit_Button" to="." method="_on_exit_button_pressed"]

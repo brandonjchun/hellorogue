@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=17 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
@@ -11,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
 [ext_resource type="AudioStream" uid="uid://3vsj717apske" path="res://Music/BossMain.wav" id="10_ldjy6"]
 [ext_resource type="AudioStream" path="res://Music/SFX/level_battle_theme/muPlumusLand.wav" id="11_ghp62"]
+[ext_resource type="PackedScene" uid="uid://cpgt8nmt3bxc1" path="res://Menu/pause_menu.tscn" id="12_wgi6v"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vow2"]
 texture = ExtResource("5_e0iff")
@@ -802,10 +803,14 @@ volume_db = -10.0
 pitch_scale = 0.97
 
 [node name="mars" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(512, 256)
 stream = ExtResource("6_d5pin")
+volume_db = -10.0
 
 [node name="mercury" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(512, 256)
 stream = ExtResource("7_sdjys")
+volume_db = -10.0
 
 [node name="goodfight" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_eta0w")
@@ -818,5 +823,12 @@ stream = ExtResource("10_ldjy6")
 
 [node name="plumus" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("11_ghp62")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+visible = false
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("12_wgi6v")]
+visible = false
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

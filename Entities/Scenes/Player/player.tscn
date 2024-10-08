@@ -6,11 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://bk3dq3uriy6dm" path="res://Sprites/gun_1.png" id="3_rvf6b"]
 [ext_resource type="Script" path="res://Entities/entities_script/camera.gd" id="4_1yqnh"]
 [ext_resource type="PackedScene" uid="uid://vauo2uuorfuo" path="res://UI/Scenes/mouse_icon.tscn" id="4_gxmvm"]
-[ext_resource type="AudioStream" path="res://Music/SFX/Jack Menhorn FPS Placeholder/Jack Menhorn FPS Placeholder/footstep_jack_01.wav" id="7_4in5d"]
-[ext_resource type="AudioStream" path="res://Music/SFX/clicks/clicks/outofammo.wav" id="7_8hcsu"]
-[ext_resource type="AudioStream" path="res://Music/SFX/Jack Menhorn FPS Placeholder/Jack Menhorn FPS Placeholder/footstep_jack_02.wav" id="8_hqm0e"]
-[ext_resource type="AudioStream" path="res://Music/SFX/Jack Menhorn FPS Placeholder/Jack Menhorn FPS Placeholder/footstep_jack_03.wav" id="9_csvd6"]
-[ext_resource type="AudioStream" path="res://Music/SFX/Jack Menhorn FPS Placeholder/Jack Menhorn FPS Placeholder/footstep_jack_04.wav" id="10_duauw"]
+[ext_resource type="AudioStream" uid="uid://b2if0awhmjy1n" path="res://Music/SFX/gun_outofammo_01.wav" id="7_lm4a3"]
+[ext_resource type="AudioStream" uid="uid://bjcx8mub6puav" path="res://Music/SFX/footstep_jack_01.wav" id="8_kstw8"]
+[ext_resource type="AudioStream" uid="uid://drgvf1skw4u8d" path="res://Music/SFX/footstep_jack_02.wav" id="9_1ympq"]
+[ext_resource type="AudioStream" uid="uid://du0y15skfj40f" path="res://Music/SFX/footstep_jack_03.wav" id="10_dwiwf"]
+[ext_resource type="AudioStream" uid="uid://cjql5db7dcl7k" path="res://Music/SFX/footstep_jack_04.wav" id="11_o7v1k"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v0vie"]
 radius = 6.0
@@ -276,9 +276,11 @@ position = Vector2(6.88889, 1.11111)
 texture = ExtResource("3_rvf6b")
 
 [node name="bullet_point" type="Marker2D" parent="gun_handler"]
-position = Vector2(13.3333, 0)
+position = Vector2(15.5556, -1.11111)
 
 [node name="mouse_icon" parent="." instance=ExtResource("4_gxmvm")]
+position = Vector2(-5, -5)
+scale = Vector2(0.8, 0.8)
 
 [node name="trail_timer" type="Timer" parent="."]
 wait_time = 0.15
@@ -294,23 +296,23 @@ wait_time = 0.25
 wait_time = 0.4
 
 [node name="outofammo" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("7_8hcsu")
+stream = ExtResource("7_lm4a3")
 volume_db = -5.0
 
 [node name="foot1" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("7_4in5d")
+stream = ExtResource("8_kstw8")
 volume_db = -18.0
 
 [node name="foot2" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("8_hqm0e")
+stream = ExtResource("9_1ympq")
 volume_db = -18.0
 
 [node name="foot3" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("9_csvd6")
+stream = ExtResource("10_dwiwf")
 volume_db = -18.0
 
 [node name="foot4" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("10_duauw")
+stream = ExtResource("11_o7v1k")
 volume_db = -18.0
 
 [connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
