@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@export var speed = randi_range(17,22)
+@export var speed = randi_range(27,32)
 
 enum enemy_direction {
 	RIGHT,
@@ -33,22 +33,22 @@ func _process(delta):
 
 func move_right():
 	velocity = Vector2.RIGHT * speed
-	$anim.play("move_right")
+	$anim.play("walkright")
 	move_and_slide()
 	
 func move_left():
 	velocity = Vector2.LEFT * speed
-	$anim.play("move_left")
+	$anim.play("walkleft")
 	move_and_slide()
 	
 func move_up():
 	velocity = Vector2.UP * speed
-	$anim.play("move_up")
+	$anim.play("walkright")
 	move_and_slide()
 	
 func move_down():
 	velocity = Vector2.DOWN * speed
-	$anim.play("move_down")
+	$anim.play("walkleft")
 	move_and_slide()
 	
 func choose_direction():
@@ -96,22 +96,22 @@ func instance_health():
 	get_tree().root.add_child(health)
 	
 func ammo_chance():
-	return randi_range(1, 6) == 6
+	return randi_range(1, 5) == 1
 	
 func health_chance():
-	return randi_range(1, 2) == 1
+	return randi_range(1, 10) == 12
 	
 func chase_state():
-	var chase_speed = 44
+	var chase_speed = 64
 	velocity = position.direction_to(target.global_position) * chase_speed
 	animation()
 	move_and_slide()
 	
 func animation():
 	if velocity > Vector2.ZERO:
-		$anim.play("move_right")
+		$anim.play("walkright")
 	if velocity < Vector2.ZERO:
-		$anim.play("move_left")
+		$anim.play("walkleft")
 		 
 func _on_chase_box_area_entered(area):
 	if area.is_in_group("follow"):

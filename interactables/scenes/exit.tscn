@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cruwu3vp7o2ii"]
+[gd_scene load_steps=8 format=3 uid="uid://cruwu3vp7o2ii"]
 
 [ext_resource type="Script" path="res://interactables/interactable_script/exit.gd" id="1_i4awj"]
 [ext_resource type="Texture2D" uid="uid://de1x0b1o7y708" path="res://Sprites/exit_portal.png" id="2_11skf"]
+[ext_resource type="AudioStream" uid="uid://c6fkyswsbdxil" path="res://Music/Warp Jingle.wav" id="3_yphs5"]
 
 [sub_resource type="Animation" id="Animation_vg6dl"]
 length = 0.001
@@ -61,5 +62,8 @@ autoplay = "active"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qudkg")
 debug_color = Color(0.717647, 0.356863, 0.823529, 0.419608)
+
+[node name="exit_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_yphs5")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

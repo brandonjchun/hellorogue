@@ -4,13 +4,18 @@ extends Area2D
 @export var speed = 75
 var direction = Vector2.RIGHT
 
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$bullet_sound.play()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	translate(direction * speed * delta)
 
 func _on_body_entered(body):
 	Globals.camera.screen_shake(1,1,0.01)
-	instance_fx()
+	instance_fx() 
+	await get_tree().create_timer(0.5).timeout
 	queue_free()
 
 func _on_visible_screen_exited():

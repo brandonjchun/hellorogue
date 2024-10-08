@@ -23,6 +23,7 @@ var rot
 var facing_right
 var melee_ready = true
 var gun_ready = true
+var step_ready = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -52,6 +53,8 @@ func movement(delta):
 			if gun_ready:
 				gun_ready = false
 				player_data.ammo -= 1
+				if player_data.ammo == 0:
+					$outofammo.play()
 				$bullet_reset.start()
 				instance_bullet()
 		else:
@@ -63,12 +66,24 @@ func movement(delta):
 				else:
 					instance_meleeright()
 
-			
 	move_and_slide()
 
 func animations():
 	if input_movement != Vector2.ZERO:
 		$anim.play("move")
+		if step_ready == true:
+			var step_sound = randi_range(1,4)
+			$step_timer.start()
+			step_ready = false
+			match step_sound:
+				1:
+					$foot1.play()
+				2:
+					$foot2.play()
+				3:
+					$foot3.play()
+				4:
+					$foot4.play()
 	if input_movement == Vector2.ZERO:
 		$anim.play("idle")
 
@@ -80,8 +95,10 @@ func dead():
 	await get_tree().create_timer(2).timeout
 	if get_tree():
 		get_tree().reload_current_scene()
-		player_data.health = 12
+		player_data.health = 8
 		player_data.ammo = 20
+		player_data.levels = 0
+		player_data.sound_selecter = 0
 		is_dead = false
 	
 func target_mouse():
@@ -129,7 +146,6 @@ func _on_trail_timer_timeout():
 	instance_trail()
 	$trail_timer.start()
 
-
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
 		flash()
@@ -149,12 +165,12 @@ func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
 	await get_tree().create_timer(0.1).timeout
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-
-func _on_idle_timer_timeout():
-	$anim.play("idle")
 	
 func _on_melee_reset_timeout():
 	melee_ready = true
 	
 func _on_bullet_reset_timeout():
 	gun_ready = true
+
+func _on_step_timer_timeout():
+	step_ready = true

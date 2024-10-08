@@ -14,10 +14,10 @@ tracks/0/path = NodePath("../Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 3.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 7, 8, 9, 10, 11, 13, 0]
+"values": [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 7, 8, 9, 10, 11, 0, 13, 0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -26,7 +26,7 @@ tracks/1/path = NodePath(".:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 2.9, 3, 3.4, 3.5, 4),
+"times": PackedFloat32Array(0, 2.2, 2.3, 3.4, 3.5, 4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, false, true, true, false, false]
@@ -66,8 +66,10 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d6axq"]
+size = Vector2(18, 15)
 
 [node name="Area2D" type="Area2D" groups=["enemy"]]
+collision_layer = 4
 script = ExtResource("1_rdsm3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -85,4 +87,7 @@ libraries = {
 autoplay = "spikes"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_d6axq")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

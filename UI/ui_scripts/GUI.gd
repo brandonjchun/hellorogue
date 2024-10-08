@@ -12,6 +12,7 @@ func _ready():
 		new_heart.texture = $heart.texture
 		new_heart.hframes = $heart.hframes
 		$heart.add_child(new_heart)
+	$level_number.text = var_to_str(player_data.levels)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
