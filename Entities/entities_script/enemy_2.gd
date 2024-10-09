@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@export var speed = randi_range(27,32)
+@export var speed = randi_range(22,27)
 
 enum current_state {
 	FROZEN,
@@ -103,13 +103,13 @@ func instance_health():
 	get_tree().root.add_child(health)
 	
 func ammo_chance():
-	return randi_range(1, 5) == 1
+	return randi_range(1, 5) == 5
 	
 func health_chance():
-	return randi_range(1, 10) == 12
+	return randi_range(1, 10) == 1
 	
 func chase_state():
-	var chase_speed = 64
+	var chase_speed = 54
 	velocity = position.direction_to(target.global_position) * chase_speed
 	animation()
 	move_and_slide()

@@ -15,8 +15,7 @@ func _process(delta):
 func _on_body_entered(body):
 	Globals.camera.screen_shake(1,1,0.01)
 	instance_fx() 
-	await get_tree().create_timer(0.5).timeout
-	queue_free()
+	$Timer.start()
 
 func _on_visible_screen_exited():
 	queue_free()
@@ -25,3 +24,6 @@ func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
 	get_tree().root.add_child(fx)
+
+func _on_timer_timeout():
+	queue_free()
