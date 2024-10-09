@@ -157,17 +157,19 @@ func _on_trail_timer_timeout():
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
-		var hurt_sound = randi_range(1,3)
-		match hurt_sound:
-			1:
-				$hurt1.play()
-			2:
-				$hurt2.play()
-			3:
-				$hurt3.play()
-		flash()
-		player_data.health -= 1
-		
+		if player_data.hurt_ready:
+			player_data.hurt_ready = false
+			$hurt_timer.start()
+			var hurt_sound = randi_range(1,3)
+			match hurt_sound:
+				1:
+					$hurt1.play()
+				2:
+					$hurt2.play()
+				3:
+					$hurt3.play()
+			flash()
+			player_data.health -= 1
 		
 func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
@@ -189,6 +191,10 @@ func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
 	await get_tree().create_timer(0.1).timeout
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 	
 func _on_melee_reset_timeout():
 	melee_ready = true
@@ -201,3 +207,6 @@ func _on_step_timer_timeout():
 	
 func _on_freeze_timer_timeout():
 	current_state = player_states.MOVE
+
+func _on_hurt_timer_timeout():
+	player_data.hurt_ready = true

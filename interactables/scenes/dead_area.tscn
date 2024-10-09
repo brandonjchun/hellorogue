@@ -69,7 +69,7 @@ _data = {
 }
 
 [node name="dead_area" type="Area2D" groups=["enemy"]]
-collision_layer = 4
+collision_layer = 36
 script = ExtResource("1_88u2x")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -78,7 +78,7 @@ texture = ExtResource("2_1ocr0")
 hframes = 7
 frame = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["enemy"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1.19209e-07, 0.5)
 scale = Vector2(0.48, 0.48)
 shape = SubResource("RectangleShape2D_jiqif")
@@ -92,5 +92,8 @@ libraries = {
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
+[node name="hurt_timer" type="Timer" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="hurt_timer" to="." method="_on_hurt_timer_timeout"]
