@@ -117,16 +117,16 @@ layout_mode = 2
 text = "Resume
 "
 
+[node name="Reset" type="Button" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+text = "Reset"
+
 [node name="Quit" type="Button" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
 text = "Quit
 "
-
-[node name="Placeholder" type="Button" parent="Panel/VBoxContainer"]
-custom_minimum_size = Vector2(256, 64)
-layout_mode = 2
-text = "Place holder"
 
 [node name="anim" type="AnimationPlayer" parent="."]
 libraries = {
@@ -134,4 +134,5 @@ libraries = {
 }
 
 [connection signal="pressed" from="Panel/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Reset" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

@@ -6,7 +6,7 @@ func _on_body_entered(body):
 		player_data.reached_exit = true
 		$exit_sound.play()
 		await get_tree().create_timer(1.25).timeout
-		get_tree().reload_current_scene()
+		player_data.toggle_loading_screen = true
 		player_data.reached_exit = false
 		
 		

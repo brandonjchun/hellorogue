@@ -103,12 +103,12 @@ func dead():
 	$anim.play("dead")
 	await get_tree().create_timer(2).timeout
 	if get_tree():
-		get_tree().reload_current_scene()
 		player_data.health = 8
 		player_data.ammo = 20
 		player_data.levels = 0
 		player_data.sound_selecter = 0
 		is_dead = false
+		player_data.toggle_loading_screen = true
 	
 func target_mouse():
 	if is_dead == false:
