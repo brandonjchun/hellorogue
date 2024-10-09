@@ -50,6 +50,11 @@ func movement(delta):
 	
 	if input_movement == Vector2.ZERO:
 		velocity = Vector2.ZERO
+	
+	if player_data.ammo > 0:
+		gun.visible = true
+	else:
+		gun.visible = false
 		
 	if Input.is_action_just_pressed("shoot"):
 		if player_data.ammo > 0:

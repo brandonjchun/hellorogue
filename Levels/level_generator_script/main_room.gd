@@ -7,14 +7,20 @@ extends Node2D
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
-@onready var pause_scene = preload("res://Menu/pause_menu.tscn")
+@onready var main_level = $"."
+@onready var gui = $GUI
+
+var lev = player_data.levels
+@onready var pause_menu_canvas = $pause_menu
+@onready var pause_menu = $pause_menu/PauseMenu
+@onready var loading_screen_canvas = $loading_screen_canvas
+@onready var loading_screen = $loading_screen_canvas/loading_screen
+
 @onready var tilemap = $TileMap
-@export var borders = Rect2(1, 1, 200, 100)
+@export var borders = Rect2(1, 1, 200 + lev*2, 100 + lev*2)
 var walker
 var map
-
 var ground_layer = 0
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -56,8 +62,8 @@ func _ready():
 			
 
 func generate_level():
-	walker = Walker_room.new(Vector2(6, 10), borders)
-	map = walker.walk(600)
+	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
+	map = walker.walk(2400)
 	
 	var using_cells: Array = []
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
@@ -82,14 +88,18 @@ func generate_level():
 	if player_data.levels >= 9:
 		instance_redspikes()
 		
-#func _input(event):
-	#if Input.is_action_just_pressed("ui_cancel"):
-		#instance_pause()
+func _input(event):
+	if Input.is_action_just_pressed("ui_cancel"):
+		if pause_menu_canvas.layer != 3:
+			pause_menu_canvas.layer = 3
+		else:
+			pause_menu_canvas.layer = -3
 		
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
-	player.position = map.pop_front() * 16
+	#was map.pop_front()
+	player.position = map[randi_range(0, 12)] * 16
 	
 func instance_exit():
 	var exit = exit_scene.instantiate()
@@ -102,7 +112,6 @@ func instance_enemy1():
 		var enemy = enemy1_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
-		
 		
 func instance_enemy2():
 	var enemies_count = randi_range(player_data.levels, player_data.levels*3)
@@ -125,13 +134,28 @@ func instance_redspikes():
 		redspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(redspikes)
 
-func instance_pause():
-	var pause = pause_scene.instantiate()
-	get_tree().root.add_child(pause)
+
 
 func _on_timer_timeout():
-	player_data.levels = 0
+	main_level.visible = false
+	gui.visible = false
+	pause_menu.visible = false
+	player_data.levels += 1 #set back to 0
 	player_data.sound_selecter = 0
-	get_tree().reload_current_scene()
+	if loading_screen_canvas.layer < 4:
+		loading_screen_canvas.layer = 4
+		loading_screen_canvas.visible = true
+		loading_screen.visible = true
+		loading_screen.z_index = 10
+	loading_screen.load_next_scene()
+	$next_level_timer.start()
 	
 
+func _on_next_level_timer_timeout():
+	main_level.visible = true
+	gui.visible = true
+	pause_menu.visible = true
+	loading_screen_canvas.layer = -2
+	loading_screen_canvas.visible = false
+	loading_screen.visible = false
+	loading_screen.z_index = -2

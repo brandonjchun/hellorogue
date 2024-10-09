@@ -2,12 +2,10 @@ extends Control
 
 func resume():
 	get_tree().paused = false
-	hide()
 	$anim.play_backwards("blur")
 	
 func pause():
 	get_tree().paused = true
-	show()
 	$anim.play("blur")
 	
 func testEsc():
@@ -19,7 +17,6 @@ func testEsc():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$anim.play("RESET")
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

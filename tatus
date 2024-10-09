@@ -1,0 +1,77 @@
+[33mcommit 6bfd28c38569338cf7257b5c3f751d3196f88b05[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31mrogue/main[m[33m)[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Tue Oct 8 20:43:32 2024 -0700
+
+    player hurt sfx, pause all sprites on load in for 1 sec, pause timer on exit portal interaction
+
+[33mcommit 4b593ce2c854b23b46afec3f1fc808294b518582[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Tue Oct 8 05:12:55 2024 -0700
+
+    main menu and pause menu
+
+[33mcommit 6b9eb4038c978d696c0d2e9ae26b42a3bc7ce94c[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Mon Oct 7 20:44:23 2024 -0700
+
+    fixed spike collision issues, new slime enemy, added some audio and global variables
+
+[33mcommit 710321cc0b96cc2290ad44652a479928a013069d[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Mon Oct 7 16:23:22 2024 -0700
+
+    health potion animation and interactions
+
+[33mcommit 1aa316ec44759c533bae4d9c508d9c636b0745a3[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Mon Oct 7 13:16:51 2024 -0700
+
+    Melee attacks and added spikes to dungeon
+
+[33mcommit c582c1f86abcb104bb8f5109bf103c4abcf8faaa[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Sat Oct 5 14:53:01 2024 -0700
+
+    Shake screen on bullet contact and countdown timer function
+
+[33mcommit e6a26c53cf3068821c37c92ec81db36f9ef8680c[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Sat Oct 5 14:00:34 2024 -0700
+
+    enemy player health interaction and damage shaders
+
+[33mcommit 7fdf84df943158718cd8441d2f480593c5135dfd[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 17:12:19 2024 -0700
+
+    adding enemies, enemy animation, and bullet onhit animation
+
+[33mcommit f9c078ab7dfb9fb5c65fde954d56ef354c010c9c[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 16:32:33 2024 -0700
+
+    added second tilemap for map flooring texture
+
+[33mcommit a57a44634b8a6c9dfab519fdca28ebbc83306fde[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 16:00:09 2024 -0700
+
+    exit portal and collision interactions for all entities
+
+[33mcommit eebf5e793f092166660c4be6c14853dc2bf03835[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 15:11:57 2024 -0700
+
+    procedural level generator
+
+[33mcommit cf7b4364cfccc25cbe1f7af454fce583a88d10a8[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 13:17:01 2024 -0700
+
+    creating the player, hitboxes, and shooting mechanics
+
+[33mcommit fdefc11507cfef1f3507bf1b4463c6af77ca3fe0[m
+Author: brandonjchun <zeonbravo@gmail.com>
+Date:   Fri Oct 4 11:17:39 2024 -0700
+
+    assets for project
