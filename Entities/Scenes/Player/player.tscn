@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cl2y8w4nga0m4"]
+[gd_scene load_steps=24 format=3 uid="uid://cl2y8w4nga0m4"]
 
 [ext_resource type="Script" path="res://Entities/entities_script/player.gd" id="1_jdr8l"]
 [ext_resource type="Texture2D" uid="uid://dkusewka3ky1n" path="res://Sprites/Player_metroid.png" id="1_kr4b0"]
@@ -11,6 +11,9 @@
 [ext_resource type="AudioStream" uid="uid://drgvf1skw4u8d" path="res://Music/SFX/footstep_jack_02.wav" id="9_1ympq"]
 [ext_resource type="AudioStream" uid="uid://du0y15skfj40f" path="res://Music/SFX/footstep_jack_03.wav" id="10_dwiwf"]
 [ext_resource type="AudioStream" uid="uid://cjql5db7dcl7k" path="res://Music/SFX/footstep_jack_04.wav" id="11_o7v1k"]
+[ext_resource type="AudioStream" uid="uid://d4nd11cwff0xg" path="res://Music/SFX/03._damage_grunt_male.wav" id="12_s5pys"]
+[ext_resource type="AudioStream" uid="uid://b2oeccyaw7mj1" path="res://Music/SFX/12._damage_grunt_male.wav" id="13_4kohn"]
+[ext_resource type="AudioStream" uid="uid://cq1k2rdf8pntn" path="res://Music/SFX/18._damage_grunt_male.wav" id="14_duv0u"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v0vie"]
 radius = 6.0
@@ -239,7 +242,6 @@ y_sort_enabled = true
 material = SubResource("ShaderMaterial_ngbeb")
 position = Vector2(0, -10)
 texture = ExtResource("1_kr4b0")
-flip_h = true
 hframes = 8
 vframes = 7
 
@@ -279,6 +281,7 @@ texture = ExtResource("3_rvf6b")
 position = Vector2(15.5556, -1.11111)
 
 [node name="mouse_icon" parent="." instance=ExtResource("4_gxmvm")]
+process_mode = 3
 position = Vector2(-5, -5)
 scale = Vector2(0.8, 0.8)
 
@@ -294,6 +297,9 @@ wait_time = 0.25
 
 [node name="step_timer" type="Timer" parent="."]
 wait_time = 0.4
+
+[node name="freeze_timer" type="Timer" parent="."]
+autostart = true
 
 [node name="outofammo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_lm4a3")
@@ -315,6 +321,18 @@ volume_db = -18.0
 stream = ExtResource("11_o7v1k")
 volume_db = -18.0
 
+[node name="hurt1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_s5pys")
+volume_db = -10.0
+
+[node name="hurt2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_4kohn")
+volume_db = -10.0
+
+[node name="hurt3" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_duv0u")
+volume_db = -10.0
+
 [connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Camera2D/camera_shake" to="Camera2D" method="_on_camera_shake_timeout"]
@@ -322,3 +340,4 @@ volume_db = -18.0
 [connection signal="timeout" from="melee_reset" to="." method="_on_melee_reset_timeout"]
 [connection signal="timeout" from="bullet_reset" to="." method="_on_bullet_reset_timeout"]
 [connection signal="timeout" from="step_timer" to="." method="_on_step_timer_timeout"]
+[connection signal="timeout" from="freeze_timer" to="." method="_on_freeze_timer_timeout"]

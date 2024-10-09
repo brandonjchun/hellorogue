@@ -29,22 +29,31 @@ func _ready():
 		player_data.sound_selecter = 3
 	if player_data.levels >= 12 and player_data.levels < 15:
 		player_data.sound_selecter = 4
+	if player_data.levels >= 15 and player_data.levels < 18:
+		player_data.sound_selecter = 5
+	if player_data.levels >= 18 and player_data.levels < 21:
+		player_data.sound_selecter = 6
+	if player_data.levels >= 21 and player_data.levels < 24:
+		player_data.sound_selecter = 7
 		
 	match player_data.sound_selecter:
 		0:
-			$mapbasic.play()
+			$wizards.play()
 		1:
-			$mars.play()
-		2:
 			$mercury.play()
+		2:
+			$mars.play()
 		3:
-			$goodfight.play()
+			$mapbasic.play()
 		4:
-			$venus.play()
+			$goodfight.play()
 		5:
-			$bossmain.play()
+			$sinister.play()
 		6:
 			$plumus.play()
+		7:
+			$final.play()
+			
 
 func generate_level():
 	walker = Walker_room.new(Vector2(6, 10), borders)

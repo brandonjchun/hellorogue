@@ -18,6 +18,8 @@ func _ready():
 func _process(delta):
 	$ammo_amount.text = var_to_str(player_data.ammo)
 	$timer_countdown.text = var_to_str(timer.time_left).pad_decimals(1)
+	if player_data.reached_exit:
+		timer.paused = true
 	
 	for heart in $heart.get_children():
 		var index = heart.get_index()

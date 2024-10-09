@@ -5,6 +5,11 @@ extends CharacterBody2D
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @export var speed = randi_range(27,32)
 
+enum current_state {
+	FROZEN,
+	MOVE
+}
+
 enum enemy_direction {
 	RIGHT,
 	LEFT,
@@ -14,22 +19,24 @@ enum enemy_direction {
 }
 var new_direction
 var change_direction
+var enemy_state = current_state.FROZEN
 
 @onready var target = get_node("../Player")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	match new_direction:
-		enemy_direction.RIGHT:
-			move_right()
-		enemy_direction.LEFT:
-			move_left()
-		enemy_direction.UP:
-			move_up()
-		enemy_direction.DOWN:
-			move_down()
-		enemy_direction.CHASE:
-			chase_state()
+	if enemy_state == current_state.MOVE:
+		match new_direction:
+			enemy_direction.RIGHT:
+				move_right()
+			enemy_direction.LEFT:
+				move_left()
+			enemy_direction.UP:
+				move_up()
+			enemy_direction.DOWN:
+				move_down()
+			enemy_direction.CHASE:
+				chase_state()
 
 func move_right():
 	velocity = Vector2.RIGHT * speed
@@ -116,3 +123,6 @@ func animation():
 func _on_chase_box_area_entered(area):
 	if area.is_in_group("follow"):
 		new_direction = enemy_direction.CHASE
+
+func _on_timer_2_timeout():
+	enemy_state = current_state.MOVE
