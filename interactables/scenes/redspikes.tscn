@@ -68,8 +68,8 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d6axq"]
 size = Vector2(18, 15)
 
-[node name="Area2D" type="Area2D" groups=["enemy"]]
-collision_layer = 4
+[node name="redspikes" type="Area2D" groups=["enemy"]]
+collision_layer = 36
 script = ExtResource("1_rdsm3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -85,11 +85,15 @@ libraries = {
 "": SubResource("AnimationLibrary_qypog")
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["enemy"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_d6axq")
 
 [node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="hurt_timer" type="Timer" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="hurt_timer" to="." method="_on_hurt_timer_timeout"]

@@ -104,15 +104,18 @@ func generate_level():
 	if player_data.levels >= 0:
 		instance_enemy1()
 	if player_data.levels >= 2:
+		instance_enemy1()
 		instance_silverspikes()
 	if player_data.levels >= 4:
 		instance_enemy1()
-		instance_silverspikes()
+		instance_enemy2()
 	if player_data.levels >= 6:
 		instance_enemy2()
 	if player_data.levels >= 8:
+		instance_enemy2()
 		instance_redspikes()
 	if player_data.levels >= 10:
+		instance_enemy1()
 		instance_enemy2()
 		instance_redspikes()
 	if player_data.levels >= 12:
@@ -150,7 +153,7 @@ func instance_enemy2():
 		add_child(enemy)
 		
 func instance_enemy3():
-	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*3)
+	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*4)
 	for i in range(enemies_count):
 		var enemy = enemy3_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16

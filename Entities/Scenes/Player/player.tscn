@@ -300,6 +300,8 @@ wait_time = 0.25
 [node name="step_timer" type="Timer" parent="."]
 wait_time = 0.4
 
+[node name="hurt_timer" type="Timer" parent="."]
+
 [node name="freeze_timer" type="Timer" parent="."]
 one_shot = true
 autostart = true
@@ -343,4 +345,5 @@ volume_db = -10.0
 [connection signal="timeout" from="melee_reset" to="." method="_on_melee_reset_timeout"]
 [connection signal="timeout" from="bullet_reset" to="." method="_on_bullet_reset_timeout"]
 [connection signal="timeout" from="step_timer" to="." method="_on_step_timer_timeout"]
+[connection signal="timeout" from="hurt_timer" to="." method="_on_hurt_timer_timeout"]
 [connection signal="timeout" from="freeze_timer" to="." method="_on_freeze_timer_timeout"]
