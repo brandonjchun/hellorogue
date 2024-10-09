@@ -15,12 +15,15 @@ var lev = player_data.levels
 @onready var pause_menu = $pause_menu/PauseMenu
 @onready var loading_screen_canvas = $loading_screen_canvas
 @onready var loading_screen = $loading_screen_canvas/loading_screen
+@onready var loading_anim = $loading_screen_canvas/loading_screen/anim
 
 @onready var tilemap = $TileMap
-@export var borders = Rect2(1, 1, 200 + lev*2, 100 + lev*2)
+@export var borders = Rect2(1, 1, 200 + 2*lev, 100 + 2*lev)
 var walker
 var map
 var ground_layer = 0
+var change_scenes_once = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -60,10 +63,28 @@ func _ready():
 		7:
 			$final.play()
 			
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if player_data.toggle_loading_screen:
+		main_level.visible = false
+		gui.visible = false
+		pause_menu.visible = false
+		if loading_screen_canvas.layer < 4:
+			loading_screen_canvas.layer = 4
+			loading_screen_canvas.visible = true
+			loading_screen.visible = true
+			loading_screen.z_index = 10
+			loading_anim.play("jumping")
+			
+		if change_scenes_once == 0:
+			loading_screen.load_next_scene()
+			$next_level_timer.start()
+			change_scenes_once += 1
+			player_data.toggle_loading_screen = false
 
 func generate_level():
 	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
-	map = walker.walk(2400)
+	map = walker.walk(300 + 600 * floor(lev/3))
 	
 	var using_cells: Array = []
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
@@ -81,12 +102,19 @@ func generate_level():
 	instance_exit()
 	if player_data.levels >= 0:
 		instance_enemy1()
-	if player_data.levels >= 3:
+	if player_data.levels >= 2:
+		instance_silverspikes()
+	if player_data.levels >= 4:
+		instance_enemy1()
 		instance_silverspikes()
 	if player_data.levels >= 6:
 		instance_enemy2()
-	if player_data.levels >= 9:
+	if player_data.levels >= 8:
 		instance_redspikes()
+	if player_data.levels >= 10:
+		instance_enemy2()
+		instance_redspikes()
+		
 		
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -98,8 +126,7 @@ func _input(event):
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
-	#was map.pop_front()
-	player.position = map[randi_range(0, 12)] * 16
+	player.position = map.pop_front() * 16
 	
 func instance_exit():
 	var exit = exit_scene.instantiate()
@@ -107,7 +134,7 @@ func instance_exit():
 	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy1():
-	var enemies_count = randi_range(player_data.levels, player_data.levels*2)
+	var enemies_count = randi_range(player_data.levels, maxi(2, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
@@ -134,22 +161,10 @@ func instance_redspikes():
 		redspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(redspikes)
 
-
-
 func _on_timer_timeout():
-	main_level.visible = false
-	gui.visible = false
-	pause_menu.visible = false
-	player_data.levels += 1 #set back to 0
+	player_data.toggle_loading_screen = true
+	player_data.levels = 0 #set back to 0
 	player_data.sound_selecter = 0
-	if loading_screen_canvas.layer < 4:
-		loading_screen_canvas.layer = 4
-		loading_screen_canvas.visible = true
-		loading_screen.visible = true
-		loading_screen.z_index = 10
-	loading_screen.load_next_scene()
-	$next_level_timer.start()
-	
 
 func _on_next_level_timer_timeout():
 	main_level.visible = true
@@ -159,3 +174,5 @@ func _on_next_level_timer_timeout():
 	loading_screen_canvas.visible = false
 	loading_screen.visible = false
 	loading_screen.z_index = -2
+	player_data.toggle_loading_screen = false
+	change_scenes_once = 0

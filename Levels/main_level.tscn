@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=25 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="6_d5pin"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/loading_screens.gd" id="6_pxbp8"]
 [ext_resource type="Texture2D" uid="uid://u4s36s1voque" path="res://Sprites/slimerawleftandright.png" id="7_okp3g"]
+[ext_resource type="Texture2D" uid="uid://b58b68iftoa0g" path="res://Sprites/9fc901bcdda2dd5ba9cfb015c9126656.jpg" id="7_qx8xt"]
 [ext_resource type="AudioStream" uid="uid://b7djrvrs0blja" path="res://Music/Mercury.wav" id="7_sdjys"]
 [ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_eta0w"]
 [ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
@@ -724,7 +725,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("animation:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -739,7 +740,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("animation:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -857,6 +858,11 @@ grow_vertical = 2
 script = ExtResource("6_pxbp8")
 metadata/_edit_use_anchors_ = true
 
+[node name="loading_bg" type="Sprite2D" parent="loading_screen_canvas/loading_screen"]
+position = Vector2(592, 320)
+scale = Vector2(2.15, 2.15)
+texture = ExtResource("7_qx8xt")
+
 [node name="Label" type="Label" parent="loading_screen_canvas/loading_screen"]
 layout_mode = 1
 anchors_preset = 5
@@ -883,7 +889,9 @@ grow_horizontal = 2
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="loading_screen_canvas/loading_screen"]
+[node name="animation" type="Sprite2D" parent="loading_screen_canvas/loading_screen"]
+z_index = 4
+y_sort_enabled = true
 position = Vector2(576, 560)
 scale = Vector2(5, 5)
 texture = ExtResource("7_okp3g")
@@ -900,7 +908,6 @@ autoplay = "jumping"
 [node name="wizards" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_7aweo")
 volume_db = -10.0
-pitch_scale = 0.95
 
 [node name="mercury" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_sdjys")
@@ -909,7 +916,6 @@ volume_db = -10.0
 [node name="mapbasic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_oqekw")
 volume_db = -12.0
-pitch_scale = 0.97
 
 [node name="mars" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_d5pin")
@@ -934,10 +940,10 @@ volume_db = -2.0
 [node name="final" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("13_wwts4")
 volume_db = -3.0
-pitch_scale = 0.97
 
 [node name="next_level_timer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 3.0
+one_shot = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="next_level_timer" to="." method="_on_next_level_timer_timeout"]
