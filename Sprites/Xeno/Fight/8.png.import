@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://billimt3v3c0o"
-path="res://.godot/imported/short-sword-blade-line-art-260nw-426581539.webp-a66f89b0559b1ba057a4e6198e7e703f.ctex"
+uid="uid://b1prccn7fscrs"
+path="res://.godot/imported/8.png-44da5c35238232262e4a6630d060ddc3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/short-sword-blade-line-art-260nw-426581539.webp"
-dest_files=["res://.godot/imported/short-sword-blade-line-art-260nw-426581539.webp-a66f89b0559b1ba057a4e6198e7e703f.ctex"]
+source_file="res://Sprites/Xeno/Fight/8.png"
+dest_files=["res://.godot/imported/8.png-44da5c35238232262e4a6630d060ddc3.ctex"]
 
 [params]
 

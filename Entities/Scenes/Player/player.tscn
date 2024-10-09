@@ -301,6 +301,7 @@ wait_time = 0.25
 wait_time = 0.4
 
 [node name="freeze_timer" type="Timer" parent="."]
+one_shot = true
 autostart = true
 
 [node name="outofammo" type="AudioStreamPlayer2D" parent="."]

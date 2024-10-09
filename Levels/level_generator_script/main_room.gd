@@ -4,6 +4,7 @@ extends Node2D
 @onready var exit_scene = preload("res://interactables/scenes/exit.tscn")
 @onready var enemy1_scene = preload("res://Entities/Scenes/Enemies/enemy_1.tscn")
 @onready var enemy2_scene = preload("res://Entities/Scenes/Enemies/enemy_2.tscn")
+@onready var enemy3_scene = preload("res://Entities/Scenes/Enemies/enemy_3.tscn")
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
@@ -44,7 +45,7 @@ func _ready():
 		player_data.sound_selecter = 6
 	if player_data.levels >= 21 and player_data.levels < 24:
 		player_data.sound_selecter = 7
-		
+
 	match player_data.sound_selecter:
 		0:
 			$wizards.play()
@@ -62,7 +63,7 @@ func _ready():
 			$plumus.play()
 		7:
 			$final.play()
-			
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if player_data.toggle_loading_screen:
@@ -75,7 +76,7 @@ func _process(delta):
 			loading_screen.visible = true
 			loading_screen.z_index = 10
 			loading_anim.play("jumping")
-			
+
 		if change_scenes_once == 0:
 			loading_screen.load_next_scene()
 			$next_level_timer.start()
@@ -85,19 +86,19 @@ func _process(delta):
 func generate_level():
 	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
 	map = walker.walk(300 + 600 * floor(lev/3))
-	
+
 	var using_cells: Array = []
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
 	tilemap.clear()
 	walker.queue_free()
-	
+
 	for tile in all_cells:
 		if !map.has(Vector2(tile.x, tile.y)):
 			using_cells.append(tile)
-			
+
 	tilemap.set_cells_terrain_connect(ground_layer, using_cells, ground_layer, ground_layer, false)
 	tilemap.set_cells_terrain_path(ground_layer, using_cells, ground_layer, ground_layer, false)
-	
+
 	instance_player()
 	instance_exit()
 	if player_data.levels >= 0:
@@ -114,8 +115,9 @@ func generate_level():
 	if player_data.levels >= 10:
 		instance_enemy2()
 		instance_redspikes()
-		
-		
+	if player_data.levels >= 12:
+		instance_enemy3()
+
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
 		if pause_menu_canvas.layer != 3:
@@ -134,16 +136,23 @@ func instance_exit():
 	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy1():
-	var enemies_count = randi_range(player_data.levels, maxi(2, player_data.levels*2))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 		
 func instance_enemy2():
-	var enemies_count = randi_range(player_data.levels, player_data.levels*3)
+	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*3)
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
+		enemy.position = (map.pick_random() * borders.position) * 16
+		add_child(enemy)
+		
+func instance_enemy3():
+	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*3)
+	for i in range(enemies_count):
+		var enemy = enemy3_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 
@@ -176,3 +185,4 @@ func _on_next_level_timer_timeout():
 	loading_screen.z_index = -2
 	player_data.toggle_loading_screen = false
 	change_scenes_once = 0
+	
