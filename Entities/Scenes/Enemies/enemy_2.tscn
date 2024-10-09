@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://u4s36s1voque" path="res://Sprites/slimerawleftandright.png" id="1_yfjfm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2247p"]
-size = Vector2(16, 18)
+size = Vector2(18, 19)
 
 [sub_resource type="Animation" id="Animation_an51f"]
 resource_name = "walkright"
@@ -97,7 +97,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q46le"]
-size = Vector2(22.8571, 25.7143)
+size = Vector2(25.7143, 27.1429)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w31tc"]
 
@@ -112,6 +112,7 @@ hframes = 9
 vframes = 2
 
 [node name="enemy_collider" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_2247p")
 
 [node name="anim" type="AnimationPlayer" parent="."]
@@ -125,12 +126,12 @@ collision_layer = 32
 collision_mask = 3
 
 [node name="hitbox_collider" type="CollisionShape2D" parent="hitbox"]
-position = Vector2(0, 2.38419e-07)
+position = Vector2(3.57628e-07, -0.5)
 scale = Vector2(0.7, 0.7)
 shape = SubResource("RectangleShape2D_q46le")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 4.0
+wait_time = 3.0
 autostart = true
 
 [node name="chase_box" type="Area2D" parent="."]
@@ -141,6 +142,10 @@ collision_mask = 64
 scale = Vector2(7, 7)
 shape = SubResource("CircleShape2D_w31tc")
 
+[node name="Timer2" type="Timer" parent="."]
+autostart = true
+
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="area_entered" from="chase_box" to="." method="_on_chase_box_area_entered"]
+[connection signal="timeout" from="Timer2" to="." method="_on_timer_2_timeout"]

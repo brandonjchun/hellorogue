@@ -1,7 +1,8 @@
 extends CharacterBody2D
 
-var current_state = player_states.MOVE
+var current_state = player_states.FREEZE
 enum player_states {
+	FREEZE,
 	MOVE,
 	DEAD
 }
@@ -18,6 +19,7 @@ var input_movement = Vector2()
 @onready var gun_spr = $gun_handler/gun_sprite
 @onready var bullet_point = $gun_handler/bullet_point
 
+
 var pos
 var rot
 var facing_right
@@ -27,16 +29,17 @@ var step_ready = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.health <= 0:
-		current_state = player_states.DEAD
-		
-	target_mouse()
+	if current_state != player_states.FREEZE:
+		if player_data.health <= 0:
+			current_state = player_states.DEAD
+			
+		target_mouse()
 
-	match current_state:
-		player_states.MOVE:
-			movement(delta)
-		player_states.DEAD:
-			dead()
+		match current_state:
+			player_states.MOVE:
+				movement(delta)
+			player_states.DEAD:
+				dead()
 
 func movement(delta):
 	animations()
@@ -86,6 +89,7 @@ func animations():
 					$foot4.play()
 	if input_movement == Vector2.ZERO:
 		$anim.play("idle")
+
 
 func dead():
 	is_dead = true
@@ -148,8 +152,17 @@ func _on_trail_timer_timeout():
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
+		var hurt_sound = randi_range(1,3)
+		match hurt_sound:
+			1:
+				$hurt1.play()
+			2:
+				$hurt2.play()
+			3:
+				$hurt3.play()
 		flash()
 		player_data.health -= 1
+		
 		
 func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
@@ -165,6 +178,12 @@ func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
 	await get_tree().create_timer(0.1).timeout
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
+	await get_tree().create_timer(0.1).timeout
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 	
 func _on_melee_reset_timeout():
 	melee_ready = true
@@ -174,3 +193,6 @@ func _on_bullet_reset_timeout():
 
 func _on_step_timer_timeout():
 	step_ready = true
+	
+func _on_freeze_timer_timeout():
+	current_state = player_states.MOVE

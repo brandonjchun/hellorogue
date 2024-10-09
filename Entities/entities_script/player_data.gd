@@ -7,3 +7,4 @@ static var ammo = 20
 static var levels = 0
 static var sound_selecter = 0
 static var did_not_initiate_round = true
+static var reached_exit = false
