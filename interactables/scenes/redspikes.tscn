@@ -3,6 +3,33 @@
 [ext_resource type="Script" path="res://interactables/interactable_script/redspikes.gd" id="1_rdsm3"]
 [ext_resource type="Texture2D" uid="uid://bv56nipw4hbrx" path="res://Sprites/redspikesall.png" id="1_wgmj3"]
 
+[sub_resource type="Animation" id="Animation_sw3gx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
 [sub_resource type="Animation" id="Animation_8jdll"]
 resource_name = "spikes"
 length = 4.0
@@ -32,33 +59,6 @@ tracks/1/keys = {
 "values": [false, false, true, true, false, false]
 }
 
-[sub_resource type="Animation" id="Animation_sw3gx"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:disabled")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qypog"]
 _data = {
 "RESET": SubResource("Animation_sw3gx"),
@@ -85,7 +85,7 @@ libraries = {
 "": SubResource("AnimationLibrary_qypog")
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["enemy"]]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_d6axq")
 

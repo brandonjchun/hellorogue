@@ -10,7 +10,7 @@ extends Control
 @onready var texture_rect = $TextureRect
 @onready var margin_container = $MarginContainer as MarginContainer
 
-@onready var start_game = preload("res://Levels/main_level.tscn")
+@onready var start_game = preload("res://Menu/loading_screen.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

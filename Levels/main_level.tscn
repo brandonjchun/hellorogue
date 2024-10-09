@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=24 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://c66jb5berp1yn" path="res://Sprites/complex_tilemap_16px.png" id="5_e0iff"]
 [ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="5_oqekw"]
 [ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="6_d5pin"]
+[ext_resource type="Script" path="res://Menu/menu_scripts/loading_screens.gd" id="6_pxbp8"]
+[ext_resource type="Texture2D" uid="uid://u4s36s1voque" path="res://Sprites/slimerawleftandright.png" id="7_okp3g"]
 [ext_resource type="AudioStream" uid="uid://b7djrvrs0blja" path="res://Music/Mercury.wav" id="7_sdjys"]
 [ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_eta0w"]
 [ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
@@ -715,6 +717,44 @@ texture = ExtResource("5_e0iff")
 [sub_resource type="TileSet" id="TileSet_rrp1n"]
 sources/0 = SubResource("TileSetAtlasSource_8vht5")
 
+[sub_resource type="Animation" id="Animation_vre1g"]
+resource_name = "jumping"
+length = 1.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [17, 16, 15, 14, 13, 12, 11, 10, 9]
+}
+
+[sub_resource type="Animation" id="Animation_5o7hd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [16]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_divu4"]
+_data = {
+"RESET": SubResource("Animation_5o7hd"),
+"jumping": SubResource("Animation_vre1g")
+}
+
 [node name="main_level" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_kcrqp")
@@ -798,6 +838,65 @@ layer_1/tile_data = PackedInt32Array(-524300, 0, 5, -262156, 65536, 6, -65548, 6
 wait_time = 90.0
 autostart = true
 
+[node name="pause_menu" type="CanvasLayer" parent="."]
+layer = -4
+
+[node name="PauseMenu" parent="pause_menu" instance=ExtResource("12_wgi6v")]
+
+[node name="loading_screen_canvas" type="CanvasLayer" parent="."]
+layer = -3
+
+[node name="loading_screen" type="Control" parent="loading_screen_canvas"]
+y_sort_enabled = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_pxbp8")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="loading_screen_canvas/loading_screen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 36
+text = "Loading...
+"
+horizontal_alignment = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="progress_bar" type="ProgressBar" parent="loading_screen_canvas/loading_screen"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="loading_screen_canvas/loading_screen"]
+position = Vector2(576, 560)
+scale = Vector2(5, 5)
+texture = ExtResource("7_okp3g")
+hframes = 9
+vframes = 2
+frame = 16
+
+[node name="anim" type="AnimationPlayer" parent="loading_screen_canvas/loading_screen"]
+libraries = {
+"": SubResource("AnimationLibrary_divu4")
+}
+autoplay = "jumping"
+
 [node name="wizards" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_7aweo")
 volume_db = -10.0
@@ -837,9 +936,8 @@ stream = ExtResource("13_wwts4")
 volume_db = -3.0
 pitch_scale = 0.97
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-layer = -1
-
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("12_wgi6v")]
+[node name="next_level_timer" type="Timer" parent="."]
+wait_time = 5.0
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="next_level_timer" to="." method="_on_next_level_timer_timeout"]
