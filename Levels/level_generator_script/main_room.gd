@@ -30,21 +30,21 @@ var change_scenes_once = 0
 func _ready():
 	randomize()
 	generate_level()
-	if player_data.levels >= 1 and player_data.levels <= 3:
+	if player_data.levels >= 1 and player_data.levels < 3:
 		player_data.sound_selecter = 0
-	if player_data.levels >= 4 and player_data.levels <= 6:
+	if player_data.levels >= 3 and player_data.levels < 5:
 		player_data.sound_selecter = 1
-	if player_data.levels >= 7 and player_data.levels <= 9:
+	if player_data.levels >= 5 and player_data.levels < 7:
 		player_data.sound_selecter = 2
-	if player_data.levels >= 10 and player_data.levels <= 12:
+	if player_data.levels >= 7 and player_data.levels < 9:
 		player_data.sound_selecter = 3
-	if player_data.levels >= 13 and player_data.levels <= 15:
+	if player_data.levels >= 9 and player_data.levels < 11:
 		player_data.sound_selecter = 4
-	if player_data.levels >= 16 and player_data.levels <= 18:
+	if player_data.levels >= 11 and player_data.levels < 13:
 		player_data.sound_selecter = 5
-	if player_data.levels >= 19 and player_data.levels <= 21:
+	if player_data.levels >= 13 and player_data.levels < 15:
 		player_data.sound_selecter = 6
-	if player_data.levels >= 22 and player_data.levels <= 24:
+	if player_data.levels >= 15
 		player_data.sound_selecter = 7
 
 	match player_data.sound_selecter:
@@ -104,33 +104,47 @@ func generate_level():
 
 	instance_player()
 	instance_exit()
-	if player_data.levels >= 1:
+	if player_data.levels >= 0 and player_data.levels < 2:
 		instance_enemy1()
-	if player_data.levels >= 3:
+	if player_data.levels >= 2 and player_data.levels < 4:
 		instance_enemy1()
 		instance_silverspikes()
-	if player_data.levels >= 5:
-		instance_enemy2()
-	if player_data.levels >= 7:
-		instance_enemy2()
-		instance_redspikes()
-	if player_data.levels >= 9:
+	if player_data.levels >= 4 and player_data.levels < 6:
+		instance_enemy1()
+		instance_enemy1()
+		instance_silverspikes()
+	if player_data.levels >= 6 and player_data.levels < 8:
+		instance_enemy1()
 		instance_enemy1()
 		instance_enemy2()
-		instance_enemy4()
-	if player_data.levels >= 11:
-		instance_enemy4()
-		instance_redspikes()
-	if player_data.levels >= 13:
-		instance_enemy3()
-	if player_data.levels >= 15:
+		instance_silverspikes()
+	if player_data.levels >= 8 and player_data.levels < 10:
+		instance_enemy1()
 		instance_enemy1()
 		instance_enemy2()
-		instance_enemy3()
 		instance_enemy4()
 		instance_silverspikes()
 		instance_redspikes()
-		
+	if player_data.levels >= 10 and player_data.levels < 12:
+		instance_enemy1()
+		instance_enemy2()
+		instance_enemy4()
+		instance_silverspikes()
+		instance_redspikes()
+	if player_data.levels >= 12 and player_data.levels < 14:
+		instance_enemy1()
+		instance_enemy2()
+		instance_enemy3()
+		instance_enemy4()
+		instance_silverspikes()
+		instance_redspikes()
+	if player_data.levels == 15:
+		instance_enemy1()
+		instance_enemy2()
+		instance_enemy3()
+		instance_enemy4()
+		instance_silverspikes()
+		instance_redspikes()
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
