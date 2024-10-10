@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cwiw3c1o42u7k"
+path="res://.godot/imported/031 The Legend of Ninetales (PMD Blue Rescue Team OST).mp3-caa3bd377a74fa2ef37c89c1667d8ed3.mp3str"
+
+[deps]
+
+source_file="res://Music/031 The Legend of Ninetales (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/031 The Legend of Ninetales (PMD Blue Rescue Team OST).mp3-caa3bd377a74fa2ef37c89c1667d8ed3.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

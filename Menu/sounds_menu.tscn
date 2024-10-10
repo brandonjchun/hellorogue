@@ -27,7 +27,7 @@ layout_mode = 2
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 64
+theme_override_constants/separation = 48
 alignment = 1
 
 [node name="Seperator7" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
@@ -37,19 +37,49 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 12
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 48
 text = "Sound"
 horizontal_alignment = 1
 
-[node name="audio_slider_settings" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Seperator10" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+
+[node name="audio_slider_settings" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer3" instance=ExtResource("1_dydf3")]
 layout_mode = 2
 bus_name = "Master"
 
-[node name="audio_slider_settings2" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+[node name="Seperator8" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Seperator10" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="audio_slider_settings2" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer" instance=ExtResource("1_dydf3")]
 layout_mode = 2
 bus_name = "Music"
 
-[node name="audio_slider_settings3" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+[node name="Seperator9" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Seperator19" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+
+[node name="audio_slider_settings3" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer2" instance=ExtResource("1_dydf3")]
 layout_mode = 2
 bus_name = "SFX"
 

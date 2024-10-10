@@ -30,42 +30,48 @@ var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player_data.game_active = true
 	randomize()
 	generate_level()
-	if player_data.levels >= 1 and player_data.levels < 3:
+	if player_data.levels >= 1 and player_data.levels <= 3:
 		player_data.sound_selecter = 0
-	if player_data.levels >= 3 and player_data.levels < 5:
+	if player_data.levels > 3 and player_data.levels < 6:
 		player_data.sound_selecter = 1
-	if player_data.levels >= 5 and player_data.levels < 7:
+	if player_data.levels >= 6 and player_data.levels < 9:
 		player_data.sound_selecter = 2
-	if player_data.levels >= 7 and player_data.levels < 9:
+	if player_data.levels >= 9 and player_data.levels < 12:
 		player_data.sound_selecter = 3
-	if player_data.levels >= 9 and player_data.levels < 11:
+	if player_data.levels >= 12 and player_data.levels < 15:
 		player_data.sound_selecter = 4
-	if player_data.levels >= 11 and player_data.levels < 13:
+	if player_data.levels >= 15 and player_data.levels < 18:
 		player_data.sound_selecter = 5
-	if player_data.levels >= 13 and player_data.levels < 15:
+	if player_data.levels >= 18 and player_data.levels < 21:
 		player_data.sound_selecter = 6
-	if player_data.levels >= 15:
+	if player_data.levels >= 21:
 		player_data.sound_selecter = 7
 
 	match player_data.sound_selecter:
 		0:
-			$wizards.play()
+			ThemePlayer.theme_wizards()
 		1:
-			$mercury.play()
+			ThemePlayer.theme_wizards_stop()
+			ThemePlayer.theme_goodfight()
 		2:
-			$mars.play()
+			ThemePlayer.theme_goodfight_stop()
+			ThemePlayer.theme_steel()
 		3:
-			$mapbasic.play()
+			ThemePlayer.theme_steel_stop()
+			ThemePlayer.theme_sinister()
 		4:
-			$goodfight.play()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma()
 		5:
-			$sinister.play()
+			ThemePlayer.theme_magma_stop()
+			ThemePlayer.theme_plumus()
 		6:
-			$plumus.play()
-		7:
-			$final.play()
+			ThemePlayer.theme_plumus_stop()
+			ThemePlayer.theme_final()
+	
 	$map_timer.start()
 	$time_running_out_timer.wait_time = $map_timer.wait_time - 10
 	$time_running_out_timer.start()
@@ -92,6 +98,8 @@ func _process(delta):
 			$next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
+	
+	ThemePlayer.theme_questionairre_stop()
 
 func generate_level():
 	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
@@ -111,47 +119,31 @@ func generate_level():
 
 	instance_player()
 	instance_exit()
-	if player_data.levels >= 0 and player_data.levels < 2:
+	if player_data.levels >= 0:
 		instance_enemy1()
-	if player_data.levels >= 2 and player_data.levels < 4:
-		instance_enemy1()
-		instance_enemy1()
+	if player_data.levels >= 2:
 		instance_silverspikes()
-	if player_data.levels >= 4 and player_data.levels < 6:
-		instance_enemy1()
+	if player_data.levels >= 4:
+		instance_enemy2()
+	if player_data.levels >= 6:
 		instance_enemy1()
 		instance_enemy2()
-		instance_silverspikes()
-	if player_data.levels >= 6 and player_data.levels < 8:
-		instance_enemy1()
-		instance_enemy1()
-		instance_enemy2()
-		instance_enemy2()
-		instance_silverspikes()
-	if player_data.levels >= 8 and player_data.levels < 10:
-		instance_enemy1()
-		instance_enemy1()
-		instance_enemy2()
+	if player_data.levels >= 8:
 		instance_enemy4()
-		instance_silverspikes()
 		instance_redspikes()
-	if player_data.levels >= 10 and player_data.levels < 12:
+	if player_data.levels >= 10:
 		instance_enemy1()
 		instance_enemy2()
 		instance_enemy2()
 		instance_enemy4()
 		instance_enemy4()
-		instance_silverspikes()
-		instance_redspikes()
-	if player_data.levels >= 12 and player_data.levels < 15:
+	if player_data.levels >= 12:
 		instance_enemy1()
 		instance_enemy2()
 		instance_enemy3()
 		instance_enemy4()
 		instance_enemy4()
-		instance_silverspikes()
-		instance_redspikes()
-	if player_data.levels == 15:
+	if player_data.levels >= 15:
 		instance_enemy1()
 		instance_enemy1()
 		instance_enemy2()
@@ -160,8 +152,6 @@ func generate_level():
 		instance_enemy3()
 		instance_enemy4()
 		instance_enemy4()
-		instance_silverspikes()
-		instance_redspikes()
 
 func instance_player():
 	var player = player_scene.instantiate()

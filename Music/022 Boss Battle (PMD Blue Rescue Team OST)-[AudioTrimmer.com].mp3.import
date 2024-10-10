@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ccfy2ri2ujvre"
+path="res://.godot/imported/022 Boss Battle (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-e8dd224ba4aefdd8c8a4170a7618f2e2.mp3str"
+
+[deps]
+
+source_file="res://Music/022 Boss Battle (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3"
+dest_files=["res://.godot/imported/022 Boss Battle (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-e8dd224ba4aefdd8c8a4170a7618f2e2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://btlpsr111is0i"
+path="res://.godot/imported/027 Silent Chasm (PMD Blue Rescue Team OST).mp3-93a2f5795a3661a2e616041a0b9771b0.mp3str"
+
+[deps]
+
+source_file="res://Music/027 Silent Chasm (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/027 Silent Chasm (PMD Blue Rescue Team OST).mp3-93a2f5795a3661a2e616041a0b9771b0.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

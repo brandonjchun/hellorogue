@@ -1,8 +1,8 @@
 extends Control
 
-@onready var audio_name_label = $HBoxContainer/audio_name_label
-@onready var audio_num_label = $HBoxContainer/audio_num_label
-@onready var h_slider = $HBoxContainer/HSlider
+@onready var audio_name_label = $HBoxContainer/MarginContainer/audio_name_label
+@onready var h_slider = $HBoxContainer/MarginContainer2/HSlider
+@onready var audio_num_label = $HBoxContainer/MarginContainer3/audio_num_label
 
 @export_enum("Master", "Music", "SFX") var bus_name : String
 

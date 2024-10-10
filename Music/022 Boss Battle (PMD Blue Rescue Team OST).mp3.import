@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bmb0o6ohnlgbo"
+path="res://.godot/imported/022 Boss Battle (PMD Blue Rescue Team OST).mp3-69601c51bbf1339a72faf86314e470ad.mp3str"
+
+[deps]
+
+source_file="res://Music/022 Boss Battle (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/022 Boss Battle (PMD Blue Rescue Team OST).mp3-69601c51bbf1339a72faf86314e470ad.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

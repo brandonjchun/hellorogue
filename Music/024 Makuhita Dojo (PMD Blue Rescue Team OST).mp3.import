@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cpvual72xncuf"
+path="res://.godot/imported/024 Makuhita Dojo (PMD Blue Rescue Team OST).mp3-bbfcafad4f5324f1a37100333bb7d84a.mp3str"
+
+[deps]
+
+source_file="res://Music/024 Makuhita Dojo (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/024 Makuhita Dojo (PMD Blue Rescue Team OST).mp3-bbfcafad4f5324f1a37100333bb7d84a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

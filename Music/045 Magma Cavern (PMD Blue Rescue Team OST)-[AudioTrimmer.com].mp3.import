@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ctug633gpoawi"
+path="res://.godot/imported/045 Magma Cavern (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-097be80ee2dda6f0ee38b2a0b451dd7b.mp3str"
+
+[deps]
+
+source_file="res://Music/045 Magma Cavern (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3"
+dest_files=["res://.godot/imported/045 Magma Cavern (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-097be80ee2dda6f0ee38b2a0b451dd7b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

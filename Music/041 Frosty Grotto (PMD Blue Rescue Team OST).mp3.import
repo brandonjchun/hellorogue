@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c6ar6t8i21fij"
+path="res://.godot/imported/041 Frosty Grotto (PMD Blue Rescue Team OST).mp3-41094d41647bee51399d5fc04d4e67ef.mp3str"
+
+[deps]
+
+source_file="res://Music/041 Frosty Grotto (PMD Blue Rescue Team OST).mp3"
+dest_files=["res://.godot/imported/041 Frosty Grotto (PMD Blue Rescue Team OST).mp3-41094d41647bee51399d5fc04d4e67ef.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
