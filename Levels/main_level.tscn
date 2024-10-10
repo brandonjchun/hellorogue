@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=26 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://dc2nbmuw3jru4" path="res://Music/025 Sinister Woods (PMD Blue Rescue Team OST).mp3" id="12_1k0e1"]
 [ext_resource type="PackedScene" uid="uid://cpgt8nmt3bxc1" path="res://Menu/pause_menu.tscn" id="12_wgi6v"]
 [ext_resource type="AudioStream" uid="uid://bptqqvq2x4x56" path="res://Music/053 Final Battle vs. Rayquaza (PMD Blue Rescue Team OST).mp3" id="13_wwts4"]
+[ext_resource type="PackedScene" uid="uid://beki4dg55i0a3" path="res://UI/Scenes/main_mouse_icon.tscn" id="18_rkf5i"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vow2"]
 texture = ExtResource("5_e0iff")
@@ -851,9 +852,12 @@ layer_1/tile_data = PackedInt32Array(-524300, 0, 5, -262156, 65536, 6, -65548, 6
 wait_time = 91.0
 
 [node name="pause_menu" type="CanvasLayer" parent="."]
-layer = -4
+layer = 4
+visible = false
 
 [node name="PauseMenu" parent="pause_menu" instance=ExtResource("12_wgi6v")]
+
+[node name="main_mouse_icon" parent="pause_menu" instance=ExtResource("18_rkf5i")]
 
 [node name="loading_screen_canvas" type="CanvasLayer" parent="."]
 layer = -3

@@ -1,0 +1,66 @@
+[gd_scene load_steps=4 format=3 uid="uid://cyud6p1mv4gad"]
+
+[ext_resource type="PackedScene" uid="uid://bs8l1uvtlmvhl" path="res://Menu/audio_slider_settings.tscn" id="1_dydf3"]
+[ext_resource type="Script" path="res://Menu/menu_scripts/sounds_menu.gd" id="1_x06vw"]
+[ext_resource type="Texture2D" uid="uid://bfa8scammq1xc" path="res://Menu/200a0aec714b5d76123e05d367f9ec9e.jpg" id="2_bcvgb"]
+
+[node name="Sounds_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x06vw")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 64
+alignment = 1
+
+[node name="Seperator7" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 64
+text = "Sound"
+horizontal_alignment = 1
+
+[node name="audio_slider_settings" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+layout_mode = 2
+bus_name = "Master"
+
+[node name="audio_slider_settings2" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+layout_mode = 2
+bus_name = "Music"
+
+[node name="audio_slider_settings3" parent="MarginContainer/ScrollContainer/VBoxContainer2" instance=ExtResource("1_dydf3")]
+layout_mode = 2
+bus_name = "SFX"
+
+[node name="Button" type="Button" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 32
+text = "Back"
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer"]
+z_index = -1
+position = Vector2(614, 323)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_bcvgb")

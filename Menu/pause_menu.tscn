@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cpgt8nmt3bxc1"]
+[gd_scene load_steps=8 format=3 uid="uid://cpgt8nmt3bxc1"]
 
 [ext_resource type="Shader" path="res://Shaders/pausemenu.gdshader" id="1_gxhw1"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/pause_menu.gd" id="1_xlgca"]
+[ext_resource type="PackedScene" uid="uid://cyud6p1mv4gad" path="res://Menu/sounds_menu.tscn" id="3_vigef"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s10g2"]
 shader = ExtResource("1_gxhw1")
@@ -117,6 +118,11 @@ layout_mode = 2
 text = "Resume
 "
 
+[node name="Sounds" type="Button" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+text = "Sounds"
+
 [node name="Reset" type="Button" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
@@ -132,7 +138,14 @@ text = "Quit
 libraries = {
 "": SubResource("AnimationLibrary_u3d8b")
 }
+autoplay = "blur"
+
+[node name="Sounds_Menu" parent="." instance=ExtResource("3_vigef")]
+layout_mode = 1
+offset_top = -1.0
+offset_bottom = -1.0
 
 [connection signal="pressed" from="Panel/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Sounds" to="." method="_on_sounds_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Reset" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
