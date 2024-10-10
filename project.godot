@@ -23,6 +23,10 @@ Globals="*res://Globals.gd"
 
 window/stretch/mode="viewport"
 
+[gui]
+
+theme/custom_font="res://Font/PressStart2P-Regular.ttf"
+
 [input]
 
 moveLeft={
