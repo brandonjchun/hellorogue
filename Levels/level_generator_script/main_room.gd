@@ -5,6 +5,7 @@ extends Node2D
 @onready var enemy1_scene = preload("res://Entities/Scenes/Enemies/enemy_1.tscn")
 @onready var enemy2_scene = preload("res://Entities/Scenes/Enemies/enemy_2.tscn")
 @onready var enemy3_scene = preload("res://Entities/Scenes/Enemies/enemy_3.tscn")
+@onready var enemy4_scene = preload("res://Entities/Scenes/Enemies/enemy_4.tscn")
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
@@ -29,21 +30,21 @@ var change_scenes_once = 0
 func _ready():
 	randomize()
 	generate_level()
-	if player_data.levels >= 0 and player_data.levels < 3:
+	if player_data.levels >= 1 and player_data.levels <= 3:
 		player_data.sound_selecter = 0
-	if player_data.levels >= 3 and player_data.levels < 6:
+	if player_data.levels >= 4 and player_data.levels <= 6:
 		player_data.sound_selecter = 1
-	if player_data.levels >= 6 and player_data.levels < 9:
+	if player_data.levels >= 7 and player_data.levels <= 9:
 		player_data.sound_selecter = 2
-	if player_data.levels >= 9 and player_data.levels < 12:
+	if player_data.levels >= 10 and player_data.levels <= 12:
 		player_data.sound_selecter = 3
-	if player_data.levels >= 12 and player_data.levels < 15:
+	if player_data.levels >= 13 and player_data.levels <= 15:
 		player_data.sound_selecter = 4
-	if player_data.levels >= 15 and player_data.levels < 18:
+	if player_data.levels >= 16 and player_data.levels <= 18:
 		player_data.sound_selecter = 5
-	if player_data.levels >= 18 and player_data.levels < 21:
+	if player_data.levels >= 19 and player_data.levels <= 21:
 		player_data.sound_selecter = 6
-	if player_data.levels >= 21 and player_data.levels < 24:
+	if player_data.levels >= 22 and player_data.levels <= 24:
 		player_data.sound_selecter = 7
 
 	match player_data.sound_selecter:
@@ -101,24 +102,25 @@ func generate_level():
 
 	instance_player()
 	instance_exit()
-	if player_data.levels >= 0:
+	if player_data.levels >= 1:
 		instance_enemy1()
-	if player_data.levels >= 2:
+	if player_data.levels >= 3:
 		instance_enemy1()
 		instance_silverspikes()
-	if player_data.levels >= 4:
+	if player_data.levels >= 5:
 		instance_enemy1()
 		instance_enemy2()
-	if player_data.levels >= 6:
-		instance_enemy2()
-	if player_data.levels >= 8:
+	if player_data.levels >= 7:
 		instance_enemy2()
 		instance_redspikes()
-	if player_data.levels >= 10:
+	if player_data.levels >= 9:
+		instance_enemy2()
+		instance_enemy4()
+	if player_data.levels >= 11:
 		instance_enemy1()
-		instance_enemy2()
+		instance_enemy4()
 		instance_redspikes()
-	if player_data.levels >= 12:
+	if player_data.levels >= 13:
 		instance_enemy3()
 
 func _input(event):
@@ -146,16 +148,23 @@ func instance_enemy1():
 		add_child(enemy)
 		
 func instance_enemy2():
-	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*3)
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 		
 func instance_enemy3():
-	var enemies_count = randi_range(maxi(1, player_data.levels), player_data.levels*4)
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(5, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy3_scene.instantiate()
+		enemy.position = (map.pick_random() * borders.position) * 16
+		add_child(enemy)
+		
+func instance_enemy4():
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*2))
+	for i in range(enemies_count):
+		var enemy = enemy4_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 

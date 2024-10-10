@@ -103,7 +103,7 @@ func dead():
 	$anim.play("dead")
 	await get_tree().create_timer(2).timeout
 	if get_tree():
-		player_data.health = 8
+		player_data.health = 12
 		player_data.ammo = 20
 		player_data.levels = 0
 		player_data.sound_selecter = 0
