@@ -4,6 +4,8 @@ const HEART_ROW_SIZE = 12
 const HEART_OFFSET = 16
 
 @onready var timer = $"../map_timer"
+@onready var pause_menu_canvas = $"../pause_menu"
+@onready var pause_menu = $"../pause_menu/PauseMenu"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -51,4 +53,6 @@ func _process(delta):
 		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
 	else:
 		$extra_hearts.text = ""
+		
+	$please.text = var_to_str(player_data.pause_active) + var_to_str(player_data.game_mouse)
 	

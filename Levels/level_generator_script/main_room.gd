@@ -15,6 +15,8 @@ extends Node2D
 var lev = player_data.levels
 @onready var pause_menu_canvas = $pause_menu
 @onready var pause_menu = $pause_menu/PauseMenu
+@onready var main_mouse_icon = $pause_menu/main_mouse_icon
+
 @onready var loading_screen_canvas = $loading_screen_canvas
 @onready var loading_screen = $loading_screen_canvas/loading_screen
 @onready var loading_anim = $loading_screen_canvas/loading_screen/anim
@@ -66,9 +68,13 @@ func _ready():
 			$final.play()
 			
 	$map_timer.start()
+	
+	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
+	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+		
 	if player_data.toggle_loading_screen:
 		main_level.visible = false
 		gui.visible = false
@@ -146,14 +152,6 @@ func generate_level():
 		instance_silverspikes()
 		instance_redspikes()
 
-func _input(event):
-	if Input.is_action_just_pressed("ui_cancel"):
-		toggle_pause()
-		
-func toggle_pause():
-	pause_menu_canvas.visible = not pause_menu_canvas.visible
-	
-		
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
@@ -222,4 +220,16 @@ func _on_next_level_timer_timeout():
 	loading_screen.z_index = -2
 	player_data.toggle_loading_screen = false
 	change_scenes_once = 0
+	
+func on_exit_pause_menu():
+	pause_menu_canvas.visible = false
+	pause_menu.visible = false
+	main_mouse_icon.visible = false
+	pause_menu_canvas.layer = -4
+	
+func on_enter_pause_menu():
+	pause_menu_canvas.visible = true
+	pause_menu.visible = true
+	main_mouse_icon.visible = true
+	pause_menu_canvas.layer = 4
 	
