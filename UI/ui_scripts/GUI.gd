@@ -3,7 +3,7 @@ extends CanvasLayer
 const HEART_ROW_SIZE = 12
 const HEART_OFFSET = 16
 
-@onready var timer = $"../Timer"
+@onready var timer = $"../map_timer"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -31,7 +31,7 @@ func _process(delta):
 	else:
 		$timer_countdown.text = var_to_str(timer.time_left).pad_decimals(1)
 		
-	if player_data.reached_exit:
+	if player_data.reached_exit or player_data.player_is_dead:
 		timer.paused = true
 		
 	for heart in $heart.get_children():

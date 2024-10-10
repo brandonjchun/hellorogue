@@ -5,6 +5,7 @@ var next_scene = "res://Levels/main_level.tscn"
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ResourceLoader.load_threaded_request(next_scene)
+	player_data.hurt_ready = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

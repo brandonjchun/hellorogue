@@ -64,6 +64,8 @@ func _ready():
 			$plumus.play()
 		7:
 			$final.play()
+			
+	$map_timer.start()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -108,20 +110,27 @@ func generate_level():
 		instance_enemy1()
 		instance_silverspikes()
 	if player_data.levels >= 5:
-		instance_enemy1()
 		instance_enemy2()
 	if player_data.levels >= 7:
 		instance_enemy2()
 		instance_redspikes()
 	if player_data.levels >= 9:
+		instance_enemy1()
 		instance_enemy2()
 		instance_enemy4()
 	if player_data.levels >= 11:
-		instance_enemy1()
 		instance_enemy4()
 		instance_redspikes()
 	if player_data.levels >= 13:
 		instance_enemy3()
+	if player_data.levels >= 15:
+		instance_enemy1()
+		instance_enemy2()
+		instance_enemy3()
+		instance_enemy4()
+		instance_silverspikes()
+		instance_redspikes()
+		
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -186,6 +195,7 @@ func _on_timer_timeout():
 	player_data.toggle_loading_screen = true
 	player_data.levels = 0 #set back to 0
 	player_data.sound_selecter = 0
+	player_data.hurt_ready = true
 
 func _on_next_level_timer_timeout():
 	main_level.visible = true
