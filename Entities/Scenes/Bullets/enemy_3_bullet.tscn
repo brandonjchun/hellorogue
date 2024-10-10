@@ -21,8 +21,8 @@ tracks/0/keys = {
 "values": [1]
 }
 
-[sub_resource type="Animation" id="Animation_lo8yb"]
-resource_name = "fu"
+[sub_resource type="Animation" id="Animation_c12bk"]
+resource_name = "fr"
 length = 1.2
 loop_mode = 1
 tracks/0/type = "value"
@@ -35,8 +35,11 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [23, 22, 21, 20, 19, 18]
+"values": [6, 7, 8, 9, 10, 11]
 }
+
+[sub_resource type="Animation" id="Animation_fo0w3"]
+resource_name = "fdr"
 
 [sub_resource type="Animation" id="Animation_tis2w"]
 resource_name = "fl"
@@ -53,23 +56,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [12, 13, 14, 15, 16, 17]
-}
-
-[sub_resource type="Animation" id="Animation_c12bk"]
-resource_name = "fr"
-length = 1.2
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [6, 7, 8, 9, 10, 11]
 }
 
 [sub_resource type="Animation" id="Animation_x8f4i"]
@@ -89,9 +75,10 @@ tracks/0/keys = {
 "values": [5, 4, 3, 2, 1, 0]
 }
 
-[sub_resource type="Animation" id="Animation_wnjol"]
-resource_name = "fur"
+[sub_resource type="Animation" id="Animation_lo8yb"]
+resource_name = "fu"
 length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -102,7 +89,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [42, 43, 44, 45, 46, 47]
+"values": [23, 22, 21, 20, 19, 18]
 }
 
 [sub_resource type="Animation" id="Animation_p7mbw"]
@@ -121,8 +108,21 @@ tracks/0/keys = {
 "values": [36, 37, 38, 39, 40, 41]
 }
 
-[sub_resource type="Animation" id="Animation_fo0w3"]
-resource_name = "fdr"
+[sub_resource type="Animation" id="Animation_wnjol"]
+resource_name = "fur"
+length = 1.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [42, 43, 44, 45, 46, 47]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_151jl"]
 _data = {

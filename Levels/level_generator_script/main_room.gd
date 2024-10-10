@@ -44,7 +44,7 @@ func _ready():
 		player_data.sound_selecter = 5
 	if player_data.levels >= 13 and player_data.levels < 15:
 		player_data.sound_selecter = 6
-	if player_data.levels >= 15
+	if player_data.levels >= 15:
 		player_data.sound_selecter = 7
 
 	match player_data.sound_selecter:

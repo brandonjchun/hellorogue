@@ -718,6 +718,21 @@ texture = ExtResource("5_e0iff")
 [sub_resource type="TileSet" id="TileSet_rrp1n"]
 sources/0 = SubResource("TileSetAtlasSource_8vht5")
 
+[sub_resource type="Animation" id="Animation_5o7hd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("animation:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [16]
+}
+
 [sub_resource type="Animation" id="Animation_vre1g"]
 resource_name = "jumping"
 length = 1.5
@@ -733,21 +748,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [17, 16, 15, 14, 13, 12, 11, 10, 9]
-}
-
-[sub_resource type="Animation" id="Animation_5o7hd"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("animation:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [16]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_divu4"]
@@ -817,7 +817,7 @@ offset_bottom = 34.0
 theme_override_font_sizes/font_size = 24
 
 [node name="extra_hearts" type="RichTextLabel" parent="GUI"]
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -164.0

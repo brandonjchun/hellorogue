@@ -17,7 +17,6 @@ grow_vertical = 2
 script = ExtResource("1_u5hxl")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-z_index = -2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -101,10 +100,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Quit"
 
-[node name="main_theme" type="AudioStreamPlayer2D" parent="."]
+[node name="Control" parent="." instance=ExtResource("4_6u2y4")]
+layout_mode = 1
+
+[node name="MusicStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_6o6vm")
 volume_db = -10.0
 autoplay = true
-
-[node name="Control" parent="." instance=ExtResource("4_6u2y4")]
-layout_mode = 1
+bus = &"Music"
