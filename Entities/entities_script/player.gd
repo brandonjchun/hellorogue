@@ -6,7 +6,6 @@ enum player_states {
 	MOVE,
 	DEAD
 }
-var is_dead = false
 
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/bullet_1.tscn")
 @onready var meleeleft_scene = preload("res://Entities/Scenes/Bullets/melee.tscn")
@@ -97,7 +96,7 @@ func animations():
 
 
 func dead():
-	is_dead = true
+	player_data.player_is_dead = true
 	velocity = Vector2.ZERO
 	gun.visible = false
 	$anim.play("dead")
@@ -107,11 +106,12 @@ func dead():
 		player_data.ammo = 20
 		player_data.levels = 0
 		player_data.sound_selecter = 0
-		is_dead = false
+		player_data.hurt_ready = true
+		player_data.player_is_dead = false
 		player_data.toggle_loading_screen = true
 	
 func target_mouse():
-	if is_dead == false:
+	if player_data.player_is_dead == false:
 		var mouse_movement = get_global_mouse_position()
 		pos = global_position
 		gun.look_at(mouse_movement)
