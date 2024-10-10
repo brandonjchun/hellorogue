@@ -66,8 +66,9 @@ func _ready():
 			$plumus.play()
 		7:
 			$final.play()
-			
 	$map_timer.start()
+	$time_running_out_timer.wait_time = $map_timer.wait_time - 10
+	$time_running_out_timer.start()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
@@ -114,14 +115,17 @@ func generate_level():
 		instance_enemy1()
 	if player_data.levels >= 2 and player_data.levels < 4:
 		instance_enemy1()
+		instance_enemy1()
 		instance_silverspikes()
 	if player_data.levels >= 4 and player_data.levels < 6:
 		instance_enemy1()
 		instance_enemy1()
+		instance_enemy2()
 		instance_silverspikes()
 	if player_data.levels >= 6 and player_data.levels < 8:
 		instance_enemy1()
 		instance_enemy1()
+		instance_enemy2()
 		instance_enemy2()
 		instance_silverspikes()
 	if player_data.levels >= 8 and player_data.levels < 10:
@@ -134,20 +138,27 @@ func generate_level():
 	if player_data.levels >= 10 and player_data.levels < 12:
 		instance_enemy1()
 		instance_enemy2()
+		instance_enemy2()
+		instance_enemy4()
 		instance_enemy4()
 		instance_silverspikes()
 		instance_redspikes()
-	if player_data.levels >= 12 and player_data.levels < 14:
+	if player_data.levels >= 12 and player_data.levels < 15:
 		instance_enemy1()
 		instance_enemy2()
 		instance_enemy3()
+		instance_enemy4()
 		instance_enemy4()
 		instance_silverspikes()
 		instance_redspikes()
 	if player_data.levels == 15:
 		instance_enemy1()
+		instance_enemy1()
+		instance_enemy2()
 		instance_enemy2()
 		instance_enemy3()
+		instance_enemy3()
+		instance_enemy4()
 		instance_enemy4()
 		instance_silverspikes()
 		instance_redspikes()
@@ -163,14 +174,14 @@ func instance_exit():
 	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy1():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*2))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*5))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
 		
 func instance_enemy2():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*2))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*4))
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
@@ -184,7 +195,7 @@ func instance_enemy3():
 		add_child(enemy)
 		
 func instance_enemy4():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*2))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*3))
 	for i in range(enemies_count):
 		var enemy = enemy4_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
@@ -233,3 +244,5 @@ func on_enter_pause_menu():
 	main_mouse_icon.visible = true
 	pause_menu_canvas.layer = 4
 	
+func _on_time_running_out_timer_timeout():
+	$time_running_out.play()

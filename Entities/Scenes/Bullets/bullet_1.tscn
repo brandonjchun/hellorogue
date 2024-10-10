@@ -16,7 +16,7 @@ script = ExtResource("1_agvws")
 texture = ExtResource("1_a0jjg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(1.2, 1.2)
+scale = Vector2(1.5, 1.5)
 shape = SubResource("CircleShape2D_p76g5")
 
 [node name="bullet_sound" type="AudioStreamPlayer2D" parent="."]
@@ -24,4 +24,7 @@ stream = ExtResource("3_1hmqi")
 volume_db = -5.0
 pitch_scale = 0.97
 
+[node name="visible" type="VisibleOnScreenNotifier2D" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_exited" from="visible" to="." method="_on_visible_screen_exited"]

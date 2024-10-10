@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dq4ykv7x8c8pf"
+path="res://.godot/imported/Pokémon- Mystery Dungeon Red Rescue Team- Personality Test- Music.mp3-2044390357be602b76b02325280ba663.mp3str"
+
+[deps]
+
+source_file="res://Music/Pokémon- Mystery Dungeon Red Rescue Team- Personality Test- Music.mp3"
+dest_files=["res://.godot/imported/Pokémon- Mystery Dungeon Red Rescue Team- Personality Test- Music.mp3-2044390357be602b76b02325280ba663.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

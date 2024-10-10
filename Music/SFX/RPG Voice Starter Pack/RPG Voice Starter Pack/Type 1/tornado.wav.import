@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://da8dnsbj4lxhp"
+path="res://.godot/imported/tornado.wav-3d96195e517c55b39908df0bfe1bb5da.sample"
+
+[deps]
+
+source_file="res://Music/SFX/RPG Voice Starter Pack/RPG Voice Starter Pack/Type 1/tornado.wav"
+dest_files=["res://.godot/imported/tornado.wav-3d96195e517c55b39908df0bfe1bb5da.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

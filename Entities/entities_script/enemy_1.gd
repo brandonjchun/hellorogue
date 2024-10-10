@@ -103,10 +103,10 @@ func instance_health():
 	get_tree().root.add_child(health)
 	
 func ammo_chance():
-	return randi_range(1, 6) == 6
+	return randi_range(1, 6) == 1
 	
 func health_chance():
-	return randi_range(1, 1) == 1
+	return randi_range(1, 12) == 1
 	
 func chase_state():
 	var chase_speed = 50

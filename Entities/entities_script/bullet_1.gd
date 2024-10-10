@@ -5,6 +5,8 @@ extends Area2D
 var direction = Vector2.RIGHT
 var sfx_finished = false
 var was_body_entered = false
+var left_screen = false
+@onready var bullet_1 = $"."
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -19,19 +21,17 @@ func _process(delta):
 
 func _on_body_entered(body):
 	if was_body_entered == false:
-		Globals.camera.screen_shake(1,1,0.01)
-		instance_fx() 
-		$CollisionShape2D.disabled = true
+		if not left_screen:
+			Globals.camera.screen_shake(1.5,0.5,0.01)
+		$CollisionShape2D.set_deferred("disabled", true)
 		hide()
 		if sfx_finished:
 			queue_free()
 		else:
 			was_body_entered = true
 
-func instance_fx():
-	var fx = fx_scene.instantiate()
-	fx.global_position = global_position
-	get_tree().root.add_child(fx)
-
 func on_sfx_finished():
 	sfx_finished = true
+
+func _on_visible_screen_exited():
+	left_screen = true

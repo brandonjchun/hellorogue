@@ -1,23 +1,25 @@
-[gd_scene load_steps=26 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=28 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
 [ext_resource type="Script" path="res://UI/ui_scripts/GUI.gd" id="3_ynv6m"]
+[ext_resource type="FontFile" uid="uid://cosfo8pb2mtf1" path="res://Font/PressStart2P-Regular.ttf" id="4_i18om"]
 [ext_resource type="AudioStream" uid="uid://dyu6jhxj5et0o" path="res://Music/WizardsBattlefield.ogg" id="5_7aweo"]
 [ext_resource type="Texture2D" uid="uid://c66jb5berp1yn" path="res://Sprites/complex_tilemap_16px.png" id="5_e0iff"]
 [ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="5_oqekw"]
 [ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="6_d5pin"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/loading_screens.gd" id="6_pxbp8"]
 [ext_resource type="Texture2D" uid="uid://u4s36s1voque" path="res://Sprites/slimerawleftandright.png" id="7_okp3g"]
-[ext_resource type="Texture2D" uid="uid://b58b68iftoa0g" path="res://Sprites/9fc901bcdda2dd5ba9cfb015c9126656.jpg" id="7_qx8xt"]
 [ext_resource type="AudioStream" uid="uid://b7djrvrs0blja" path="res://Music/Mercury.wav" id="7_sdjys"]
 [ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_eta0w"]
 [ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
+[ext_resource type="Texture2D" uid="uid://db4uwr5wr1nvc" path="res://Sprites/5fffa94f972dd62c2346caa888c0c8eb.jpg" id="9_ajkyi"]
 [ext_resource type="AudioStream" uid="uid://pfx3wsrh83s4" path="res://Music/muPlumusLand.wav" id="11_i685x"]
 [ext_resource type="AudioStream" uid="uid://dc2nbmuw3jru4" path="res://Music/025 Sinister Woods (PMD Blue Rescue Team OST).mp3" id="12_1k0e1"]
 [ext_resource type="PackedScene" uid="uid://cpgt8nmt3bxc1" path="res://Menu/pause_menu.tscn" id="12_wgi6v"]
 [ext_resource type="AudioStream" uid="uid://bptqqvq2x4x56" path="res://Music/053 Final Battle vs. Rayquaza (PMD Blue Rescue Team OST).mp3" id="13_wwts4"]
 [ext_resource type="PackedScene" uid="uid://beki4dg55i0a3" path="res://UI/Scenes/main_mouse_icon.tscn" id="18_rkf5i"]
+[ext_resource type="AudioStream" uid="uid://b2s0vk4djghv1" path="res://Sprites/Clock_Ticking_gaming_Sound_effectmp3.wav" id="19_r2xnn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vow2"]
 texture = ExtResource("5_e0iff")
@@ -772,32 +774,34 @@ hframes = 5
 
 [node name="ammo" type="Label" parent="GUI"]
 offset_left = 16.0
-offset_top = 54.0
-offset_right = 131.0
-offset_bottom = 99.0
-theme_override_font_sizes/font_size = 32
+offset_top = 58.0
+offset_right = 136.0
+offset_bottom = 103.0
+theme_override_font_sizes/font_size = 24
 text = "AMMO:"
 
 [node name="ammo_amount" type="Label" parent="GUI"]
-offset_left = 144.0
-offset_top = 54.0
-offset_right = 184.0
-offset_bottom = 99.0
-theme_override_font_sizes/font_size = 32
+offset_left = 140.0
+offset_top = 59.0
+offset_right = 180.0
+offset_bottom = 104.0
+theme_override_fonts/font = ExtResource("4_i18om")
+theme_override_font_sizes/font_size = 24
 
 [node name="timer_countdown" type="Label" parent="GUI"]
-offset_left = 144.0
+offset_left = 140.0
 offset_top = 98.0
-offset_right = 184.0
+offset_right = 180.0
 offset_bottom = 143.0
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = ExtResource("4_i18om")
+theme_override_font_sizes/font_size = 24
 
 [node name="time_left" type="Label" parent="GUI"]
 offset_left = 16.0
 offset_top = 98.0
 offset_right = 138.0
 offset_bottom = 143.0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 24
 text = "TIME:"
 
 [node name="level" type="Label" parent="GUI"]
@@ -805,51 +809,30 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -75.0
+offset_top = 10.0
 offset_right = 5.0
-offset_bottom = 45.0
+offset_bottom = 55.0
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 text = "L:"
 
 [node name="level_number" type="Label" parent="GUI"]
-offset_left = 1109.0
-offset_right = 1149.0
-offset_bottom = 34.0
-theme_override_font_sizes/font_size = 24
+offset_left = 1113.0
+offset_top = 10.0
+offset_right = 1153.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 18
 
 [node name="extra_hearts" type="RichTextLabel" parent="GUI"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -164.0
-offset_top = 20.0
-offset_right = -124.0
-offset_bottom = 60.0
+offset_left = -166.0
+offset_top = 24.0
+offset_right = -98.0
+offset_bottom = 64.0
 grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 16
-
-[node name="please" type="Label" parent="GUI"]
-offset_left = 412.0
-offset_top = 80.0
-offset_right = 452.0
-offset_bottom = 103.0
-
-[node name="Label" type="Label" parent="GUI"]
-offset_left = 352.0
-offset_top = 63.0
-offset_right = 548.0
-offset_bottom = 86.0
-text = "pauseactive, gamemouse"
-
-[node name="pausemenucanvas" type="Label" parent="GUI"]
-offset_left = 336.0
-offset_top = 128.0
-offset_right = 376.0
-offset_bottom = 151.0
-
-[node name="pausemenu" type="Label" parent="GUI"]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="TileMap" type="TileMap" parent="."]
 z_index = 1
@@ -897,8 +880,8 @@ metadata/_edit_use_anchors_ = true
 
 [node name="loading_bg" type="Sprite2D" parent="loading_screen_canvas/loading_screen"]
 position = Vector2(592, 320)
-scale = Vector2(2.15, 2.15)
-texture = ExtResource("7_qx8xt")
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("9_ajkyi")
 
 [node name="Label" type="Label" parent="loading_screen_canvas/loading_screen"]
 layout_mode = 1
@@ -953,6 +936,7 @@ volume_db = -10.0
 [node name="mapbasic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_oqekw")
 volume_db = -12.0
+pitch_scale = 0.95
 
 [node name="mars" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_d5pin")
@@ -961,6 +945,7 @@ volume_db = -10.0
 [node name="goodfight" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_eta0w")
 volume_db = -10.0
+pitch_scale = 0.97
 
 [node name="venus" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("9_40npo")
@@ -982,5 +967,13 @@ volume_db = -3.0
 wait_time = 3.0
 one_shot = true
 
+[node name="time_running_out" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("19_r2xnn")
+volume_db = -5.0
+
+[node name="time_running_out_timer" type="Timer" parent="."]
+wait_time = 81.0
+
 [connection signal="timeout" from="map_timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="next_level_timer" to="." method="_on_next_level_timer_timeout"]
+[connection signal="timeout" from="time_running_out_timer" to="." method="_on_time_running_out_timer_timeout"]

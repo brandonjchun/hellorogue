@@ -48,11 +48,14 @@ theme_override_constants/separation = 60
 [node name="Seperator" type="Control" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="Seperator2" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 36
 text = "EVERPATH"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -67,21 +70,34 @@ layout_mode = 2
 theme_override_constants/separation = 18
 alignment = 1
 
-[node name="Seperator2" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="Seperator6" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator7" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator8" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator9" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator10" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(120, 32)
+custom_minimum_size = Vector2(96, 48)
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_nfh2d")
 theme_override_font_sizes/font_size = 24
-text = "Start Game
+text = "Start
 "
 
 [node name="Seperator3" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="SoundButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Sound"
@@ -90,6 +106,7 @@ text = "Sound"
 layout_mode = 2
 
 [node name="ControlsButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Controls"
@@ -98,11 +115,13 @@ text = "Controls"
 layout_mode = 2
 
 [node name="QuitButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Quit"
 
 [node name="Control" parent="." instance=ExtResource("4_6u2y4")]
+visible = false
 layout_mode = 1
 
 [node name="MusicStreamPlayer" type="AudioStreamPlayer" parent="."]
@@ -112,6 +131,8 @@ autoplay = true
 bus = &"Music"
 
 [node name="Sounds_Menu" parent="." instance=ExtResource("5_1lquf")]
+visible = false
 layout_mode = 1
 
 [node name="main_mouse_icon" parent="." instance=ExtResource("6_oy7qh")]
+visible = false

@@ -53,6 +53,4 @@ func _process(delta):
 		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
 	else:
 		$extra_hearts.text = ""
-		
-	$please.text = var_to_str(player_data.pause_active) + var_to_str(player_data.game_mouse)
 	
