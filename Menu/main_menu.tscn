@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://btrg2dmcahmcp"]
+[gd_scene load_steps=7 format=3 uid="uid://btrg2dmcahmcp"]
 
 [ext_resource type="Texture2D" uid="uid://bo3o2ej5kitfg" path="res://Sprites/tocu0xmhmeca1.png" id="1_sw2pt"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/main_menu.gd" id="1_u5hxl"]
-[ext_resource type="AudioStream" uid="uid://fhx6rd0ai1nm" path="res://Music/004 Personality Test (PMD Blue Rescue Team OST).mp3" id="4_6o6vm"]
 [ext_resource type="PackedScene" uid="uid://12k8mi4hc64x" path="res://Menu/control.tscn" id="4_6u2y4"]
 [ext_resource type="PackedScene" uid="uid://cyud6p1mv4gad" path="res://Menu/sounds_menu.tscn" id="5_1lquf"]
 [ext_resource type="PackedScene" uid="uid://beki4dg55i0a3" path="res://UI/Scenes/main_mouse_icon.tscn" id="6_oy7qh"]
@@ -55,7 +54,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 42
 text = "EVERPATH"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -71,6 +70,12 @@ theme_override_constants/separation = 18
 alignment = 1
 
 [node name="Seperator6" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator12" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Seperator11" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="Seperator7" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
@@ -123,12 +128,6 @@ text = "Quit"
 [node name="Control" parent="." instance=ExtResource("4_6u2y4")]
 visible = false
 layout_mode = 1
-
-[node name="MusicStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_6o6vm")
-volume_db = -10.0
-autoplay = true
-bus = &"Music"
 
 [node name="Sounds_Menu" parent="." instance=ExtResource("5_1lquf")]
 visible = false

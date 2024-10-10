@@ -1,23 +1,14 @@
-[gd_scene load_steps=28 format=3 uid="uid://b5f82kcscwr5w"]
+[gd_scene load_steps=19 format=3 uid="uid://b5f82kcscwr5w"]
 
 [ext_resource type="Script" path="res://Levels/level_generator_script/main_room.gd" id="1_kcrqp"]
 [ext_resource type="Texture2D" uid="uid://3u858w7mg5fe" path="res://Sprites/HeartSpriteSheet.png" id="3_sggjq"]
 [ext_resource type="Script" path="res://UI/ui_scripts/GUI.gd" id="3_ynv6m"]
 [ext_resource type="FontFile" uid="uid://cosfo8pb2mtf1" path="res://Font/PressStart2P-Regular.ttf" id="4_i18om"]
-[ext_resource type="AudioStream" uid="uid://dyu6jhxj5et0o" path="res://Music/WizardsBattlefield.ogg" id="5_7aweo"]
 [ext_resource type="Texture2D" uid="uid://c66jb5berp1yn" path="res://Sprites/complex_tilemap_16px.png" id="5_e0iff"]
-[ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="5_oqekw"]
-[ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="6_d5pin"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/loading_screens.gd" id="6_pxbp8"]
 [ext_resource type="Texture2D" uid="uid://u4s36s1voque" path="res://Sprites/slimerawleftandright.png" id="7_okp3g"]
-[ext_resource type="AudioStream" uid="uid://b7djrvrs0blja" path="res://Music/Mercury.wav" id="7_sdjys"]
-[ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_eta0w"]
-[ext_resource type="AudioStream" uid="uid://b1jm452ncm7wk" path="res://Music/Venus.wav" id="9_40npo"]
 [ext_resource type="Texture2D" uid="uid://db4uwr5wr1nvc" path="res://Sprites/5fffa94f972dd62c2346caa888c0c8eb.jpg" id="9_ajkyi"]
-[ext_resource type="AudioStream" uid="uid://pfx3wsrh83s4" path="res://Music/muPlumusLand.wav" id="11_i685x"]
-[ext_resource type="AudioStream" uid="uid://dc2nbmuw3jru4" path="res://Music/025 Sinister Woods (PMD Blue Rescue Team OST).mp3" id="12_1k0e1"]
 [ext_resource type="PackedScene" uid="uid://cpgt8nmt3bxc1" path="res://Menu/pause_menu.tscn" id="12_wgi6v"]
-[ext_resource type="AudioStream" uid="uid://bptqqvq2x4x56" path="res://Music/053 Final Battle vs. Rayquaza (PMD Blue Rescue Team OST).mp3" id="13_wwts4"]
 [ext_resource type="PackedScene" uid="uid://beki4dg55i0a3" path="res://UI/Scenes/main_mouse_icon.tscn" id="18_rkf5i"]
 [ext_resource type="AudioStream" uid="uid://b2s0vk4djghv1" path="res://Sprites/Clock_Ticking_gaming_Sound_effectmp3.wav" id="19_r2xnn"]
 
@@ -834,7 +825,7 @@ offset_bottom = 64.0
 grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 16
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 z_index = 1
 y_sort_enabled = true
 tile_set = SubResource("TileSet_f2x63")
@@ -924,44 +915,6 @@ libraries = {
 "": SubResource("AnimationLibrary_divu4")
 }
 autoplay = "jumping"
-
-[node name="wizards" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_7aweo")
-volume_db = -10.0
-
-[node name="mercury" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_sdjys")
-volume_db = -10.0
-
-[node name="mapbasic" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_oqekw")
-volume_db = -12.0
-pitch_scale = 0.95
-
-[node name="mars" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_d5pin")
-volume_db = -10.0
-
-[node name="goodfight" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("8_eta0w")
-volume_db = -10.0
-pitch_scale = 0.97
-
-[node name="venus" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("9_40npo")
-volume_db = -14.0
-
-[node name="sinister" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("12_1k0e1")
-volume_db = -4.0
-
-[node name="plumus" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("11_i685x")
-volume_db = -2.0
-
-[node name="final" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("13_wwts4")
-volume_db = -3.0
 
 [node name="next_level_timer" type="Timer" parent="."]
 wait_time = 3.0

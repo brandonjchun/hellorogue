@@ -12,34 +12,67 @@ grow_vertical = 2
 script = ExtResource("1_hkrjd")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_constants/separation = 42
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 32.0
+grow_horizontal = 2
+theme_override_constants/separation = 32
 
-[node name="audio_name_label" type="Label" parent="HBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+layout_direction = 2
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="audio_name_label" type="Label" parent="HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 24
 text = "Master Volume"
 
 [node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
 layout_mode = 2
 
-[node name="HSlider" type="HSlider" parent="HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="HSlider" type="HSlider" parent="HBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_vertical = 1
 max_value = 1.0
 step = 0.001
 
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
 layout_mode = 2
 
-[node name="audio_num_label" type="Label" parent="HBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer"]
+layout_direction = 2
+layout_mode = 2
+theme_override_constants/margin_right = 20
+
+[node name="audio_num_label" type="Label" parent="HBoxContainer/MarginContainer3"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 24
 text = "???"

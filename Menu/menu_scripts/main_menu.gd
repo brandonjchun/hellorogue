@@ -15,18 +15,22 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	ThemePlayer.theme_questionairre()
 	controls_menu.visible = false
 	sounds_menu.visible = false
 	handle_connecting_signals()
 	
 func on_start_pressed() -> void:
 	get_tree().change_scene_to_packed(start_game)
+	ThemePlayer.theme_questionairre_stop()
 	
 func on_sounds_pressed() -> void:
 	margin_container.visible = false
 	texture_rect.visible = false
 	sounds_menu.set_process(true)
 	sounds_menu.visible = true
+	ThemePlayer.theme_questionairre_stop()
+	ThemePlayer.theme_fileselect()
 	
 func on_controls_pressed() -> void:
 	margin_container.visible = false
@@ -41,6 +45,8 @@ func on_exit_controls_menu() -> void:
 	controls_menu.visible = false
 	
 func on_exit_sounds_menu() -> void:
+	ThemePlayer.theme_fileselect_stop()
+	ThemePlayer.theme_questionairre()
 	margin_container.visible = true
 	texture_rect.visible = true
 	sounds_menu.visible = false

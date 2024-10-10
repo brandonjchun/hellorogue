@@ -1,0 +1,141 @@
+[gd_scene load_steps=21 format=3 uid="uid://bsjo24d8g5hjj"]
+
+[ext_resource type="Script" path="res://Levels/theme_script/theme_player.gd" id="1_tcan7"]
+[ext_resource type="AudioStream" uid="uid://k7ey1vbnwvnh" path="res://Music/007 Tiny Woods (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="2_jb8hf"]
+[ext_resource type="AudioStream" uid="uid://dyu6jhxj5et0o" path="res://Music/WizardsBattlefield.ogg" id="3_x8kgt"]
+[ext_resource type="AudioStream" uid="uid://ctug633gpoawi" path="res://Music/045 Magma Cavern (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="4_esli7"]
+[ext_resource type="AudioStream" uid="uid://cq8g23sdrhdkp" path="res://Music/030 Great Canyon (PMD Blue Rescue Team OST).mp3" id="5_68br6"]
+[ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="6_2ednu"]
+[ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="7_o3saj"]
+[ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_sgy68"]
+[ext_resource type="AudioStream" uid="uid://bdmyaw1jqiakl" path="res://Music/021 Mt. Steel (PMD Blue Rescue Team OST).mp3" id="9_5lft4"]
+[ext_resource type="AudioStream" uid="uid://pfx3wsrh83s4" path="res://Music/muPlumusLand.wav" id="11_hvtio"]
+[ext_resource type="AudioStream" uid="uid://c1th74e4gk3e1" path="res://Music/025 Sinister Woods (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="11_t068w"]
+[ext_resource type="AudioStream" uid="uid://bptqqvq2x4x56" path="res://Music/053 Final Battle vs. Rayquaza (PMD Blue Rescue Team OST).mp3" id="12_c6v8g"]
+[ext_resource type="AudioStream" uid="uid://daad1s1qy85aj" path="res://Music/003 File Select (PMD Blue Rescue Team OST).mp3" id="14_jjcnr"]
+[ext_resource type="AudioStream" uid="uid://dxipysf7367u3" path="res://Music/004 Personality Test (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="15_2tkrm"]
+[ext_resource type="AudioStream" uid="uid://ccfy2ri2ujvre" path="res://Music/022 Boss Battle (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="16_l35l3"]
+[ext_resource type="AudioStream" uid="uid://c6dd7m33sbowq" path="res://Music/024 Makuhita Dojo (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="17_axu6w"]
+[ext_resource type="AudioStream" uid="uid://dpd2uitg1ij8a" path="res://Music/031 The Legend of Ninetales (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="18_ffwya"]
+[ext_resource type="AudioStream" uid="uid://cwjki8op8s34n" path="res://Music/038 Mt. Blaze Peak (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="19_7wt31"]
+[ext_resource type="AudioStream" uid="uid://col6543d7cum2" path="res://Music/033 Lapis Cave (PMD Blue Rescue Team OST)).mp3" id="19_ouaeb"]
+[ext_resource type="AudioStream" uid="uid://bu63wdpwfq51c" path="res://Music/051 Sky Tower Summit (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="20_fcmf4"]
+
+[node name="ThemePlayer" type="Node"]
+script = ExtResource("1_tcan7")
+
+[node name="tiny" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_jb8hf")
+volume_db = -12.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="wizards" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_x8kgt")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="magma" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_esli7")
+volume_db = -8.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="grand" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_68br6")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="mapbasic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_2ednu")
+volume_db = -12.0
+pitch_scale = 0.93
+bus = &"Music"
+
+[node name="mars" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_o3saj")
+volume_db = -10.0
+pitch_scale = 0.95
+bus = &"Music"
+
+[node name="goodfight" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_sgy68")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="steel" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_5lft4")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="sinister" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_t068w")
+volume_db = -8.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="plumus" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_hvtio")
+volume_db = -4.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="final" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_c6v8g")
+volume_db = -3.0
+bus = &"Music"
+
+[node name="fileselect" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_jjcnr")
+volume_db = -8.0
+bus = &"Music"
+
+[node name="questionairre" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_2tkrm")
+volume_db = -8.0
+bus = &"Music"
+
+[node name="bossbattle" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_l35l3")
+volume_db = -10.0
+bus = &"Music"
+
+[node name="makuhita" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("17_axu6w")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="silentchasm" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_t068w")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="ninetales" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("18_ffwya")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="lapis" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("19_ouaeb")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="blazepeak" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("19_7wt31")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"
+
+[node name="skytowersummit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("20_fcmf4")
+volume_db = -10.0
+pitch_scale = 0.97
+bus = &"Music"

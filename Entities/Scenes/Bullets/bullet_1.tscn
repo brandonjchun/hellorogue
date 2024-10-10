@@ -23,8 +23,14 @@ shape = SubResource("CircleShape2D_p76g5")
 stream = ExtResource("3_1hmqi")
 volume_db = -5.0
 pitch_scale = 0.97
+bus = &"SFX"
 
 [node name="visible" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.5, 1.5)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="screen_exited" from="visible" to="." method="_on_visible_screen_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

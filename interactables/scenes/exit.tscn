@@ -66,5 +66,6 @@ debug_color = Color(0.717647, 0.356863, 0.823529, 0.419608)
 [node name="exit_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_yphs5")
 volume_db = -5.0
+bus = &"SFX"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

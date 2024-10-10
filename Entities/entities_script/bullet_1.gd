@@ -20,18 +20,28 @@ func _process(delta):
 		queue_free()
 
 func _on_body_entered(body):
+	if body.is_in_group("tilemap"):
+		instance_fx()
 	if was_body_entered == false:
 		if not left_screen:
 			Globals.camera.screen_shake(1.5,0.5,0.01)
-		$CollisionShape2D.set_deferred("disabled", true)
+		$Timer.start()
 		hide()
 		if sfx_finished:
 			queue_free()
 		else:
 			was_body_entered = true
 
+func instance_fx():
+	var fx = fx_scene.instantiate()
+	fx.global_position = global_position
+	get_tree().root.add_child(fx)
+	
 func on_sfx_finished():
 	sfx_finished = true
 
 func _on_visible_screen_exited():
 	left_screen = true
+
+func _on_timer_timeout():
+	$CollisionShape2D.set_deferred("disabled", true)
