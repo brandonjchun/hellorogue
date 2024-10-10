@@ -279,7 +279,6 @@ texture = ExtResource("3_rvf6b")
 position = Vector2(15.5556, -1.11111)
 
 [node name="mouse_icon" parent="." instance=ExtResource("4_gxmvm")]
-process_mode = 3
 z_index = 900
 y_sort_enabled = true
 position = Vector2(-5, -5)

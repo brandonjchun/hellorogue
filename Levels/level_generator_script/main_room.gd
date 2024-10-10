@@ -148,10 +148,11 @@ func generate_level():
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
-		if pause_menu_canvas.layer != 3:
-			pause_menu_canvas.layer = 3
-		else:
-			pause_menu_canvas.layer = -3
+		toggle_pause()
+		
+func toggle_pause():
+	pause_menu_canvas.visible = not pause_menu_canvas.visible
+	
 		
 func instance_player():
 	var player = player_scene.instantiate()
