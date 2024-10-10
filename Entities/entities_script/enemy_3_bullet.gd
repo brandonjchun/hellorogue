@@ -1,7 +1,8 @@
 extends Area2D
 
-@export var speed = 1
+@export var speed = 1.75
 var direction = Vector2.RIGHT
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if player_data.degrees_to_player >= 9.5 and player_data.degrees_to_player < 50.0:
@@ -12,7 +13,7 @@ func _ready():
 		$anim.play("fr")
 	if player_data.degrees_to_player >= 2.0 and player_data.degrees_to_player < 9.5:
 		$anim.play("fd")
-	$fire_sound.play()
+	$bullet_sound.play()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

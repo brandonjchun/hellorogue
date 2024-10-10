@@ -5,6 +5,8 @@ extends CharacterBody2D
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @export var speed = randi_range(25,30)
 
+var enemy_health = 2
+
 enum current_state {
 	FROZEN,
 	MOVE
@@ -77,15 +79,16 @@ func _on_timer_timeout():
 	choose_direction()
 	$Timer.start()
 
-
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
+		enemy_health -= 1
 		instance_fx()
-		if ammo_chance():
-			instance_ammo()
-		elif health_chance():
-			instance_health()
-		queue_free()
+		if enemy_health == 0:
+			if ammo_chance():
+				instance_ammo()
+			elif health_chance():
+				instance_health()
+			queue_free()
 		
 func instance_fx():
 	var fx = fx_scene.instantiate()

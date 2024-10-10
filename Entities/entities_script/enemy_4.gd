@@ -3,10 +3,10 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_3_bullet.tscn")
-@export var speed = randi_range(15,20)
+@onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet.tscn")
+@export var speed = randi_range(25,30)
 
-var enemy_health = 4
+var enemy_health = 3
 var can_attack = true
 
 enum enemy_state {
@@ -50,27 +50,26 @@ func _process(delta):
 				enemy_direction.CHASE:
 					chase_state()
 		enemy_state.DEAD:
-			$anim.play("dead")
-			
+			queue_free()
 
 func move_right():
 	velocity = Vector2.RIGHT * speed
-	$anim.play("walk_right")
+	$anim.play("move")
 	move_and_slide()
 	
 func move_left():
 	velocity = Vector2.LEFT * speed
-	$anim.play("walk_left")
+	$anim.play("move")
 	move_and_slide()
 	
 func move_up():
 	velocity = Vector2.UP * speed
-	$anim.play("walk_right")
+	$anim.play("move")
 	move_and_slide()
 	
 func move_down():
 	velocity = Vector2.DOWN * speed
-	$anim.play("walk_left")
+	$anim.play("move")
 	move_and_slide()
 	
 func choose_direction():
@@ -95,7 +94,6 @@ func instance_health():
 func instance_bullet():
 	var bullet = bullet_scene.instantiate()
 	bullet.direction = target.global_position - global_position
-	player_data.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
 	bullet.global_position = global_position
 	get_tree().root.add_child(bullet)
 	
@@ -117,7 +115,6 @@ func _on_timer_timeout():
 	choose_direction()
 	$Timer.start()
 
-
 func _on_chase_box_area_entered(area):
 	if area.is_in_group("follow"):
 		if can_attack and not current_state == enemy_state.DEAD:
@@ -127,28 +124,19 @@ func _on_chase_box_area_entered(area):
 		new_direction = enemy_direction.CHASE
 
 func ammo_chance():
-	return randi_range(1, 3) == 3
+	return randi_range(1, 4) == 4
 	
 func health_chance():
-	return randi_range(1, 6) == 1
+	return randi_range(1, 8) == 1
 
 func chase_state():
-	var chase_speed = 40
+	var chase_speed = 55
 	velocity = position.direction_to(target.global_position) * chase_speed
 	animation()
 	move_and_slide()
 	
 func animation():
-	if velocity > Vector2.ZERO:
-		if new_direction == enemy_direction.CHASE:
-			$anim.play("run_right")
-		else:
-			$anim.play("walk_right")
-	if velocity < Vector2.ZERO:
-		if new_direction == enemy_direction.CHASE:
-			$anim.play("run_left")
-		else:
-			$anim.play("walk_left")
+	$anim.play("move")
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
@@ -160,10 +148,6 @@ func _on_hitbox_area_entered(area):
 				instance_ammo()
 			elif health_chance():
 				instance_health()
-			$death_timer.start()
-			
-func _on_death_timer_timeout():
-	queue_free()
 
 func _on_attack_timer_timeout():
 	can_attack = true

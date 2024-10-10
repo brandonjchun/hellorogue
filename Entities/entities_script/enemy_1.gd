@@ -106,7 +106,7 @@ func ammo_chance():
 	return randi_range(1, 6) == 6
 	
 func health_chance():
-	return randi_range(1, 12) == 1
+	return randi_range(1, 1) == 1
 	
 func chase_state():
 	var chase_speed = 50
