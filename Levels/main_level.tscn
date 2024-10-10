@@ -828,6 +828,29 @@ offset_bottom = 60.0
 grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 16
 
+[node name="please" type="Label" parent="GUI"]
+offset_left = 412.0
+offset_top = 80.0
+offset_right = 452.0
+offset_bottom = 103.0
+
+[node name="Label" type="Label" parent="GUI"]
+offset_left = 352.0
+offset_top = 63.0
+offset_right = 548.0
+offset_bottom = 86.0
+text = "pauseactive, gamemouse"
+
+[node name="pausemenucanvas" type="Label" parent="GUI"]
+offset_left = 336.0
+offset_top = 128.0
+offset_right = 376.0
+offset_bottom = 151.0
+
+[node name="pausemenu" type="Label" parent="GUI"]
+offset_right = 40.0
+offset_bottom = 23.0
+
 [node name="TileMap" type="TileMap" parent="."]
 z_index = 1
 y_sort_enabled = true
@@ -852,8 +875,7 @@ layer_1/tile_data = PackedInt32Array(-524300, 0, 5, -262156, 65536, 6, -65548, 6
 wait_time = 91.0
 
 [node name="pause_menu" type="CanvasLayer" parent="."]
-layer = 4
-visible = false
+layer = -4
 
 [node name="PauseMenu" parent="pause_menu" instance=ExtResource("12_wgi6v")]
 

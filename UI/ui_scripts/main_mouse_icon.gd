@@ -12,4 +12,4 @@ func _process(delta):
 	if get_tree().paused or not player_data.game_mouse:
 		main_mouse_icon.visible = true
 	else:
-		main_mouse_icon.visible = true
+		main_mouse_icon.visible = false
