@@ -14,13 +14,18 @@ func resume():
 	player_data.game_mouse = true
 	exit_pause_menu.emit()
 	get_tree().paused = false
+	
+	ThemePlayer.theme_ninetales_stop()
 	$anim.play_backwards("blur")
 
 func pause():
 	player_data.pause_active = true
 	player_data.game_mouse = false
+	
 	enter_pause_menu.emit()
 	get_tree().paused = true
+	
+	ThemePlayer.theme_ninetales()
 	$anim.play("blur")
 	
 func testEsc():

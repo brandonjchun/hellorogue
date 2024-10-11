@@ -9,25 +9,28 @@ extends Node2D
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
-@onready var main_level = $"."
+@onready var intermission_level = $"."
 @onready var gui = $GUI
+@onready var player_spawn = $player_spawn
 
+@onready var enemy_spawner_1 = $enemy_spawner1
+@onready var enemy_spawner_2 = $enemy_spawner2
+@onready var enemy_spawner_3 = $enemy_spawner3
+@onready var enemy_spawner_4 = $enemy_spawner4
+@onready var enemy_spawner_5 = $enemy_spawner5
+@onready var enemy_spawner_6 = $enemy_spawner6
+@onready var enemy_spawner_7 = $enemy_spawner7
+var spawners : Array[Marker2D] = [enemy_spawner_1, enemy_spawner_2, enemy_spawner_3, enemy_spawner_4, enemy_spawner_5, enemy_spawner_6, enemy_spawner_7]
 var lev = player_data.levels
-@onready var pause_menu_canvas = $pause_menu
-@onready var pause_menu = $pause_menu/PauseMenu
 @onready var main_mouse_icon = $pause_menu/main_mouse_icon
+@onready var pause_menu = $CanvasLayer/PauseMenu
+@onready var pause_menu_canvas = $CanvasLayer
 
 @onready var loading_screen_canvas = $loading_screen_canvas
 @onready var loading_screen = $loading_screen_canvas/loading_screen
 @onready var loading_anim = $loading_screen_canvas/loading_screen/anim
 
-@onready var tilemap_water = $TileMap3
-@onready var tilemap_mix = $TileMap
-@onready var tilemap_hell = $TileMap2
-@onready var ground = $ground
-@onready var ground2 = $ground2
-@onready var ground3 = $ground3
-
+@onready var tilemap = $TileMap3
 
 @export var borders = Rect2(1, 1, 200 + 2*lev, 100 + 2*lev)
 var walker
@@ -38,59 +41,12 @@ var change_scenes_once = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player_data.game_active = true
-	randomize()
-	if player_data.levels <= 1:
-		generate_level(tilemap_water)
-		ground2.visible = false
-	elif player_data.levels > 1 and player_data.levels <= 2:
-		tilemap_water.tile_set = tilemap_mix.tile_set
-		generate_level(tilemap_water)
-	elif player_data.levels > 2:
-		tilemap_water.tile_set = tilemap_hell.tile_set
-		generate_level(tilemap_water) 
+	generate_level()
 		
-	if player_data.levels >= 1 and player_data.levels <= 3:
-		player_data.sound_selecter = 0
-	if player_data.levels > 3 and player_data.levels < 6:
-		player_data.sound_selecter = 1
-	if player_data.levels >= 6 and player_data.levels < 9:
-		player_data.sound_selecter = 2
-	if player_data.levels >= 9 and player_data.levels < 12:
-		player_data.sound_selecter = 3
-	if player_data.levels >= 12 and player_data.levels < 15:
-		player_data.sound_selecter = 4
-	if player_data.levels >= 15 and player_data.levels < 18:
-		player_data.sound_selecter = 5
-	if player_data.levels >= 18 and player_data.levels < 21:
-		player_data.sound_selecter = 6
-	if player_data.levels >= 21:
-		player_data.sound_selecter = 7
-
-	match player_data.sound_selecter:
-		0:
-			ThemePlayer.theme_makuhita()
-		1:
-			ThemePlayer.theme_makuhita_stop()
-			ThemePlayer.theme_goodfight()
-		2:
-			ThemePlayer.theme_goodfight_stop()
-			ThemePlayer.theme_steel()
-		3:
-			ThemePlayer.theme_steel_stop()
-			ThemePlayer.theme_sinister()
-		4:
-			ThemePlayer.theme_sinister_stop()
-			ThemePlayer.theme_magma()
-		5:
-			ThemePlayer.theme_magma_stop()
-			ThemePlayer.theme_plumus()
-		6:
-			ThemePlayer.theme_plumus_stop()
-			ThemePlayer.theme_final()
+		
+	ThemePlayer.theme_skytowersummit()
+	ThemePlayer.theme_makuhita_stop()
 	
-	$map_timer.start()
-	$time_running_out_timer.wait_time = $map_timer.wait_time - 10
-	$time_running_out_timer.start()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
@@ -99,7 +55,7 @@ func _ready():
 func _process(delta):
 		
 	if player_data.toggle_loading_screen:
-		main_level.visible = false
+		intermission_level.visible = false
 		gui.visible = false
 		pause_menu.visible = false
 		if loading_screen_canvas.layer < 4:
@@ -119,69 +75,49 @@ func _process(delta):
 	ThemePlayer.theme_fileselect_stop()
 	ThemePlayer.theme_ninetales_stop()
 
-func generate_level(tilemap):
-	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
-	map = walker.walk(300 + 600 * floor(lev/3))
-
-	var using_cells: Array = []
-	var all_cells: Array = tilemap.get_used_cells(ground_layer)
-	tilemap.clear()
-	walker.queue_free()
-
-	for tile in all_cells:
-		if !map.has(Vector2(tile.x, tile.y)):
-			using_cells.append(tile)
-
-	tilemap.set_cells_terrain_connect(ground_layer, using_cells, ground_layer, ground_layer, false)
-	tilemap.set_cells_terrain_path(ground_layer, using_cells, ground_layer, ground_layer, false)
-
+func generate_level():
 	instance_player()
-	instance_exit()
-	if player_data.levels >= 0:
-		instance_enemy1()
-	if player_data.levels >= 2:
-		instance_silverspikes()
-	if player_data.levels >= 4:
-		instance_enemy2()
-	if player_data.levels >= 6:
-		instance_enemy1()
-		instance_enemy2()
-		instance_redspikes()
-	if player_data.levels >= 8:
-		instance_enemy4()
-	if player_data.levels >= 10:
-		instance_enemy1()
-		instance_enemy4()
-	if player_data.levels >= 12:
-		instance_enemy3()
-		instance_enemy4()
-		instance_enemy4()
-		instance_redspikes()
-	if player_data.levels >= 15:
-		instance_enemy1()
-		instance_enemy1()
-		instance_enemy2()
-		instance_enemy2()
-		instance_enemy3()
-		instance_enemy3()
-		instance_enemy4()
-		instance_enemy4()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
+	instance_enemy1()
 
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
-	player.position = map.pop_front() * 16
+	player.position = player_spawn.position
 	
-func instance_exit():
-	var exit = exit_scene.instantiate()
-	add_child(exit)
-	exit.position = walker.get_end_room().position * 16
 
 func instance_enemy1():
 	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*5))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
-		enemy.position = (map.pick_random() * borders.position) * 16
+		enemy.position = spawners.pick_random().position
 		add_child(enemy)
 		
 func instance_enemy2():
@@ -226,7 +162,7 @@ func _on_timer_timeout():
 	player_data.hurt_ready = true
 
 func _on_next_level_timer_timeout():
-	main_level.visible = true
+	intermission_level.visible = true
 	gui.visible = true
 	pause_menu.visible = true
 	loading_screen_canvas.layer = -2
@@ -247,6 +183,3 @@ func on_enter_pause_menu():
 	pause_menu.visible = true
 	main_mouse_icon.visible = true
 	pause_menu_canvas.layer = 4
-	
-func _on_time_running_out_timer_timeout():
-	$time_running_out.play()
