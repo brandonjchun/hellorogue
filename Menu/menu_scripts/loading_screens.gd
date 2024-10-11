@@ -3,6 +3,8 @@ extends Control
 var next_scene = "res://Levels/main_level.tscn"
 
 func load_next_scene():
+	if player_data.levels == 2:
+		next_scene = "res://Levels/intermission_level_1.tscn"
 	ResourceLoader.load_threaded_request(next_scene)
 	$anim.play("jumping")
 	

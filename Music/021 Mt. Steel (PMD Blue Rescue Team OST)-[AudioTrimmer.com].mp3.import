@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c153e7seaylqd"
+path="res://.godot/imported/021 Mt. Steel (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-dd9c47454a5fa7b9aa1ea92e9afe7a96.mp3str"
+
+[deps]
+
+source_file="res://Music/021 Mt. Steel (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3"
+dest_files=["res://.godot/imported/021 Mt. Steel (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3-dd9c47454a5fa7b9aa1ea92e9afe7a96.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
