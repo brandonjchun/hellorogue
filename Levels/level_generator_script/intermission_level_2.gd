@@ -43,6 +43,7 @@ extends Node2D
 @onready var pause_menu = $CanvasLayer/PauseMenu
 @onready var pause_menu_canvas = $CanvasLayer
 
+
 @onready var loading_screen_canvas = $loading_screen_canvas
 @onready var loading_screen = $loading_screen_canvas/loading_screen
 @onready var loading_anim = $loading_screen_canvas/loading_screen/anim
@@ -60,8 +61,9 @@ func _ready():
 	player_data.levels = 21
 	generate_level()
 		
-	ThemePlayer.theme_skytowersummit()
+	ThemePlayer.theme_skytowersummit_stop()
 	ThemePlayer.theme_makuhita_stop()
+	ThemePlayer.theme_blazepeak()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)

@@ -39,6 +39,11 @@ var change_scenes_once = 0
 func _ready():
 	player_data.game_active = true
 	randomize()
+	if player_data.levels >= 21:
+		player_data.intermission_levels = true
+	if player_data.intermission_levels == true:
+		loading_screen.load_intermission()
+		
 	if player_data.levels <= 1:
 		generate_level(tilemap_water)
 		ground2.visible = false
