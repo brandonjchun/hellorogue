@@ -10,7 +10,7 @@ extends Node2D
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
 @onready var intermission_level = $"."
-@onready var gui = $GUI
+@onready var gui = $GUI_intermission
 @onready var player_spawn = $player_spawn
 
 @onready var enemy_spawner_1 = $enemy_spawner1
@@ -20,9 +20,16 @@ extends Node2D
 @onready var enemy_spawner_5 = $enemy_spawner5
 @onready var enemy_spawner_6 = $enemy_spawner6
 @onready var enemy_spawner_7 = $enemy_spawner7
-var spawners : Array[Marker2D] = [enemy_spawner_1, enemy_spawner_2, enemy_spawner_3, enemy_spawner_4, enemy_spawner_5, enemy_spawner_6, enemy_spawner_7]
-var lev = player_data.levels
-@onready var main_mouse_icon = $pause_menu/main_mouse_icon
+@onready var enemy_spawner_8 = $enemy_spawner8
+@onready var enemy_spawner_9 = $enemy_spawner9
+@onready var enemy_spawner_10 = $enemy_spawner10
+@onready var enemy_spawner_11 = $enemy_spawner11
+@onready var enemy_spawner_12 = $enemy_spawner12
+@onready var enemy_spawner_13 = $enemy_spawner13
+
+@onready var exit = $exit
+
+@onready var main_mouse_icon = $CanvasLayer/main_mouse_icon
 @onready var pause_menu = $CanvasLayer/PauseMenu
 @onready var pause_menu_canvas = $CanvasLayer
 
@@ -32,7 +39,6 @@ var lev = player_data.levels
 
 @onready var tilemap = $TileMap3
 
-@export var borders = Rect2(1, 1, 200 + 2*lev, 100 + 2*lev)
 var walker
 var map
 var ground_layer = 0
@@ -90,22 +96,32 @@ func generate_level():
 	instance_enemy1()
 	instance_enemy1()
 	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
-	instance_enemy1()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy2()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy4()
+	instance_enemy3()
+	instance_enemy3()
+	instance_enemy3()
+	instance_enemy3()
 
 func instance_player():
 	var player = player_scene.instantiate()
@@ -117,42 +133,167 @@ func instance_enemy1():
 	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*5))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
-		enemy.position = spawners.pick_random().position
+		var spawn_point = randi_range(1,14)
+		match spawn_point:
+			1:
+				enemy.position = enemy_spawner_1.position
+			2:
+				enemy.position = enemy_spawner_2.position
+			3:
+				enemy.position = enemy_spawner_3.position
+			4:
+				enemy.position = enemy_spawner_4.position
+			5:
+				enemy.position = enemy_spawner_5.position
+			6:
+				enemy.position = enemy_spawner_6.position
+			7:
+				enemy.position = enemy_spawner_7.position
+			8:
+				enemy.position = enemy_spawner_8.position
+			7:
+				enemy.position = enemy_spawner_8.position
+			9:
+				enemy.position = enemy_spawner_9.position
+			10:
+				enemy.position = enemy_spawner_10.position
+			11:
+				enemy.position = enemy_spawner_11.position
+			12:
+				enemy.position = enemy_spawner_12.position
+			13:
+				enemy.position = enemy_spawner_13.position
+			14:
+				enemy.position = exit.position
 		add_child(enemy)
 		
 func instance_enemy2():
 	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*4))
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
-		enemy.position = (map.pick_random() * borders.position) * 16
+		
+		var spawn_point = randi_range(1,14)
+		match spawn_point:
+			1:
+				enemy.position = enemy_spawner_1.position
+			2:
+				enemy.position = enemy_spawner_2.position
+			3:
+				enemy.position = enemy_spawner_3.position
+			4:
+				enemy.position = enemy_spawner_4.position
+			5:
+				enemy.position = enemy_spawner_5.position
+			6:
+				enemy.position = enemy_spawner_6.position
+			7:
+				enemy.position = enemy_spawner_7.position
+			8:
+				enemy.position = enemy_spawner_8.position
+			7:
+				enemy.position = enemy_spawner_8.position
+			9:
+				enemy.position = enemy_spawner_9.position
+			10:
+				enemy.position = enemy_spawner_10.position
+			11:
+				enemy.position = enemy_spawner_11.position
+			12:
+				enemy.position = enemy_spawner_12.position
+			13:
+				enemy.position = enemy_spawner_13.position
+			14:
+				enemy.position = exit.position
 		add_child(enemy)
 		
 func instance_enemy3():
 	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(5, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy3_scene.instantiate()
-		enemy.position = (map.pick_random() * borders.position) * 16
+		
+		var spawn_point = randi_range(1,14)
+		match spawn_point:
+			1:
+				enemy.position = enemy_spawner_1.position
+			2:
+				enemy.position = enemy_spawner_2.position
+			3:
+				enemy.position = enemy_spawner_3.position
+			4:
+				enemy.position = enemy_spawner_4.position
+			5:
+				enemy.position = enemy_spawner_5.position
+			6:
+				enemy.position = enemy_spawner_6.position
+			7:
+				enemy.position = enemy_spawner_7.position
+			8:
+				enemy.position = enemy_spawner_8.position
+			7:
+				enemy.position = enemy_spawner_8.position
+			9:
+				enemy.position = enemy_spawner_9.position
+			10:
+				enemy.position = enemy_spawner_10.position
+			11:
+				enemy.position = enemy_spawner_11.position
+			12:
+				enemy.position = enemy_spawner_12.position
+			13:
+				enemy.position = enemy_spawner_13.position
+			14:
+				enemy.position = exit.position
 		add_child(enemy)
 		
 func instance_enemy4():
 	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*3))
 	for i in range(enemies_count):
 		var enemy = enemy4_scene.instantiate()
-		enemy.position = (map.pick_random() * borders.position) * 16
+		
+		var spawn_point = randi_range(1,14)
+		match spawn_point:
+			1:
+				enemy.position = enemy_spawner_1.position
+			2:
+				enemy.position = enemy_spawner_2.position
+			3:
+				enemy.position = enemy_spawner_3.position
+			4:
+				enemy.position = enemy_spawner_4.position
+			5:
+				enemy.position = enemy_spawner_5.position
+			6:
+				enemy.position = enemy_spawner_6.position
+			7:
+				enemy.position = enemy_spawner_7.position
+			8:
+				enemy.position = enemy_spawner_8.position
+			7:
+				enemy.position = enemy_spawner_8.position
+			9:
+				enemy.position = enemy_spawner_9.position
+			10:
+				enemy.position = enemy_spawner_10.position
+			11:
+				enemy.position = enemy_spawner_11.position
+			12:
+				enemy.position = enemy_spawner_12.position
+			13:
+				enemy.position = enemy_spawner_13.position
+			14:
+				enemy.position = exit.position
 		add_child(enemy)
 
 func instance_silverspikes():
 	var silverspikes_count = randi_range(3*player_data.levels,8)
 	for i in range(silverspikes_count):
 		var silverspikes = silverspikes_scene.instantiate()
-		silverspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(silverspikes)
 		
 func instance_redspikes():
 	var redspikes_count = randi_range(2*player_data.levels,12)
 	for i in range(redspikes_count):
 		var redspikes = redspikes_scene.instantiate()
-		redspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(redspikes)
 
 func _on_timer_timeout():
