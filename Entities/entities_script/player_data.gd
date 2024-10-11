@@ -14,3 +14,4 @@ static var player_is_dead = false
 static var game_mouse = false
 static var pause_active = false
 static var game_active = true
+static var intermission_levels = false
