@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@export var speed = randi_range(25,30)
+@export var speed = randi_range(25,30) + player_data.levels
 
 var enemy_health = 2
 
@@ -112,7 +112,7 @@ func health_chance():
 	return randi_range(1, 10) == 1
 	
 func chase_state():
-	var chase_speed = 60
+	var chase_speed = speed * 2
 	velocity = position.direction_to(target.global_position) * chase_speed
 	animation()
 	move_and_slide()

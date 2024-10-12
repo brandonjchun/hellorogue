@@ -44,9 +44,9 @@ extends Node2D
 @onready var pause_menu_canvas = $CanvasLayer
 
 
-@onready var loading_screen_canvas = $loading_screen_canvas
-@onready var loading_screen = $loading_screen_canvas/loading_screen
-@onready var loading_anim = $loading_screen_canvas/loading_screen/anim
+@onready var loading_screen_canvas = $CanvasLayer2
+@onready var loading_screen_intermission = $CanvasLayer2/loading_screen_intermission
+@onready var next_level_timer = $next_level_timer
 
 @onready var tilemap = $TileMap3
 
@@ -58,19 +58,27 @@ var change_scenes_once = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player_data.game_active = true
-	player_data.levels = 21
+	player_data.levels = 19
+	player_data.hurt_ready = true
+	player_data.reached_exit = false
 	generate_level()
-		
-	ThemePlayer.theme_skytowersummit_stop()
+	
+	intermission_level.z_index = 20
+	
+	ThemePlayer.theme_skytowersummit()
 	ThemePlayer.theme_makuhita_stop()
-	ThemePlayer.theme_blazepeak()
+	ThemePlayer.theme_silentchasm_stop()
+	ThemePlayer.theme_steel_stop()
+	ThemePlayer.theme_lapis_stop()
+	ThemePlayer.theme_sinister_stop()
+	ThemePlayer.theme_magma_stop()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-		
+	
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -78,13 +86,15 @@ func _process(delta):
 		if loading_screen_canvas.layer < 4:
 			loading_screen_canvas.layer = 4
 			loading_screen_canvas.visible = true
-			loading_screen.visible = true
-			loading_screen.z_index = 10
-			loading_anim.play("jumping")
+			loading_screen_intermission.visible = true
+			loading_screen_intermission.z_index = 10
 
 		if change_scenes_once == 0:
-			loading_screen.load_next_scene()
-			$next_level_timer.start()
+			if player_data.player_is_dead:
+				loading_screen_intermission.reset_next_scene()
+			else:
+				loading_screen_intermission.load_next_scene()
+			next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
 	
@@ -104,6 +114,8 @@ func generate_level():
 	instance_enemy4()
 		
 	instance_enemy_at_spawn()
+	
+	instance_redspikes()
 
 func instance_player():
 	var player = player_scene.instantiate()
@@ -299,3 +311,15 @@ func on_enter_pause_menu():
 	pause_menu.visible = true
 	main_mouse_icon.visible = true
 	pause_menu_canvas.layer = 4
+
+
+func _on_next_level_timer_timeout():
+	intermission_level.visible = true
+	gui.visible = true
+	pause_menu.visible = true
+	loading_screen_canvas.layer = -10
+	loading_screen_canvas.visible = false
+	loading_screen_intermission.visible = false
+	loading_screen_intermission.z_index = -10
+	player_data.toggle_loading_screen = false
+	change_scenes_once = 0

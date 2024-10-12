@@ -17,6 +17,7 @@ var input_movement = Vector2()
 @onready var gun = $gun_handler
 @onready var gun_spr = $gun_handler/gun_sprite
 @onready var bullet_point = $gun_handler/bullet_point
+@onready var player = $"."
 
 
 var pos
@@ -26,11 +27,16 @@ var melee_ready = true
 var gun_ready = true
 var step_ready = true
 
+func _ready():
+	player.speed = 80 + player_data.levels*50
+	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if current_state != player_states.FREEZE:
 		if player_data.health <= 0:
 			current_state = player_states.DEAD
+			player_data.player_is_dead = true
 			
 		target_mouse()
 
@@ -102,13 +108,14 @@ func dead():
 	$anim.play("dead")
 	await get_tree().create_timer(2).timeout
 	if get_tree():
-		player_data.health = 12
-		player_data.ammo = 20
-		player_data.levels = 0
+		player_data.health = 24
+		player_data.ammo = 50
+		player_data.levels = 1
 		player_data.sound_selecter = 0
 		player_data.hurt_ready = true
 		player_data.player_is_dead = false
 		player_data.toggle_loading_screen = true
+		player_data.intermission_levels = false
 	
 func target_mouse():
 	if player_data.player_is_dead == false:

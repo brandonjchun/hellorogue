@@ -230,7 +230,7 @@ height = 22.0
 y_sort_enabled = true
 collision_mask = 31
 script = ExtResource("1_jdr8l")
-speed = 100
+speed = 110
 
 [node name="player_collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)

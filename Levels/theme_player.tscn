@@ -6,7 +6,6 @@
 [ext_resource type="AudioStream" uid="uid://ctug633gpoawi" path="res://Music/045 Magma Cavern (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="4_esli7"]
 [ext_resource type="AudioStream" uid="uid://cq8g23sdrhdkp" path="res://Music/030 Great Canyon (PMD Blue Rescue Team OST).mp3" id="5_68br6"]
 [ext_resource type="AudioStream" uid="uid://bsqx0l0fkbwin" path="res://Music/Map (basic version).wav" id="6_2ednu"]
-[ext_resource type="AudioStream" uid="uid://biu3pfbvipikx" path="res://Music/Mars.wav" id="7_o3saj"]
 [ext_resource type="AudioStream" uid="uid://dbmk2w1v5alxb" path="res://Music/The Good Fight (w intro).mp3" id="8_sgy68"]
 [ext_resource type="AudioStream" uid="uid://c153e7seaylqd" path="res://Music/021 Mt. Steel (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="9_1verj"]
 [ext_resource type="AudioStream" uid="uid://pfx3wsrh83s4" path="res://Music/muPlumusLand.wav" id="11_hvtio"]
@@ -14,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://bptqqvq2x4x56" path="res://Music/053 Final Battle vs. Rayquaza (PMD Blue Rescue Team OST).mp3" id="12_c6v8g"]
 [ext_resource type="AudioStream" uid="uid://daad1s1qy85aj" path="res://Music/003 File Select (PMD Blue Rescue Team OST).mp3" id="14_jjcnr"]
 [ext_resource type="AudioStream" uid="uid://dxipysf7367u3" path="res://Music/004 Personality Test (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="15_2tkrm"]
+[ext_resource type="AudioStream" uid="uid://c6ar6t8i21fij" path="res://Music/041 Frosty Grotto (PMD Blue Rescue Team OST).mp3" id="16_j23i7"]
 [ext_resource type="AudioStream" uid="uid://ccfy2ri2ujvre" path="res://Music/022 Boss Battle (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="16_l35l3"]
 [ext_resource type="AudioStream" uid="uid://c6dd7m33sbowq" path="res://Music/024 Makuhita Dojo (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="17_axu6w"]
 [ext_resource type="AudioStream" uid="uid://bni7xiht8wve6" path="res://Music/027 Silent Chasm (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="17_mr0dd"]
@@ -105,10 +105,10 @@ volume_db = -12.0
 pitch_scale = 0.93
 bus = &"Music"
 
-[node name="mars" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_o3saj")
+[node name="frosty" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_j23i7")
 volume_db = -10.0
-pitch_scale = 0.95
+pitch_scale = 0.97
 bus = &"Music"
 
 [node name="bossbattle" type="AudioStreamPlayer" parent="."]

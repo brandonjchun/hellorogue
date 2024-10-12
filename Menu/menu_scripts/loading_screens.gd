@@ -1,13 +1,13 @@
 extends Control
 
 var next_scene = "res://Levels/main_level.tscn"
+@onready var anim = $anim
 
-func _ready():
-	$anim.play("jumping")
-	
-func load_intermission():
-	ResourceLoader.load_threaded_request("res://Levels/intermission_level_1.tscn")
 func load_next_scene():
+	if player_data.intermission_levels:
+		next_scene = "res://Levels/intermission_level_2.tscn"
+		player_data.levels = 19
+	anim.play("fly")
 	ResourceLoader.load_threaded_request(next_scene)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
