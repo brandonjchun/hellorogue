@@ -1,12 +1,17 @@
 extends Control
 
-var next_scene = "res://Levels/main_level.tscn"
+var next_scene = "res://Levels/intermission_level_2.tscn"
 
 func load_next_scene():
-	if next_scene == "res://Levels/intermission_level_1.tscn":
-		next_scene = "res://Levels/intermission_level_2.tscn"
 	if next_scene == "res://Levels/intermission_level_2.tscn":
+		next_scene = "res://Levels/intermission_level_1.tscn"
+	elif next_scene == "res://Levels/intermission_level_1.tscn":
 		next_scene = "res://Levels/intermission_level_3.tscn"
+	$anim.play("fly")
+	ResourceLoader.load_threaded_request(next_scene)
+
+func reset_next_scene():
+	next_scene = "res://Levels/intermission_level_1.tscn"
 	ResourceLoader.load_threaded_request(next_scene)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.

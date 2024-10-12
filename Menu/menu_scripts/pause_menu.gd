@@ -5,7 +5,6 @@ extends Control
 @onready var panel = $Panel
 @onready var pause_menu = $"."
 
-
 signal exit_pause_menu
 signal enter_pause_menu
 

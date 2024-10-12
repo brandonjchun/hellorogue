@@ -1,5 +1,6 @@
 extends Node2D
 
+#region imports
 @onready var player_scene = preload("res://Entities/Scenes/Player/player.tscn")
 @onready var exit_scene = preload("res://interactables/scenes/exit.tscn")
 @onready var enemy1_scene = preload("res://Entities/Scenes/Enemies/enemy_1.tscn")
@@ -12,7 +13,6 @@ extends Node2D
 @onready var intermission_level = $"."
 @onready var gui = $GUI_intermission
 @onready var player_spawn = $player_spawn
-
 @onready var enemy_spawner_1 = $enemy_spawner1
 @onready var enemy_spawner_2 = $enemy_spawner2
 @onready var enemy_spawner_3 = $enemy_spawner3
@@ -36,39 +36,55 @@ extends Node2D
 @onready var enemy_spawner_21 = $enemy_spawner21
 @onready var enemy_spawner_22 = $enemy_spawner22
 @onready var enemy_spawner_23 = $enemy_spawner23
+@onready var enemy_spawner_24 = $enemy_spawner24
+@onready var enemy_spawner_25 = $enemy_spawner25
+@onready var enemy_spawner_26 = $enemy_spawner26
+@onready var enemy_spawner_27 = $enemy_spawner27
+@onready var enemy_spawner_28 = $enemy_spawner28
+@onready var enemy_spawner_29 = $enemy_spawner29
+@onready var enemy_spawner_30 = $enemy_spawner30
+@onready var enemy_spawner_31 = $enemy_spawner31
+@onready var enemy_spawner_32 = $enemy_spawner32
+@onready var enemy_spawner_33 = $enemy_spawner33
+@onready var enemy_spawner_34 = $enemy_spawner34
+@onready var enemy_spawner_35 = $enemy_spawner35
 
 @onready var exit = $exit
 
 @onready var main_mouse_icon = $CanvasLayer/main_mouse_icon
 @onready var pause_menu = $CanvasLayer/PauseMenu
 @onready var pause_menu_canvas = $CanvasLayer
+#endregion
 
-@onready var loading_screen_canvas = $loading_screen_canvas
-@onready var loading_screen = $loading_screen_canvas/loading_screen
-@onready var loading_anim = $loading_screen_canvas/loading_screen/anim
+@onready var loading_screen_canvas = $CanvasLayer2
+@onready var loading_screen_intermission = $CanvasLayer2/loading_screen_intermission
 
 @onready var tilemap = $TileMap3
 
-var walker
-var map
-var ground_layer = 0
 var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player_data.game_active = true
-	player_data.levels = 21
+	player_data.levels = 20
+	player_data.hurt_ready = true
+	player_data.reached_exit = false
 	generate_level()
 		
-	ThemePlayer.theme_skytowersummit()
+	ThemePlayer.theme_blazepeak()
+	ThemePlayer.theme_skytowersummit_stop()
 	ThemePlayer.theme_makuhita_stop()
+	ThemePlayer.theme_silentchasm_stop()
+	ThemePlayer.theme_steel_stop()
+	ThemePlayer.theme_lapis_stop()
+	ThemePlayer.theme_sinister_stop()
+	ThemePlayer.theme_magma_stop()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -76,12 +92,14 @@ func _process(delta):
 		if loading_screen_canvas.layer < 4:
 			loading_screen_canvas.layer = 4
 			loading_screen_canvas.visible = true
-			loading_screen.visible = true
-			loading_screen.z_index = 10
-			loading_anim.play("jumping")
+			loading_screen_intermission.visible = true
+			loading_screen_intermission.z_index = 10
 
 		if change_scenes_once == 0:
-			loading_screen.load_next_scene()
+			if player_data.player_is_dead:
+				loading_screen_intermission.reset_next_scene()
+			else:
+				loading_screen_intermission.load_next_scene()
 			$next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
@@ -89,6 +107,7 @@ func _process(delta):
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
 	ThemePlayer.theme_ninetales_stop()
+
 
 func generate_level():
 	instance_player()
@@ -100,9 +119,31 @@ func generate_level():
 	instance_enemy3()
 		
 	instance_enemy4()
+	
+	instance_enemy1()
+		
+	instance_enemy2()
+		
+	instance_enemy3()
+		
+	instance_enemy4()
 		
 	instance_enemy_at_spawn()
+	
+	instance_redspikes()
 
+
+func _on_next_level_timer_timeout():
+	intermission_level.visible = true
+	gui.visible = true
+	pause_menu.visible = true
+	loading_screen_canvas.layer = -10
+	loading_screen_canvas.visible = false
+	loading_screen_intermission.visible = false
+	loading_screen_intermission.z_index = -10
+	player_data.toggle_loading_screen = false
+	change_scenes_once = 0
+	
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
@@ -135,7 +176,7 @@ func instance_enemy1():
 		add_child(enemy)
 		
 func choose_spawn_point(enemy):
-	var spawn_point = randi_range(1,14)
+	var spawn_point = randi_range(1,36)
 	match spawn_point:
 		1:
 			enemy.position = enemy_spawner_1.position
@@ -186,6 +227,30 @@ func choose_spawn_point(enemy):
 		23:
 			enemy.position = enemy_spawner_23.position
 		24:
+			enemy.position = enemy_spawner_24.position
+		25:
+			enemy.position = enemy_spawner_25.position
+		26:
+			enemy.position = enemy_spawner_26.position
+		27:
+			enemy.position = enemy_spawner_27.position
+		28:
+			enemy.position = enemy_spawner_28.position
+		29:
+			enemy.position = enemy_spawner_29.position
+		30:
+			enemy.position = enemy_spawner_30.position
+		31:
+			enemy.position = enemy_spawner_31.position
+		32:
+			enemy.position = enemy_spawner_32.position
+		33:
+			enemy.position = enemy_spawner_33.position
+		34:
+			enemy.position = enemy_spawner_34.position
+		35:
+			enemy.position = enemy_spawner_35.position
+		36:
 			enemy.position = exit.position
 			
 func instance_enemy2():

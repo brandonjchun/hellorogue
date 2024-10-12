@@ -134,4 +134,3 @@ visible = false
 layout_mode = 1
 
 [node name="main_mouse_icon" parent="." instance=ExtResource("6_oy7qh")]
-visible = false

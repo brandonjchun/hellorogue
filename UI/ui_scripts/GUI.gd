@@ -28,8 +28,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$ammo_amount.text = var_to_str(player_data.ammo)
-	if timer.time_left >= 90.0:
-		$timer_countdown.text = "90.0"
+	if timer.time_left >= 120.0:
+		$timer_countdown.text = "120.0"
 	else:
 		$timer_countdown.text = var_to_str(timer.time_left).pad_decimals(1)
 		
@@ -53,4 +53,5 @@ func _process(delta):
 		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
 	else:
 		$extra_hearts.text = ""
+	$Label.text = var_to_str(player_data.sound_selecter)
 	

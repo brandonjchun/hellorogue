@@ -12,13 +12,14 @@ extends Node2D
 @onready var main_level = $"."
 @onready var gui = $GUI
 
-var lev = player_data.levels
+var lev = player_data.levels-1
 @onready var pause_menu_canvas = $pause_menu
 @onready var pause_menu = $pause_menu/PauseMenu
 @onready var main_mouse_icon = $pause_menu/main_mouse_icon
 
 @onready var loading_screen_canvas = $loading_screen_canvas
 @onready var loading_screen = $loading_screen_canvas/loading_screen
+@onready var animation = $loading_screen_canvas/loading_screen/animation
 @onready var loading_anim = $loading_screen_canvas/loading_screen/anim
 
 @onready var tilemap_water = $TileMap3
@@ -29,7 +30,7 @@ var lev = player_data.levels
 @onready var ground3 = $ground3
 
 
-@export var borders = Rect2(1, 1, 200 + 2*lev, 100 + 2*lev)
+@export var borders = Rect2(1, 1, 200 + 2*(floor(lev/3)*2), 100 + 2*(floor(lev/3)*2))
 var walker
 var map
 var ground_layer = 0
@@ -37,58 +38,32 @@ var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player_data.hurt_ready = true
+	player_data.reached_exit = false
 	player_data.game_active = true
 	randomize()
-	if player_data.levels >= 21:
-		player_data.intermission_levels = true
-	if player_data.intermission_levels == true:
-		loading_screen.load_intermission()
-		
-	if player_data.levels <= 1:
+	if player_data.levels < 6:
 		generate_level(tilemap_water)
 		ground2.visible = false
-	elif player_data.levels > 1 and player_data.levels <= 2:
+	elif player_data.levels >= 6 and player_data.levels < 12:
 		tilemap_water.tile_set = tilemap_mix.tile_set
 		generate_level(tilemap_water)
-	elif player_data.levels > 2:
+	elif player_data.levels >= 12:
 		tilemap_water.tile_set = tilemap_hell.tile_set
 		generate_level(tilemap_water) 
 		
-	if player_data.levels >= 1 and player_data.levels <= 3:
+	if player_data.levels >= 0 and player_data.levels < 3:
 		player_data.sound_selecter = 0
-	if player_data.levels > 3 and player_data.levels < 6:
+	if player_data.levels >= 3 and player_data.levels < 6:
 		player_data.sound_selecter = 1
 	if player_data.levels >= 6 and player_data.levels < 9:
 		player_data.sound_selecter = 2
 	if player_data.levels >= 9 and player_data.levels < 12:
 		player_data.sound_selecter = 3
-	if player_data.levels >= 12 and player_data.levels < 15:
+	if player_data.levels >= 12 and player_data.levels <= 15:
 		player_data.sound_selecter = 4
-	if player_data.levels >= 15 and player_data.levels < 18:
+	if player_data.levels >= 15 and player_data.levels <= 18:
 		player_data.sound_selecter = 5
-	if player_data.levels >= 18 and player_data.levels < 21:
-		player_data.sound_selecter = 6
-
-	match player_data.sound_selecter:
-		0:
-			ThemePlayer.theme_makuhita()
-		1:
-			ThemePlayer.theme_makuhita_stop()
-			ThemePlayer.theme_goodfight()
-		2:
-			ThemePlayer.theme_goodfight_stop()
-			ThemePlayer.theme_steel()
-		3:
-			ThemePlayer.theme_steel_stop()
-			ThemePlayer.theme_sinister()
-		4:
-			ThemePlayer.theme_sinister_stop()
-			ThemePlayer.theme_magma()
-		5:
-			ThemePlayer.theme_magma_stop()
-			ThemePlayer.theme_plumus()
-		6:
-			ThemePlayer.theme_plumus_stop()
 	
 	$map_timer.start()
 	$time_running_out_timer.wait_time = $map_timer.wait_time - 10
@@ -99,6 +74,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.reached_exit:
+		$map_timer.paused = true
+		$time_running_out_timer.paused = true
 		
 	if player_data.toggle_loading_screen:
 		main_level.visible = false
@@ -109,7 +87,9 @@ func _process(delta):
 			loading_screen_canvas.visible = true
 			loading_screen.visible = true
 			loading_screen.z_index = 10
-			loading_anim.play("jumping")
+			animation.z_index = 12
+			animation.visible = true
+			loading_anim.play("fly")
 
 		if change_scenes_once == 0:
 			loading_screen.load_next_scene()
@@ -120,6 +100,34 @@ func _process(delta):
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
 	ThemePlayer.theme_ninetales_stop()
+	
+	match player_data.sound_selecter:
+		0:
+			ThemePlayer.theme_makuhita()
+			ThemePlayer.theme_silentchasm_stop()
+			ThemePlayer.theme_steel_stop()
+			ThemePlayer.theme_lapis_stop()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma_stop()
+		1:
+			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_silentchasm()
+		2:
+			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_silentchasm_stop()
+			ThemePlayer.theme_steel()
+		3:
+			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_steel_stop()
+			ThemePlayer.theme_lapis()
+		4:
+			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_lapis_stop()
+			ThemePlayer.theme_sinister()
+		5:
+			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma()
 
 func generate_level(tilemap):
 	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
@@ -223,9 +231,9 @@ func instance_redspikes():
 
 func _on_timer_timeout():
 	player_data.toggle_loading_screen = true
-	player_data.levels = 0 #set back to 0
-	player_data.sound_selecter = 0
+	player_data.levels = 1 
 	player_data.hurt_ready = true
+	player_data.reached_exit = false
 
 func _on_next_level_timer_timeout():
 	main_level.visible = true
