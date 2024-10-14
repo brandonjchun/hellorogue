@@ -36,9 +36,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	while $freeze_timer.time_left > 0:
-		current_state = enemy_state.FROZEN
-		
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
