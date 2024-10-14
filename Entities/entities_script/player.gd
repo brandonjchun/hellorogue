@@ -116,6 +116,7 @@ func dead():
 		player_data.player_is_dead = false
 		player_data.toggle_loading_screen = true
 		player_data.intermission_levels = false
+			
 	
 func target_mouse():
 	if player_data.player_is_dead == false:

@@ -5,7 +5,7 @@ var next_scene = "res://Levels/main_level.tscn"
 
 func load_next_scene():
 	if player_data.intermission_levels:
-		next_scene = "res://Levels/intermission_level_2.tscn"
+		next_scene = "res://Levels/intermission_level.tscn"
 		player_data.levels = 19
 	anim.play("fly")
 	ResourceLoader.load_threaded_request(next_scene)

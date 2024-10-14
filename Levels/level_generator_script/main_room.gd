@@ -30,7 +30,7 @@ var lev = player_data.levels-1
 @onready var ground3 = $ground3
 
 
-@export var borders = Rect2(1, 1, 200 + 2*(floor(lev/3)*2), 100 + 2*(floor(lev/3)*2))
+@export var borders = Rect2(1, 1, 200 + 5*(floor(lev/6)*2), 100 + 5*(floor(lev/6)*2))
 var walker
 var map
 var ground_layer = 0
@@ -127,11 +127,11 @@ func _process(delta):
 		5:
 			ThemePlayer.theme_makuhita_stop()
 			ThemePlayer.theme_sinister_stop()
-			ThemePlayer.theme_magma()
+			ThemePlayer.theme_blazepeak()
 
 func generate_level(tilemap):
-	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
-	map = walker.walk(300 + 600 * floor(lev/3))
+	walker = Walker_room.new(Vector2(3 + floor(lev/6), 5 + floor(lev/6)), borders)
+	map = walker.walk(300 + 600 * floor(lev/6))
 
 	var using_cells: Array = []
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
