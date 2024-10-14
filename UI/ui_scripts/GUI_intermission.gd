@@ -41,7 +41,6 @@ func _process(delta):
 	else:
 		$extra_hearts.text = ""
 		
-	
 	if player_data.levels <= 18:
 		$level_number.text = var_to_str(player_data.levels)
 	elif player_data.levels == 19: 

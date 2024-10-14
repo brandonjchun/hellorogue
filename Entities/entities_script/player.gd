@@ -28,7 +28,7 @@ var gun_ready = true
 var step_ready = true
 
 func _ready():
-	player.speed = 80 + player_data.levels*50
+	player.speed = 90 + player_data.levels*5
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

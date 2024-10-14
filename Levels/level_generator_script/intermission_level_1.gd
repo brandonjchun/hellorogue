@@ -13,41 +13,41 @@ extends Node2D
 @onready var intermission_level = $"."
 @onready var gui = $GUI_intermission
 @onready var player_spawn = $player_spawn
-@onready var enemy_spawner_1 = $enemy_spawner1
-@onready var enemy_spawner_2 = $enemy_spawner2
-@onready var enemy_spawner_3 = $enemy_spawner3
-@onready var enemy_spawner_4 = $enemy_spawner4
-@onready var enemy_spawner_5 = $enemy_spawner5
-@onready var enemy_spawner_6 = $enemy_spawner6
-@onready var enemy_spawner_7 = $enemy_spawner7
-@onready var enemy_spawner_8 = $enemy_spawner8
-@onready var enemy_spawner_9 = $enemy_spawner9
-@onready var enemy_spawner_10 = $enemy_spawner10
-@onready var enemy_spawner_11 = $enemy_spawner11
-@onready var enemy_spawner_12 = $enemy_spawner12
-@onready var enemy_spawner_13 = $enemy_spawner13
-@onready var enemy_spawner_14 = $enemy_spawner14
-@onready var enemy_spawner_15 = $enemy_spawner15
-@onready var enemy_spawner_16 = $enemy_spawner16
-@onready var enemy_spawner_17 = $enemy_spawner17
-@onready var enemy_spawner_18 = $enemy_spawner18
-@onready var enemy_spawner_19 = $enemy_spawner19
-@onready var enemy_spawner_20 = $enemy_spawner20
-@onready var enemy_spawner_21 = $enemy_spawner21
-@onready var enemy_spawner_22 = $enemy_spawner22
-@onready var enemy_spawner_23 = $enemy_spawner23
-@onready var enemy_spawner_24 = $enemy_spawner24
-@onready var enemy_spawner_25 = $enemy_spawner25
-@onready var enemy_spawner_26 = $enemy_spawner26
-@onready var enemy_spawner_27 = $enemy_spawner27
-@onready var enemy_spawner_28 = $enemy_spawner28
-@onready var enemy_spawner_29 = $enemy_spawner29
-@onready var enemy_spawner_30 = $enemy_spawner30
-@onready var enemy_spawner_31 = $enemy_spawner31
-@onready var enemy_spawner_32 = $enemy_spawner32
-@onready var enemy_spawner_33 = $enemy_spawner33
-@onready var enemy_spawner_34 = $enemy_spawner34
-@onready var enemy_spawner_35 = $enemy_spawner35
+@onready var spawner_1 = $enemy_spawner1
+@onready var spawner_2 = $enemy_spawner2
+@onready var spawner_3 = $enemy_spawner3
+@onready var spawner_4 = $enemy_spawner4
+@onready var spawner_5 = $enemy_spawner5
+@onready var spawner_6 = $enemy_spawner6
+@onready var spawner_7 = $enemy_spawner7
+@onready var spawner_8 = $enemy_spawner8
+@onready var spawner_9 = $enemy_spawner9
+@onready var spawner_10 = $enemy_spawner10
+@onready var spawner_11 = $enemy_spawner11
+@onready var spawner_12 = $enemy_spawner12
+@onready var spawner_13 = $enemy_spawner13
+@onready var spawner_14 = $enemy_spawner14
+@onready var spawner_15 = $enemy_spawner15
+@onready var spawner_16 = $enemy_spawner16
+@onready var spawner_17 = $enemy_spawner17
+@onready var spawner_18 = $enemy_spawner18
+@onready var spawner_19 = $enemy_spawner19
+@onready var spawner_20 = $enemy_spawner20
+@onready var spawner_21 = $enemy_spawner21
+@onready var spawner_22 = $enemy_spawner22
+@onready var spawner_23 = $enemy_spawner23
+@onready var spawner_24 = $enemy_spawner24
+@onready var spawner_25 = $enemy_spawner25
+@onready var spawner_26 = $enemy_spawner26
+@onready var spawner_27 = $enemy_spawner27
+@onready var spawner_28 = $enemy_spawner28
+@onready var spawner_29 = $enemy_spawner29
+@onready var spawner_30 = $enemy_spawner30
+@onready var spawner_31 = $enemy_spawner31
+@onready var spawner_32 = $enemy_spawner32
+@onready var spawner_33 = $enemy_spawner33
+@onready var spawner_34 = $enemy_spawner34
+@onready var spawner_35 = $enemy_spawner35
 
 @onready var exit = $exit
 
@@ -61,10 +61,87 @@ extends Node2D
 
 @onready var tilemap = $TileMap3
 
+var enemies_array
+var spikes_array
+var spike
 var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	enemies_array = [spawner_1, 
+		spawner_2, 
+		spawner_3,
+		spawner_4, 
+		spawner_5,
+		spawner_6, 
+		spawner_7,
+		spawner_8, 
+		spawner_9,
+		spawner_10, 
+		spawner_11,
+		spawner_12,
+		spawner_13,
+		spawner_14,
+		spawner_15,
+		spawner_16,
+		spawner_17,
+		spawner_18,
+		spawner_19,
+		spawner_20,
+		spawner_21,
+		spawner_22,
+		spawner_23,
+		spawner_24,
+		spawner_25,
+		spawner_26,
+		spawner_27,
+		spawner_28,
+		spawner_29,
+		spawner_30,
+		spawner_31,
+		spawner_32,
+		spawner_33,
+		spawner_34,
+		spawner_35
+	]
+	
+	spikes_array = [spawner_1, 
+		spawner_2, 
+		spawner_3,
+		spawner_4, 
+		spawner_5,
+		spawner_6, 
+		spawner_7,
+		spawner_8, 
+		spawner_9,
+		spawner_10, 
+		spawner_11,
+		spawner_12,
+		spawner_13,
+		spawner_14,
+		spawner_15,
+		spawner_16,
+		spawner_17,
+		spawner_18,
+		spawner_19,
+		spawner_20,
+		spawner_21,
+		spawner_22,
+		spawner_23,
+		spawner_24,
+		spawner_25,
+		spawner_26,
+		spawner_27,
+		spawner_28,
+		spawner_29,
+		spawner_30,
+		spawner_31,
+		spawner_32,
+		spawner_33,
+		spawner_34,
+		spawner_35
+	]
+	
 	player_data.game_active = true
 	player_data.levels = 21
 	player_data.hurt_ready = true
@@ -80,6 +157,7 @@ func _ready():
 	ThemePlayer.theme_lapis_stop()
 	ThemePlayer.theme_sinister_stop()
 	ThemePlayer.theme_blazepeak_stop()
+	ThemePlayer.theme_sinister_stop()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
@@ -112,14 +190,6 @@ func _process(delta):
 
 func generate_level():
 	instance_player()
-	
-	instance_enemy1()
-		
-	instance_enemy2()
-		
-	instance_enemy3()
-		
-	instance_enemy4()
 	
 	instance_enemy1()
 		
@@ -180,77 +250,77 @@ func choose_spawn_point(enemy):
 	var spawn_point = randi_range(1,36)
 	match spawn_point:
 		1:
-			enemy.position = enemy_spawner_1.position
+			enemy.position = spawner_1.position
 		2:
-			enemy.position = enemy_spawner_2.position
+			enemy.position = spawner_2.position
 		3:
-			enemy.position = enemy_spawner_3.position
+			enemy.position = spawner_3.position
 		4:
-			enemy.position = enemy_spawner_4.position
+			enemy.position = spawner_4.position
 		5:
-			enemy.position = enemy_spawner_5.position
+			enemy.position = spawner_5.position
 		6:
-			enemy.position = enemy_spawner_6.position
+			enemy.position = spawner_6.position
 		7:
-			enemy.position = enemy_spawner_7.position
+			enemy.position = spawner_7.position
 		8:
-			enemy.position = enemy_spawner_8.position
+			enemy.position = spawner_8.position
 		7:
-			enemy.position = enemy_spawner_8.position
+			enemy.position = spawner_8.position
 		9:
-			enemy.position = enemy_spawner_9.position
+			enemy.position = spawner_9.position
 		10:
-			enemy.position = enemy_spawner_10.position
+			enemy.position = spawner_10.position
 		11:
-			enemy.position = enemy_spawner_11.position
+			enemy.position = spawner_11.position
 		12:
-			enemy.position = enemy_spawner_12.position
+			enemy.position = spawner_12.position
 		13:
-			enemy.position = enemy_spawner_13.position
+			enemy.position = spawner_13.position
 		14:
-			enemy.position = enemy_spawner_14.position
+			enemy.position = spawner_14.position
 		15:
-			enemy.position = enemy_spawner_15.position
+			enemy.position = spawner_15.position
 		16:
-			enemy.position = enemy_spawner_16.position
+			enemy.position = spawner_16.position
 		17:
-			enemy.position = enemy_spawner_17.position
+			enemy.position = spawner_17.position
 		18:
-			enemy.position = enemy_spawner_18.position
+			enemy.position = spawner_18.position
 		19:
-			enemy.position = enemy_spawner_19.position
+			enemy.position = spawner_19.position
 		20:
-			enemy.position = enemy_spawner_20.position
+			enemy.position = spawner_20.position
 		21:
-			enemy.position = enemy_spawner_21.position
+			enemy.position = spawner_21.position
 		22:
-			enemy.position = enemy_spawner_22.position
+			enemy.position = spawner_22.position
 		23:
-			enemy.position = enemy_spawner_23.position
+			enemy.position = spawner_23.position
 		24:
-			enemy.position = enemy_spawner_24.position
+			enemy.position = spawner_24.position
 		25:
-			enemy.position = enemy_spawner_25.position
+			enemy.position = spawner_25.position
 		26:
-			enemy.position = enemy_spawner_26.position
+			enemy.position = spawner_26.position
 		27:
-			enemy.position = enemy_spawner_27.position
+			enemy.position = spawner_27.position
 		28:
-			enemy.position = enemy_spawner_28.position
+			enemy.position = spawner_28.position
 		29:
-			enemy.position = enemy_spawner_29.position
+			enemy.position = spawner_29.position
 		30:
-			enemy.position = enemy_spawner_30.position
+			enemy.position = spawner_30.position
 		31:
-			enemy.position = enemy_spawner_31.position
+			enemy.position = spawner_31.position
 		32:
-			enemy.position = enemy_spawner_32.position
+			enemy.position = spawner_32.position
 		33:
-			enemy.position = enemy_spawner_33.position
+			enemy.position = spawner_33.position
 		34:
-			enemy.position = enemy_spawner_34.position
+			enemy.position = spawner_34.position
 		35:
-			enemy.position = enemy_spawner_35.position
+			enemy.position = spawner_35.position
 		36:
 			enemy.position = exit.position
 			
@@ -363,3 +433,34 @@ func on_enter_pause_menu():
 	pause_menu.visible = true
 	main_mouse_icon.visible = true
 	pause_menu_canvas.layer = 4
+	
+func _on_enemy_spawn_timeout():
+	var enemy
+	var enemy_type = randi_range(0, 3)
+	var enemy_position
+	match enemy_type:
+		0:
+			enemy = enemy1_scene.instantiate()
+			for i in range(12):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		1:
+			enemy = enemy2_scene.instantiate()
+			for i in range(10):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		2:
+			enemy = enemy3_scene.instantiate()
+			for i in range(6):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		3:
+			enemy = enemy4_scene.instantiate()
+			for i in range(8):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+	$enemy_spawn.start()

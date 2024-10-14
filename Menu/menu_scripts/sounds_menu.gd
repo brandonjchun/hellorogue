@@ -15,3 +15,8 @@ func on_exit_pressed() -> void:
 	set_process(false)
 	self.visible = false
 	
+func _on_check_button_toggled(toggled_on):
+	if toggled_on:
+		player_data.screen_shake_enabled = true
+	else:
+		player_data.screen_shake_enabled = false

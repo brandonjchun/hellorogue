@@ -23,7 +23,7 @@ func _on_body_entered(body):
 	if body.is_in_group("tilemap"):
 		instance_fx()
 	if was_body_entered == false:
-		if not left_screen:
+		if not left_screen and player_data.screen_shake_enabled:
 			Globals.camera.screen_shake(1.5,0.5,0.01)
 		$Timer.start()
 		hide()

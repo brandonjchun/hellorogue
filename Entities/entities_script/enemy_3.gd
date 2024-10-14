@@ -4,7 +4,7 @@ extends CharacterBody2D
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_3_bullet.tscn")
-@export var speed = randi_range(20,25) + player_data.levels
+@export var speed = randi_range(27,32) + player_data.levels
 
 var enemy_health = 4
 var can_attack = true
@@ -36,6 +36,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	while $freeze_timer.time_left > 0:
+		current_state = enemy_state.FROZEN
+		
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
@@ -93,11 +96,14 @@ func instance_health():
 	get_tree().root.add_child(health)
 	
 func instance_bullet():
-	var bullet = bullet_scene.instantiate()
-	bullet.direction = target.global_position - global_position
-	player_data.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
-	bullet.global_position = global_position
-	get_tree().root.add_child(bullet)
+	var counter = 0
+	while counter < 3:
+		var bullet = bullet_scene.instantiate()
+		bullet.direction = target.global_position - global_position
+		player_data.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
+		bullet.global_position = global_position
+		get_tree().root.add_child(bullet)
+		counter += 1
 	
 func random_direction():
 	match change_direction:
@@ -167,3 +173,4 @@ func _on_death_timer_timeout():
 
 func _on_attack_timer_timeout():
 	can_attack = true
+

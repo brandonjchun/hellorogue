@@ -13,29 +13,29 @@ extends Node2D
 @onready var gui = $GUI_intermission
 @onready var player_spawn = $player_spawn
 
-@onready var enemy_spawner_1 = $enemy_spawner1
-@onready var enemy_spawner_2 = $enemy_spawner2
-@onready var enemy_spawner_3 = $enemy_spawner3
-@onready var enemy_spawner_4 = $enemy_spawner4
-@onready var enemy_spawner_5 = $enemy_spawner5
-@onready var enemy_spawner_6 = $enemy_spawner6
-@onready var enemy_spawner_7 = $enemy_spawner7
-@onready var enemy_spawner_8 = $enemy_spawner8
-@onready var enemy_spawner_9 = $enemy_spawner9
-@onready var enemy_spawner_10 = $enemy_spawner10
-@onready var enemy_spawner_11 = $enemy_spawner11
-@onready var enemy_spawner_12 = $enemy_spawner12
-@onready var enemy_spawner_13 = $enemy_spawner13
-@onready var enemy_spawner_14 = $enemy_spawner14
-@onready var enemy_spawner_15 = $enemy_spawner15
-@onready var enemy_spawner_16 = $enemy_spawner16
-@onready var enemy_spawner_17 = $enemy_spawner17
-@onready var enemy_spawner_18 = $enemy_spawner18
-@onready var enemy_spawner_19 = $enemy_spawner19
-@onready var enemy_spawner_20 = $enemy_spawner20
-@onready var enemy_spawner_21 = $enemy_spawner21
-@onready var enemy_spawner_22 = $enemy_spawner22
-@onready var enemy_spawner_23 = $enemy_spawner23
+@onready var spawner_1 = $enemy_spawner1
+@onready var spawner_2 = $enemy_spawner2
+@onready var spawner_3 = $enemy_spawner3
+@onready var spawner_4 = $enemy_spawner4
+@onready var spawner_5 = $enemy_spawner5
+@onready var spawner_6 = $enemy_spawner6
+@onready var spawner_7 = $enemy_spawner7
+@onready var spawner_8 = $enemy_spawner8
+@onready var spawner_9 = $enemy_spawner9
+@onready var spawner_10 = $enemy_spawner10
+@onready var spawner_11 = $enemy_spawner11
+@onready var spawner_12 = $enemy_spawner12
+@onready var spawner_13 = $enemy_spawner13
+@onready var spawner_14 = $enemy_spawner14
+@onready var spawner_15 = $enemy_spawner15
+@onready var spawner_16 = $enemy_spawner16
+@onready var spawner_17 = $enemy_spawner17
+@onready var spawner_18 = $enemy_spawner18
+@onready var spawner_19 = $enemy_spawner19
+@onready var spawner_20 = $enemy_spawner20
+@onready var spawner_21 = $enemy_spawner21
+@onready var spawner_22 = $enemy_spawner22
+@onready var spawner_23 = $enemy_spawner23
 
 @onready var exit = $exit
 
@@ -50,8 +50,9 @@ extends Node2D
 
 @onready var tilemap = $TileMap3
 
-var walker
-var map
+var enemies_array 
+var spikes_array
+var spike
 var ground_layer = 0
 var change_scenes_once = 0
 
@@ -71,13 +72,64 @@ func _ready():
 	ThemePlayer.theme_lapis_stop()
 	ThemePlayer.theme_sinister_stop()
 	ThemePlayer.theme_blazepeak_stop()
+	ThemePlayer.theme_sinister_stop()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	enemies_array = [spawner_1, 
+		spawner_2, 
+		spawner_3,
+		spawner_4, 
+		spawner_5,
+		spawner_6, 
+		spawner_7,
+		spawner_8, 
+		spawner_9,
+		spawner_10, 
+		spawner_11,
+		spawner_12,
+		spawner_13,
+		spawner_14,
+		spawner_15,
+		spawner_16,
+		spawner_17,
+		spawner_18,
+		spawner_19,
+		spawner_20,
+		spawner_21,
+		spawner_22,
+		spawner_23
+	]
 	
+	spikes_array = [spawner_1, 
+		spawner_2, 
+		spawner_3,
+		spawner_4, 
+		spawner_5,
+		spawner_6, 
+		spawner_7,
+		spawner_8, 
+		spawner_9,
+		spawner_10, 
+		spawner_11,
+		spawner_12,
+		spawner_13,
+		spawner_14,
+		spawner_15,
+		spawner_16,
+		spawner_17,
+		spawner_18,
+		spawner_19,
+		spawner_20,
+		spawner_21,
+		spawner_22,
+		spawner_23
+	]
+	
+		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -113,8 +165,6 @@ func generate_level():
 	instance_enemy4()
 		
 	instance_enemy_at_spawn()
-	
-	instance_redspikes()
 
 func instance_player():
 	var player = player_scene.instantiate()
@@ -122,7 +172,7 @@ func instance_player():
 	player.position = player_spawn.position
 
 func instance_enemy_at_spawn():
-	for i in range(20):
+	for i in range(40):
 		var enemy_type = randi_range(1,4)
 		var enemy
 		match enemy_type:
@@ -137,11 +187,10 @@ func instance_enemy_at_spawn():
 		enemy.position = exit.position
 		add_child(enemy)
 		add_child(enemy)
-		add_child(enemy)
 				
 	
 func instance_enemy1():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*5))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
 		choose_spawn_point(enemy)
@@ -151,58 +200,58 @@ func choose_spawn_point(enemy):
 	var spawn_point = randi_range(1,14)
 	match spawn_point:
 		1:
-			enemy.position = enemy_spawner_1.position
+			enemy.position = spawner_1.position
 		2:
-			enemy.position = enemy_spawner_2.position
+			enemy.position = spawner_2.position
 		3:
-			enemy.position = enemy_spawner_3.position
+			enemy.position = spawner_3.position
 		4:
-			enemy.position = enemy_spawner_4.position
+			enemy.position = spawner_4.position
 		5:
-			enemy.position = enemy_spawner_5.position
+			enemy.position = spawner_5.position
 		6:
-			enemy.position = enemy_spawner_6.position
+			enemy.position = spawner_6.position
 		7:
-			enemy.position = enemy_spawner_7.position
+			enemy.position = spawner_7.position
 		8:
-			enemy.position = enemy_spawner_8.position
+			enemy.position = spawner_8.position
 		7:
-			enemy.position = enemy_spawner_8.position
+			enemy.position = spawner_8.position
 		9:
-			enemy.position = enemy_spawner_9.position
+			enemy.position = spawner_9.position
 		10:
-			enemy.position = enemy_spawner_10.position
+			enemy.position = spawner_10.position
 		11:
-			enemy.position = enemy_spawner_11.position
+			enemy.position = spawner_11.position
 		12:
-			enemy.position = enemy_spawner_12.position
+			enemy.position = spawner_12.position
 		13:
-			enemy.position = enemy_spawner_13.position
+			enemy.position = spawner_13.position
 		14:
-			enemy.position = enemy_spawner_14.position
+			enemy.position = spawner_14.position
 		15:
-			enemy.position = enemy_spawner_15.position
+			enemy.position = spawner_15.position
 		16:
-			enemy.position = enemy_spawner_16.position
+			enemy.position = spawner_16.position
 		17:
-			enemy.position = enemy_spawner_17.position
+			enemy.position = spawner_17.position
 		18:
-			enemy.position = enemy_spawner_18.position
+			enemy.position = spawner_18.position
 		19:
-			enemy.position = enemy_spawner_19.position
+			enemy.position = spawner_19.position
 		20:
-			enemy.position = enemy_spawner_20.position
+			enemy.position = spawner_20.position
 		21:
-			enemy.position = enemy_spawner_21.position
+			enemy.position = spawner_21.position
 		22:
-			enemy.position = enemy_spawner_22.position
+			enemy.position = spawner_22.position
 		23:
-			enemy.position = enemy_spawner_23.position
+			enemy.position = spawner_23.position
 		24:
 			enemy.position = exit.position
 			
 func instance_enemy2():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*4))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
 		choose_spawn_point(enemy)
@@ -216,7 +265,7 @@ func instance_enemy3():
 		add_child(enemy)
 		
 func instance_enemy4():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*3))
+	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy4_scene.instantiate()
 		choose_spawn_point(enemy)
@@ -228,76 +277,19 @@ func instance_silverspikes():
 		var silverspikes = silverspikes_scene.instantiate()
 		add_child(silverspikes)
 		
-func instance_redspikes():
-	var redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_1.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_2.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_3.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_4.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_5.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_6.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_7.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_8.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_9.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_10.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_11.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_12.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_13.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_14.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_15.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_16.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_17.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_18.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_19.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_20.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_21.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_22.position
-	add_child(redspikes)
-	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_23.position
-	add_child(redspikes)
+func _on_spikes_timer_timeout():
+	if spikes_array.size()-3 >= 1:
+		var spike_type = randi_range(0, 1)
+		var spike_position_source = randi_range(0, spikes_array.size()-3)
+		var spike_source = spikes_array.pop_at(spike_position_source)
+		match spike_type:
+			0: 
+				spike = silverspikes_scene.instantiate()
+			1: 
+				spike = redspikes_scene.instantiate()
+		spike.position = spike_source.position
+		spikes_array.remove_at(spike_position_source)
+		add_child(spike)
 	
 func on_exit_pause_menu():
 	pause_menu_canvas.visible = false
@@ -322,3 +314,34 @@ func _on_next_level_timer_timeout():
 	loading_screen_intermission.z_index = -10
 	player_data.toggle_loading_screen = false
 	change_scenes_once = 0
+	
+func _on_enemy_spawn_timeout():
+	var enemy
+	var enemy_type = randi_range(0, 3)
+	var enemy_position
+	match enemy_type:
+		0:
+			enemy = enemy1_scene.instantiate()
+			for i in range(10):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		1:
+			enemy = enemy2_scene.instantiate()
+			for i in range(8):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		2:
+			enemy = enemy3_scene.instantiate()
+			for i in range(4):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+		3:
+			enemy = enemy4_scene.instantiate()
+			for i in range(6):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
+	$enemy_spawn.start()

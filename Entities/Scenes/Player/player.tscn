@@ -292,13 +292,13 @@ autostart = true
 wait_time = 1.5
 
 [node name="bullet_reset" type="Timer" parent="."]
-wait_time = 0.25
+wait_time = 0.1
 
 [node name="step_timer" type="Timer" parent="."]
 wait_time = 0.4
 
 [node name="hurt_timer" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 0.33
 
 [node name="freeze_timer" type="Timer" parent="."]
 one_shot = true

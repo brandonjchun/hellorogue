@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@export var speed = randi_range(20,25) + player_data.levels
+@export var speed = randi_range(22,27) + player_data.levels
 
 enum current_state {
 	FROZEN,
@@ -25,6 +25,9 @@ var enemy_state = current_state.FROZEN
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	while $freeze.time_left > 0:
+		enemy_state = current_state.FROZEN
+		
 	if enemy_state == current_state.MOVE:
 		match new_direction:
 			enemy_direction.RIGHT:
