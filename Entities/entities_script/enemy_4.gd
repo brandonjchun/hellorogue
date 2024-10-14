@@ -4,7 +4,7 @@ extends CharacterBody2D
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet.tscn")
-@export var speed = randi_range(25,30) + player_data.levels
+@export var speed = randi_range(32,37) + player_data.levels
 
 var enemy_health = 3
 var can_attack = true
@@ -36,6 +36,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	while $freeze_timer.time_left > 0:
+		current_state = enemy_state.FROZEN
+	
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:

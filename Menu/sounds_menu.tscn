@@ -83,6 +83,39 @@ layout_mode = 2
 layout_mode = 2
 bus_name = "SFX"
 
+[node name="Seperator11" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Seperator12" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/h_separation = 20
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 24
+text = "Screen Shake FX"
+icon_alignment = 2
+vertical_icon_alignment = 2
+expand_icon = true
+
+[node name="Seperator11" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+
+[node name="Seperator10" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+
+[node name="Seperator19" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+
 [node name="Button" type="Button" parent="MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 8
@@ -94,3 +127,5 @@ z_index = -1
 position = Vector2(614, 323)
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("2_bcvgb")
+
+[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer2/HBoxContainer4/CheckButton" to="." method="_on_check_button_toggled"]

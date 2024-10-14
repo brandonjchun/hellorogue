@@ -21,6 +21,8 @@ var lev = player_data.levels-1
 @onready var loading_screen = $loading_screen_canvas/loading_screen
 @onready var animation = $loading_screen_canvas/loading_screen/animation
 @onready var loading_anim = $loading_screen_canvas/loading_screen/anim
+@onready var loading_anim2 = $loading_screen_canvas/loading_screen/loading
+
 
 @onready var tilemap_water = $TileMap3
 @onready var tilemap_mix = $TileMap
@@ -30,7 +32,7 @@ var lev = player_data.levels-1
 @onready var ground3 = $ground3
 
 
-@export var borders = Rect2(1, 1, 200 + 5*(floor(lev/6)*2), 100 + 5*(floor(lev/6)*2))
+@export var borders = Rect2(1, 1, 200 + 10*(floor(lev/3)*4), 100 + 10*(floor(lev/3)*4))
 var walker
 var map
 var ground_layer = 0
@@ -90,6 +92,7 @@ func _process(delta):
 			animation.z_index = 12
 			animation.visible = true
 			loading_anim.play("fly")
+			loading_anim2.play("loading")
 
 		if change_scenes_once == 0:
 			loading_screen.load_next_scene()
@@ -123,15 +126,15 @@ func _process(delta):
 		4:
 			ThemePlayer.theme_makuhita_stop()
 			ThemePlayer.theme_lapis_stop()
-			ThemePlayer.theme_sinister()
+			ThemePlayer.theme_blazepeak()
 		5:
 			ThemePlayer.theme_makuhita_stop()
-			ThemePlayer.theme_sinister_stop()
-			ThemePlayer.theme_blazepeak()
+			ThemePlayer.theme_blazepeak_stop()
+			ThemePlayer.theme_sinister()
 
 func generate_level(tilemap):
-	walker = Walker_room.new(Vector2(3 + floor(lev/6), 5 + floor(lev/6)), borders)
-	map = walker.walk(300 + 600 * floor(lev/6))
+	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
+	map = walker.walk(600 + 900 * floor(lev/3))
 
 	var using_cells: Array = []
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
@@ -149,32 +152,22 @@ func generate_level(tilemap):
 	instance_exit()
 	if player_data.levels >= 0:
 		instance_enemy1()
-	if player_data.levels >= 2:
+	if player_data.levels >= 3:
 		instance_silverspikes()
-	if player_data.levels >= 4:
+		instance_enemy2()
+	if player_data.levels >= 3 and player_data.levels < 6:
+		instance_enemy1()
 		instance_enemy2()
 	if player_data.levels >= 6:
+		instance_enemy4()
+		instance_redspikes()
+	if player_data.levels >= 9 and player_data.levels < 12:
 		instance_enemy1()
 		instance_enemy2()
-		instance_redspikes()
-	if player_data.levels >= 8:
-		instance_enemy4()
-	if player_data.levels >= 10:
-		instance_enemy1()
-		instance_enemy4()
 	if player_data.levels >= 12:
 		instance_enemy3()
-		instance_enemy4()
-		instance_enemy4()
-		instance_redspikes()
 	if player_data.levels >= 15:
-		instance_enemy1()
-		instance_enemy1()
-		instance_enemy2()
-		instance_enemy2()
 		instance_enemy3()
-		instance_enemy3()
-		instance_enemy4()
 		instance_enemy4()
 
 func instance_player():
@@ -216,14 +209,14 @@ func instance_enemy4():
 		add_child(enemy)
 
 func instance_silverspikes():
-	var silverspikes_count = randi_range(3*player_data.levels,8)
+	var silverspikes_count = randi_range(player_data.levels, 2*player_data.levels)
 	for i in range(silverspikes_count):
 		var silverspikes = silverspikes_scene.instantiate()
 		silverspikes.position = (map.pick_random() * borders.position) * 16
 		add_child(silverspikes)
 		
 func instance_redspikes():
-	var redspikes_count = randi_range(2*player_data.levels,12)
+	var redspikes_count = randi_range(player_data.levels, 2*player_data.levels)
 	for i in range(redspikes_count):
 		var redspikes = redspikes_scene.instantiate()
 		redspikes.position = (map.pick_random() * borders.position) * 16

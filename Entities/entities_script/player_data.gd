@@ -16,3 +16,4 @@ static var pause_active = false
 static var game_active = true
 static var intermission_levels = false
 static var next_scene = "res://Levels/intermission_level.tscn"
+static var screen_shake_enabled = false

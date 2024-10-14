@@ -985,7 +985,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$Label.text = var_to_str(spikes_array.size())
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -1014,6 +1013,7 @@ func _process(delta):
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
 	ThemePlayer.theme_ninetales_stop()
+	ThemePlayer.theme_sinister_stop()
 
 func generate_level():
 	instance_player()
@@ -1066,18 +1066,32 @@ func _on_spikes_timer_timeout():
 func _on_enemy_spawn_timeout():
 	var enemy
 	var enemy_type = randi_range(0, 3)
+	var enemy_position
 	match enemy_type:
 		0:
 			enemy = enemy1_scene.instantiate()
+			for i in range(8):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
 		1:
 			enemy = enemy2_scene.instantiate()
+			for i in range(6):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
 		2:
 			enemy = enemy3_scene.instantiate()
+			for i in range(2):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
 		3:
 			enemy = enemy4_scene.instantiate()
-	var enemy_position = enemies_array.pick_random()
-	enemy.position = enemy_position.position
-	add_child(enemy)
+			for i in range(4):
+				enemy_position = enemies_array.pick_random()
+				enemy.position = enemy_position.position
+				add_child(enemy)
 	$enemy_spawn.start()
 	
 	
