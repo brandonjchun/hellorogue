@@ -18,14 +18,6 @@ func _ready():
 			new_heart.hframes = $heart.hframes
 			$heart.add_child(new_heart)
 			empty_hearts -= 1
-	if player_data.levels <= 18:
-		$level_number.text = var_to_str(player_data.levels)
-	elif player_data.levels == 19: 
-		$level_number.text = "F1"
-	elif player_data.levels == 20:
-		$level_number.text = "F2"
-	elif player_data.levels == 21:
-		$level_number.text = "F3"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -48,4 +40,14 @@ func _process(delta):
 		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
 	else:
 		$extra_hearts.text = ""
+		
+	
+	if player_data.levels <= 18:
+		$level_number.text = var_to_str(player_data.levels)
+	elif player_data.levels == 19: 
+		$level_number.text = "F1"
+	elif player_data.levels == 20:
+		$level_number.text = "F2"
+	elif player_data.levels == 21:
+		$level_number.text = "F3"
 	

@@ -58,20 +58,19 @@ var change_scenes_once = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player_data.game_active = true
-	player_data.levels = 19
+	player_data.levels = 20
 	player_data.hurt_ready = true
 	player_data.reached_exit = false
 	generate_level()
 	
-	intermission_level.z_index = 20
-	
-	ThemePlayer.theme_skytowersummit()
+	ThemePlayer.theme_grand_stop()
+	ThemePlayer.theme_magma()
 	ThemePlayer.theme_makuhita_stop()
 	ThemePlayer.theme_silentchasm_stop()
 	ThemePlayer.theme_steel_stop()
 	ThemePlayer.theme_lapis_stop()
 	ThemePlayer.theme_sinister_stop()
-	ThemePlayer.theme_magma_stop()
+	ThemePlayer.theme_blazepeak_stop()
 	
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
