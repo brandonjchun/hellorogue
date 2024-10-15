@@ -1,7 +1,10 @@
 extends Control
-
+	
 func load_next_scene():
-	if player_data.next_scene == "res://Levels/intermission_level.tscn":
+	if player_data.reset_button_hit:
+		player_data.next_scene = "res://Levels/intermission_level.tscn"
+		player_data.reset_button_hit = false
+	elif player_data.next_scene == "res://Levels/intermission_level.tscn":
 		player_data.next_scene = "res://Levels/intermission_level_2.tscn"
 	elif player_data.next_scene == "res://Levels/intermission_level_2.tscn":
 		player_data.next_scene = "res://Levels/intermission_level_1.tscn"

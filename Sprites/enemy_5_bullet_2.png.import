@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://f0fbop7xwt7k"
-path="res://.godot/imported/uz3wovykum891-ezgif.com-gif-to-sprite-converter.png-08e76a9f3335797d20c126099d67494a.ctex"
+uid="uid://flvmyqwinrhl"
+path="res://.godot/imported/enemy_5_bullet_2.png-854af130bb21d03d94c90e5216519031.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/uz3wovykum891-ezgif.com-gif-to-sprite-converter.png"
-dest_files=["res://.godot/imported/uz3wovykum891-ezgif.com-gif-to-sprite-converter.png-08e76a9f3335797d20c126099d67494a.ctex"]
+source_file="res://Sprites/enemy_5_bullet_2.png"
+dest_files=["res://.godot/imported/enemy_5_bullet_2.png-854af130bb21d03d94c90e5216519031.ctex"]
 
 [params]
 

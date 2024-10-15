@@ -985,6 +985,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.player_is_dead:
+		loading_screen_intermission.reset_next_scene()
+		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -1004,6 +1007,9 @@ func _process(delta):
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
 	
+	ThemePlayer.theme_final_stop()
+	ThemePlayer.theme_skytowersummit_stop()
+	ThemePlayer.theme_magma_stop()
 	ThemePlayer.theme_makuhita_stop()
 	ThemePlayer.theme_silentchasm_stop()
 	ThemePlayer.theme_steel_stop()
@@ -1057,7 +1063,6 @@ func _on_spikes_timer_timeout():
 				spike = silverspikes_scene.instantiate()
 			1: 
 				spike = redspikes_scene.instantiate()
-		print("spike", spike)
 		spike.position = spike_source.position
 		spikes_array.remove_at(spike_position_source)
 		add_child(spike)

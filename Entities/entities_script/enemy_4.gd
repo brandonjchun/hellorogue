@@ -4,7 +4,10 @@ extends CharacterBody2D
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet.tscn")
-@export var speed = randi_range(32,37) + player_data.levels
+@onready var final_bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet_2.tscn")
+var boss_multiplier = 0
+@export var speed = randi_range(32,37) + player_data.levels + boss_multiplier
+@onready var chase_box = $chase_box
 
 var enemy_health = 3
 var can_attack = false
@@ -31,11 +34,34 @@ var change_direction
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
-
+	if player_data.final_level:
+		$freeze_timer.wait_time = 0.3
+	if player_data.boss_health >= 400:
+		boss_multiplier = 0
+	elif player_data.boss_health >= 300:
+		boss_multiplier = 5
+	elif player_data.boss_health >= 200:
+		boss_multiplier = 10
+	elif player_data.boss_health >= 100:
+		boss_multiplier = 15
+	else:
+		boss_multiplier = 20
+	speed = randi_range(22,27) + player_data.levels + boss_multiplier
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.boss_health >= 400:
+		boss_multiplier = 0
+	elif player_data.boss_health >= 300:
+		boss_multiplier = 5
+	elif player_data.boss_health >= 200:
+		boss_multiplier = 10
+	elif player_data.boss_health >= 100:
+		boss_multiplier = 15
+	else:
+		boss_multiplier = 20
+	if player_data.final_level:
+		chase_box.scale = Vector2(3.5, 3.5)
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
@@ -92,7 +118,11 @@ func instance_health():
 	get_tree().root.add_child(health)
 	
 func instance_bullet():
-	var bullet = bullet_scene.instantiate()
+	var bullet
+	if not player_data.final_level:
+		bullet = bullet_scene.instantiate()
+	else:
+		bullet = final_bullet_scene.instantiate()
 	bullet.direction = (target.global_position - global_position).normalized()
 	bullet.global_position = global_position
 	get_tree().root.add_child(bullet)
@@ -144,6 +174,7 @@ func _on_hitbox_area_entered(area):
 		instance_fx()
 		enemy_health -= 1
 		if enemy_health == 0:
+			ThemePlayer.play_e4_death()
 			current_state = enemy_state.DEAD
 			if ammo_chance():
 				instance_ammo()

@@ -10,7 +10,6 @@ func load_next_scene():
 		ResourceLoader.load_threaded_request(next_scene)
 	
 func reset_player_data_states():
-	print("called reset_player_data_states... bruh")
 	player_data.health = 24
 	player_data.ammo = 50
 	player_data.levels = 1

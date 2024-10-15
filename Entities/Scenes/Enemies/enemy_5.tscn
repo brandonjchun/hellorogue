@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://cii50ghlrtqub"]
+[gd_scene load_steps=13 format=3 uid="uid://cii50ghlrtqub"]
 
 [ext_resource type="Script" path="res://Entities/entities_script/enemy_5.gd" id="1_t5wye"]
 [ext_resource type="Texture2D" uid="uid://climvjt7k081s" path="res://Sprites/arachne-1.2/PNG/48x64/arachne-NESW.png" id="2_q6hlv"]
+[ext_resource type="AudioStream" uid="uid://c0pq41602k3yt" path="res://Music/SFX/Vampire Hiss.mp3" id="3_wafpe"]
 
 [sub_resource type="Animation" id="Animation_a2bv7"]
 resource_name = "walk_left"
@@ -132,16 +133,13 @@ wait_time = 1.5
 autostart = true
 
 [node name="freeze_timer" type="Timer" parent="."]
-wait_time = 1.5
 one_shot = true
 autostart = true
 
-[node name="death_timer" type="Timer" parent="."]
-wait_time = 1.2
-one_shot = true
-
 [node name="attack_timer" type="Timer" parent="."]
-wait_time = 0.5
+
+[node name="attack2_timer" type="Timer" parent="."]
+wait_time = 500.0
 
 [node name="hitbox" type="Area2D" parent="."]
 position = Vector2(0, -5)
@@ -170,9 +168,14 @@ theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 18
 text = "250"
 
+[node name="boss_roar" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_wafpe")
+volume_db = -12.0
+pitch_scale = 0.97
+
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="freeze_timer" to="." method="_on_freeze_timer_timeout"]
-[connection signal="timeout" from="death_timer" to="." method="_on_death_timer_timeout"]
 [connection signal="timeout" from="attack_timer" to="." method="_on_attack_timer_timeout"]
+[connection signal="timeout" from="attack2_timer" to="." method="_on_attack_2_timer_timeout"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_entered" from="chase_box" to="." method="_on_chase_box_area_entered"]

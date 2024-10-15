@@ -5,7 +5,6 @@ extends Node
 @onready var magma = $magma
 @onready var grand = $grand
 @onready var mapbasic = $mapbasic
-@onready var mars = $mars
 @onready var goodfight = $goodfight
 @onready var steel = $steel
 @onready var sinister = $sinister
@@ -55,13 +54,6 @@ func theme_mapbasic():
 		
 func theme_mapbasic_stop():
 	mapbasic.stream_paused = true
-	
-func theme_mars():
-	if not mars.playing:
-		mars.play()
-		
-func theme_mars_stop():
-	mars.stream_paused = true
 	
 func theme_goodfight():
 	if not goodfight.playing:
@@ -176,3 +168,23 @@ func play_heal():
 
 func play_ammo():
 	$ammo.play()
+	
+func play_e1_death():
+	$e1_death.play()
+	
+func play_e2_death():
+	$e2_death.play()
+
+func play_e3_bullet():
+	$e3_bullet.play()
+	
+func play_e3_death():
+	$e4_death.play()
+	
+func play_e4_bullet():
+	$e4_bullet.play()
+	
+func play_e4_death():
+	$e3_death.play()
+	
+	

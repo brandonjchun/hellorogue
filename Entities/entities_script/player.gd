@@ -32,13 +32,15 @@ var gun_ready = false
 var step_ready = true #for footstep osund
 
 func _ready():
-	player.speed = 80 + player_data.levels*5
+	player.speed = 500 + player_data.levels*5
+	if player_data.final_level:
+		$hurt_timer.wait_time = 0.1
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if player_data.levels == 22:
-		camera_2d.zoom = Vector2(3,3)
+		camera_2d.zoom = Vector2(3, 3)
 		
 	if current_state != player_states.FREEZE:
 		if player_data.health <= 0:
@@ -68,7 +70,7 @@ func movement(delta):
 	else:
 		gun.visible = false
 		
-	if Input.is_action_just_pressed("shoot"):
+	if Input.is_action_just_pressed("shoot") or Input.is_action_pressed("shoot"):
 		if player_data.ammo > 0:
 			if gun_ready:
 				gun_ready = false
@@ -173,6 +175,8 @@ func _on_trail_timer_timeout():
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
 		if player_data.hurt_ready:
+			if area.is_in_group("poison"):
+				player_data.health -= 2
 			if area.is_in_group("web") and not already_slowed:
 				already_slowed = true
 				player.speed = player.speed / 4

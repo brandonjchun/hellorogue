@@ -11,6 +11,9 @@ extends Control
 @onready var texture_rect = $TextureRect
 @onready var margin_container = $MarginContainer as MarginContainer
 
+@onready var button = $TextureRect/HBoxContainer2/Button
+@onready var loading_screen_intermission = $loading_screen_intermission
+
 @onready var start_game = preload("res://Menu/loading_screen.tscn")
 
 # Called when the node enters the scene tree for the first time.
@@ -58,4 +61,6 @@ func handle_connecting_signals() -> void:
 	exit_button.button_down.connect(on_exit_pressed)
 	controls_menu.exit_controls_menu.connect(on_exit_controls_menu)
 	sounds_menu.exit_sounds_menu.connect(on_exit_sounds_menu)
-	
+
+func _on_button_pressed():
+	loading_screen_intermission.reset_next_scene()
