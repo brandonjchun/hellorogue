@@ -68,6 +68,7 @@ var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+#region New Code Region
 	enemies_array = [spawner_1, 
 		spawner_2, 
 		spawner_3,
@@ -141,6 +142,7 @@ func _ready():
 		spawner_34,
 		spawner_35
 	]
+#endregion
 	
 	player_data.game_active = true
 	player_data.levels = 21
@@ -353,73 +355,109 @@ func instance_silverspikes():
 		
 func instance_redspikes():
 	var redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_1.position
+	redspikes.position = spawner_1.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_2.position
+	redspikes.position = spawner_2.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_3.position
+	redspikes.position = spawner_3.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_4.position
+	redspikes.position = spawner_4.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_5.position
+	redspikes.position = spawner_5.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_6.position
+	redspikes.position = spawner_6.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_7.position
+	redspikes.position = spawner_7.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_8.position
+	redspikes.position = spawner_8.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_9.position
+	redspikes.position = spawner_9.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_10.position
+	redspikes.position = spawner_10.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_11.position
+	redspikes.position = spawner_11.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_12.position
+	redspikes.position = spawner_12.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_13.position
+	redspikes.position = spawner_13.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_14.position
+	redspikes.position = spawner_14.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_15.position
+	redspikes.position = spawner_15.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_16.position
+	redspikes.position = spawner_16.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_17.position
+	redspikes.position = spawner_17.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_18.position
+	redspikes.position = spawner_18.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_19.position
+	redspikes.position = spawner_19.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_20.position
+	redspikes.position = spawner_20.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_21.position
+	redspikes.position = spawner_21.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_22.position
+	redspikes.position = spawner_22.position
 	add_child(redspikes)
 	redspikes = redspikes_scene.instantiate()
-	redspikes.position = enemy_spawner_23.position
+	redspikes.position = spawner_23.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_24.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_25.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_26.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_27.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_28.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_29.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_30.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_31.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_32.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_33.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_34.position
+	add_child(redspikes)
+	redspikes = redspikes_scene.instantiate()
+	redspikes.position = spawner_35.position
 	add_child(redspikes)
 	
 func on_exit_pause_menu():

@@ -19,9 +19,6 @@ texture = ExtResource("1_pe7d4")
 scale = Vector2(0.8, 0.8)
 shape = SubResource("CircleShape2D_lph6p")
 
-[node name="visible" type="VisibleOnScreenNotifier2D" parent="."]
-scale = Vector2(0.8, 0.8)
-
 [node name="bullet_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_gwvio")
 volume_db = -12.0
@@ -29,5 +26,4 @@ bus = &"SFX"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="screen_exited" from="visible" to="." method="_on_visible_screen_exited"]
 [connection signal="finished" from="bullet_sound" to="." method="_on_bullet_sound_finished"]

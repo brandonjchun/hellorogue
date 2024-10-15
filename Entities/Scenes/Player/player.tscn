@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cl2y8w4nga0m4"]
+[gd_scene load_steps=25 format=3 uid="uid://cl2y8w4nga0m4"]
 
 [ext_resource type="Script" path="res://Entities/entities_script/player.gd" id="1_jdr8l"]
 [ext_resource type="Texture2D" uid="uid://dkusewka3ky1n" path="res://Sprites/Player_metroid.png" id="1_kr4b0"]
@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://d4nd11cwff0xg" path="res://Music/SFX/03._damage_grunt_male.wav" id="12_s5pys"]
 [ext_resource type="AudioStream" uid="uid://b2oeccyaw7mj1" path="res://Music/SFX/12._damage_grunt_male.wav" id="13_4kohn"]
 [ext_resource type="AudioStream" uid="uid://cq1k2rdf8pntn" path="res://Music/SFX/18._damage_grunt_male.wav" id="14_duv0u"]
+[ext_resource type="AudioStream" uid="uid://cod2ji0vycea0" path="res://Music/SFX/death_sound.mp3" id="15_1ot5i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v0vie"]
 radius = 6.0
@@ -304,6 +305,10 @@ wait_time = 0.33
 one_shot = true
 autostart = true
 
+[node name="slow_timer" type="Timer" parent="."]
+wait_time = 0.75
+one_shot = true
+
 [node name="outofammo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_lm4a3")
 volume_db = -5.0
@@ -344,6 +349,9 @@ stream = ExtResource("14_duv0u")
 volume_db = -12.0
 bus = &"SFX"
 
+[node name="death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_1ot5i")
+
 [connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Camera2D/camera_shake" to="Camera2D" method="_on_camera_shake_timeout"]
@@ -353,3 +361,4 @@ bus = &"SFX"
 [connection signal="timeout" from="step_timer" to="." method="_on_step_timer_timeout"]
 [connection signal="timeout" from="hurt_timer" to="." method="_on_hurt_timer_timeout"]
 [connection signal="timeout" from="freeze_timer" to="." method="_on_freeze_timer_timeout"]
+[connection signal="timeout" from="slow_timer" to="." method="_on_slow_timer_timeout"]

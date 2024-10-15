@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bsjo24d8g5hjj"]
+[gd_scene load_steps=28 format=3 uid="uid://bsjo24d8g5hjj"]
 
 [ext_resource type="Script" path="res://Levels/theme_script/theme_player.gd" id="1_tcan7"]
 [ext_resource type="AudioStream" uid="uid://k7ey1vbnwvnh" path="res://Music/007 Tiny Woods (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="2_jb8hf"]
@@ -21,6 +21,12 @@
 [ext_resource type="AudioStream" uid="uid://cwjki8op8s34n" path="res://Music/038 Mt. Blaze Peak (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="19_7wt31"]
 [ext_resource type="AudioStream" uid="uid://col6543d7cum2" path="res://Music/033 Lapis Cave (PMD Blue Rescue Team OST)).mp3" id="19_ouaeb"]
 [ext_resource type="AudioStream" uid="uid://bu63wdpwfq51c" path="res://Music/051 Sky Tower Summit (PMD Blue Rescue Team OST)-[AudioTrimmer.com].mp3" id="20_fcmf4"]
+[ext_resource type="AudioStream" uid="uid://dmrbovrl2lnmr" path="res://Music/SFX/weapload.wav" id="22_r8av1"]
+[ext_resource type="AudioStream" uid="uid://dc7okf3o4uu8s" path="res://Sprites/curemagic/Cure2.wav" id="22_trjto"]
+[ext_resource type="AudioStream" uid="uid://cv6t18go8uuw4" path="res://Music/SFX/death-3.mp3" id="24_6wxfn"]
+[ext_resource type="AudioStream" uid="uid://c53rq2i8pth2" path="res://Music/SFX/death-4.mp3" id="25_2ukj4"]
+[ext_resource type="AudioStream" uid="uid://blr0bmwhy34ax" path="res://Music/SFX/death-1.mp3" id="26_iip8k"]
+[ext_resource type="AudioStream" uid="uid://cloqw4t5tfr2f" path="res://Music/SFX/death-2.mp3" id="27_3wcpt"]
 
 [node name="ThemePlayer" type="Node"]
 script = ExtResource("1_tcan7")
@@ -139,3 +145,35 @@ stream = ExtResource("20_fcmf4")
 volume_db = -10.0
 pitch_scale = 0.97
 bus = &"Music"
+
+[node name="ammo" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("22_r8av1")
+bus = &"SFX"
+
+[node name="heal" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("22_trjto")
+volume_db = -6.0
+pitch_scale = 1.05
+bus = &"SFX"
+
+[node name="e3_bullet" type="AudioStreamPlayer2D" parent="."]
+
+[node name="e4_bullet" type="AudioStreamPlayer2D" parent="."]
+
+[node name="e1_death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("24_6wxfn")
+volume_db = -5.0
+
+[node name="e2_death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("25_2ukj4")
+volume_db = -3.0
+pitch_scale = 0.97
+
+[node name="e3_death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("26_iip8k")
+volume_db = -15.0
+
+[node name="e4_death" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("27_3wcpt")
+volume_db = -5.0
+pitch_scale = 0.97

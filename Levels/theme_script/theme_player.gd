@@ -170,3 +170,9 @@ func theme_skytowersummit():
 		
 func theme_skytowersummit_stop():
 	skytowersummit.stream_paused = true
+
+func play_heal():
+	$heal.play()
+
+func play_ammo():
+	$ammo.play()

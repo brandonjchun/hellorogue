@@ -7,7 +7,7 @@ extends CharacterBody2D
 @export var speed = randi_range(27,32) + player_data.levels
 
 var enemy_health = 4
-var can_attack = true
+var can_attack = false
 
 enum enemy_state {
 	FROZEN,
@@ -96,10 +96,11 @@ func instance_bullet():
 	var counter = 0
 	while counter < 3:
 		var bullet = bullet_scene.instantiate()
-		bullet.direction = target.global_position - global_position
+		bullet.direction = global_position.direction_to(target.global_position)
 		player_data.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
 		bullet.global_position = global_position
 		get_tree().root.add_child(bullet)
+		await get_tree().create_timer(0.25).timeout 
 		counter += 1
 	
 func random_direction():
@@ -115,6 +116,7 @@ func random_direction():
 
 func _on_freeze_timer_timeout():
 	current_state = enemy_state.MOVE
+	can_attack = true
 
 func _on_timer_timeout():
 	choose_direction()

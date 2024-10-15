@@ -3,10 +3,10 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet.tscn")
-@export var speed = randi_range(32,37) + player_data.levels
+@onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_5_bullet.tscn")
+@export var speed = 30
 
-var enemy_health = 3
+var enemy_health = 250
 var can_attack = false
 
 enum enemy_state {
@@ -36,6 +36,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	$Label.text = var_to_str(enemy_health)
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
@@ -49,27 +50,30 @@ func _process(delta):
 					move_down()
 				enemy_direction.CHASE:
 					chase_state()
-		enemy_state.DEAD:
-			queue_free()
+
+	if can_attack and not current_state == enemy_state.DEAD:
+		instance_bullet()
+		can_attack = false
+		$attack_timer.start()
 
 func move_right():
 	velocity = Vector2.RIGHT * speed
-	$anim.play("move")
+	$anim.play("walk_right")
 	move_and_slide()
 	
 func move_left():
 	velocity = Vector2.LEFT * speed
-	$anim.play("move")
+	$anim.play("walk_left")
 	move_and_slide()
 	
 func move_up():
 	velocity = Vector2.UP * speed
-	$anim.play("move")
+	$anim.play("walk_right")
 	move_and_slide()
 	
 func move_down():
 	velocity = Vector2.DOWN * speed
-	$anim.play("move")
+	$anim.play("walk_left")
 	move_and_slide()
 	
 func choose_direction():
@@ -80,16 +84,6 @@ func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
 	get_tree().root.add_child(fx)
-	
-func instance_ammo():
-	var ammo = ammo_scene.instantiate()
-	ammo.global_position = global_position
-	get_tree().root.add_child(ammo)
-	
-func instance_health():
-	var health = health_scene.instantiate()
-	health.global_position = global_position
-	get_tree().root.add_child(health)
 	
 func instance_bullet():
 	var bullet = bullet_scene.instantiate()
@@ -111,24 +105,15 @@ func random_direction():
 func _on_freeze_timer_timeout():
 	current_state = enemy_state.MOVE
 	can_attack = true
-
+	
 func _on_timer_timeout():
 	choose_direction()
 	$Timer.start()
 
+
 func _on_chase_box_area_entered(area):
 	if area.is_in_group("follow"):
-		if can_attack and not current_state == enemy_state.DEAD:
-			instance_bullet()
-			can_attack = false
-			$attack_timer.start()
 		new_direction = enemy_direction.CHASE
-
-func ammo_chance():
-	return randi_range(1, 4) == 4
-	
-func health_chance():
-	return randi_range(1, 8) == 1
 
 func chase_state():
 	var chase_speed = speed*2
@@ -137,7 +122,16 @@ func chase_state():
 	move_and_slide()
 	
 func animation():
-	$anim.play("move")
+	if velocity > Vector2.ZERO:
+		if new_direction == enemy_direction.CHASE:
+			$anim.play("run_right")
+		else:
+			$anim.play("walk_right")
+	if velocity < Vector2.ZERO:
+		if new_direction == enemy_direction.CHASE:
+			$anim.play("run_left")
+		else:
+			$anim.play("walk_left")
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
@@ -145,10 +139,11 @@ func _on_hitbox_area_entered(area):
 		enemy_health -= 1
 		if enemy_health == 0:
 			current_state = enemy_state.DEAD
-			if ammo_chance():
-				instance_ammo()
-			elif health_chance():
-				instance_health()
 
 func _on_attack_timer_timeout():
 	can_attack = true
+
+
+
+func _on_death_timer_timeout():
+	queue_free()

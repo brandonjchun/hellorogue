@@ -53,5 +53,4 @@ func _process(delta):
 		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
 	else:
 		$extra_hearts.text = ""
-	$Label.text = var_to_str(player_data.sound_selecter)
 	

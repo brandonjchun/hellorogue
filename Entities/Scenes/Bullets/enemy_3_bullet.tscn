@@ -151,10 +151,9 @@ frame = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_6ftbw")
 
-[node name="visible" type="VisibleOnScreenNotifier2D" parent="."]
-
 [node name="bullet_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_wxuks")
+volume_db = -5.0
 bus = &"SFX"
 
 [node name="anim" type="AnimationPlayer" parent="."]
@@ -166,4 +165,4 @@ autoplay = "fdr"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="screen_exited" from="visible" to="." method="_on_visible_screen_exited"]
+[connection signal="finished" from="bullet_sound" to="." method="_on_bullet_sound_finished"]

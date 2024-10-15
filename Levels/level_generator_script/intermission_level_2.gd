@@ -36,6 +36,13 @@ extends Node2D
 @onready var spawner_21 = $enemy_spawner21
 @onready var spawner_22 = $enemy_spawner22
 @onready var spawner_23 = $enemy_spawner23
+@onready var spawner_24 = $enemy_spawner24
+@onready var spawner_25 = $enemy_spawner25
+@onready var spawner_26 = $enemy_spawner26
+@onready var spawner_27 = $enemy_spawner27
+@onready var spawner_28 = $enemy_spawner28
+@onready var spawner_29 = $enemy_spawner29
+@onready var spawner_30 = $enemy_spawner30
 
 @onready var exit = $exit
 
@@ -101,7 +108,14 @@ func _process(delta):
 		spawner_20,
 		spawner_21,
 		spawner_22,
-		spawner_23
+		spawner_23,
+		spawner_24,
+		spawner_25,
+		spawner_26,
+		spawner_27,
+		spawner_28,
+		spawner_29,
+		spawner_30
 	]
 	
 	spikes_array = [spawner_1, 
@@ -126,7 +140,14 @@ func _process(delta):
 		spawner_20,
 		spawner_21,
 		spawner_22,
-		spawner_23
+		spawner_23,
+		spawner_24,
+		spawner_25,
+		spawner_26,
+		spawner_27,
+		spawner_28,
+		spawner_29,
+		spawner_30
 	]
 	
 		
@@ -155,6 +176,14 @@ func _process(delta):
 
 func generate_level():
 	instance_player()
+	
+	instance_enemy1()
+		
+	instance_enemy2()
+		
+	instance_enemy3()
+		
+	instance_enemy4()
 	
 	instance_enemy1()
 		
@@ -197,7 +226,7 @@ func instance_enemy1():
 		add_child(enemy)
 		
 func choose_spawn_point(enemy):
-	var spawn_point = randi_range(1,14)
+	var spawn_point = randi_range(1,30)
 	match spawn_point:
 		1:
 			enemy.position = spawner_1.position
@@ -248,6 +277,20 @@ func choose_spawn_point(enemy):
 		23:
 			enemy.position = spawner_23.position
 		24:
+			enemy.position = spawner_24.position
+		25:
+			enemy.position = spawner_25.position
+		26:
+			enemy.position = spawner_26.position
+		27:
+			enemy.position = spawner_27.position
+		28:
+			enemy.position = spawner_28.position
+		29:
+			enemy.position = spawner_29.position
+		30:
+			enemy.position = spawner_30.position
+		31:
 			enemy.position = exit.position
 			
 func instance_enemy2():

@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var speed = 1.25
+@export var speed = 90
 var direction = Vector2.RIGHT
 
 var sfx_finished = false

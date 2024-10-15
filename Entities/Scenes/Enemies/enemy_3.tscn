@@ -33,18 +33,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [true]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("hitbox/hitbox_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
 
 [sub_resource type="Animation" id="Animation_5iob7"]
 resource_name = "dead"
@@ -68,18 +56,6 @@ tracks/1/path = NodePath("enemy_collider:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, true]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("hitbox/hitbox_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 1.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -114,18 +90,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [false, false]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("hitbox/hitbox_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.7),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, false]
-}
 
 [sub_resource type="Animation" id="Animation_vjurq"]
 resource_name = "run_right"
@@ -146,22 +110,10 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("hitbox/hitbox_collider:disabled")
+tracks/1/path = NodePath("enemy_collider:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.7),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("enemy_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -196,18 +148,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [false, false]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("hitbox/hitbox_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 1.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, false]
-}
 
 [sub_resource type="Animation" id="Animation_slfal"]
 resource_name = "walk_right"
@@ -228,22 +168,10 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("hitbox/hitbox_collider:disabled")
+tracks/1/path = NodePath("enemy_collider:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("enemy_collider:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 1.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -298,7 +226,6 @@ collision_mask = 3
 position = Vector2(0, -3)
 scale = Vector2(1.5, 1.5)
 shape = SubResource("CapsuleShape2D_qdkj6")
-disabled = true
 debug_color = Color(0.431373, 0.541176, 0.709804, 0.419608)
 
 [node name="Timer" type="Timer" parent="."]
@@ -316,6 +243,7 @@ shape = SubResource("CircleShape2D_sx81m")
 debug_color = Color(0.615686, 0.529412, 0.223529, 0.419608)
 
 [node name="freeze_timer" type="Timer" parent="."]
+wait_time = 1.5
 one_shot = true
 autostart = true
 
