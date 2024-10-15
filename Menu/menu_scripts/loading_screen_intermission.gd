@@ -5,6 +5,8 @@ func load_next_scene():
 		player_data.next_scene = "res://Levels/intermission_level_2.tscn"
 	elif player_data.next_scene == "res://Levels/intermission_level_2.tscn":
 		player_data.next_scene = "res://Levels/intermission_level_1.tscn"
+	elif player_data.next_scene == "res://Levels/intermission_level_1.tscn":
+		player_data.next_scene = "res://Levels/final_level.tscn"
 	$anim.play("fly")
 	ResourceLoader.load_threaded_request(player_data.next_scene)
 

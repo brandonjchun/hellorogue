@@ -6,6 +6,7 @@ extends Node2D
 @onready var enemy2_scene = preload("res://Entities/Scenes/Enemies/enemy_2.tscn")
 @onready var enemy3_scene = preload("res://Entities/Scenes/Enemies/enemy_3.tscn")
 @onready var enemy4_scene = preload("res://Entities/Scenes/Enemies/enemy_4.tscn")
+@onready var enemy5_scene = preload("res://Entities/Scenes/Enemies/enemy_5.tscn")
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
 @onready var menu_scene = preload("res://Levels/menu.tscn")
@@ -37,9 +38,11 @@ var walker
 var map
 var ground_layer = 0
 var change_scenes_once = 0
+var loading_screen_timeout = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$loading_screen_timer.wait_time = randf_range(1.5, 2.5)
 	player_data.hurt_ready = true
 	player_data.reached_exit = false
 	player_data.game_active = true
@@ -91,11 +94,12 @@ func _process(delta):
 			loading_screen.z_index = 10
 			animation.z_index = 12
 			animation.visible = true
+			player_data.hurt_ready = false
 			loading_anim.play("fly")
 			loading_anim2.play("loading")
+			$loading_screen_timer.start()
 
-		if change_scenes_once == 0:
-			loading_screen.load_next_scene()
+		if change_scenes_once == 0 and loading_screen_timeout:
 			$next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
@@ -151,6 +155,9 @@ func generate_level(tilemap):
 	instance_player()
 	instance_exit()
 	if player_data.levels >= 0:
+		instance_enemy5()
+		instance_enemy4()
+		instance_enemy3()
 		instance_enemy1()
 	if player_data.levels >= 3:
 		instance_silverspikes()
@@ -207,6 +214,11 @@ func instance_enemy4():
 		var enemy = enemy4_scene.instantiate()
 		enemy.position = (map.pick_random() * borders.position) * 16
 		add_child(enemy)
+		
+func instance_enemy5():
+	var enemy = enemy5_scene.instantiate()
+	enemy.position = (map.pick_random() * borders.position) * 16
+	add_child(enemy)
 
 func instance_silverspikes():
 	var silverspikes_count = randi_range(player_data.levels, 2*player_data.levels)
@@ -225,7 +237,6 @@ func instance_redspikes():
 func _on_timer_timeout():
 	player_data.toggle_loading_screen = true
 	player_data.levels = 1 
-	player_data.hurt_ready = true
 	player_data.reached_exit = false
 
 func _on_next_level_timer_timeout():
@@ -235,6 +246,7 @@ func _on_next_level_timer_timeout():
 	loading_screen_canvas.layer = -2
 	loading_screen_canvas.visible = false
 	loading_screen.visible = false
+	player_data.hurt_ready = false
 	loading_screen.z_index = -2
 	player_data.toggle_loading_screen = false
 	change_scenes_once = 0
@@ -253,3 +265,7 @@ func on_enter_pause_menu():
 	
 func _on_time_running_out_timer_timeout():
 	$time_running_out.play()
+
+func _on_loading_screen_timer_timeout():
+	loading_screen_timeout = true
+	loading_screen.load_next_scene()

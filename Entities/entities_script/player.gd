@@ -14,6 +14,8 @@ enum player_states {
 @export var speed: int
 var input_movement = Vector2()
 
+@onready var camera_2d = $Camera2D
+
 @onready var gun = $gun_handler
 @onready var gun_spr = $gun_handler/gun_sprite
 @onready var bullet_point = $gun_handler/bullet_point
@@ -23,16 +25,21 @@ var input_movement = Vector2()
 var pos
 var rot
 var facing_right
-var melee_ready = true
-var gun_ready = true
-var step_ready = true
+var already_slowed = false
+var melee_ready = false
+var gun_ready = false
+
+var step_ready = true #for footstep osund
 
 func _ready():
-	player.speed = 90 + player_data.levels*5
+	player.speed = 80 + player_data.levels*5
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.levels == 22:
+		camera_2d.zoom = Vector2(3,3)
+		
 	if current_state != player_states.FREEZE:
 		if player_data.health <= 0:
 			current_state = player_states.DEAD
@@ -166,16 +173,23 @@ func _on_trail_timer_timeout():
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
 		if player_data.hurt_ready:
+			if area.is_in_group("web") and not already_slowed:
+				already_slowed = true
+				player.speed = player.speed / 4
+				$slow_timer.start()
 			player_data.hurt_ready = false
 			$hurt_timer.start()
-			var hurt_sound = randi_range(1,3)
-			match hurt_sound:
-				1:
-					$hurt1.play()
-				2:
-					$hurt2.play()
-				3:
-					$hurt3.play()
+			if player_data.health >= 2:
+				var hurt_sound = randi_range(1,3)
+				match hurt_sound:
+					1:
+						$hurt1.play()
+					2:
+						$hurt2.play()
+					3:
+						$hurt3.play()
+			else:
+				$death.play()
 			flash()
 			player_data.health -= 1
 		
@@ -215,6 +229,13 @@ func _on_step_timer_timeout():
 	
 func _on_freeze_timer_timeout():
 	current_state = player_states.MOVE
+	melee_ready = true
+	gun_ready = true
+	player_data.hurt_ready = true
 
 func _on_hurt_timer_timeout():
 	player_data.hurt_ready = true
+
+func _on_slow_timer_timeout():
+	player.speed = player.speed * 4
+	already_slowed = false

@@ -1,0 +1,80 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlsrigsw4iqov"]
+
+[ext_resource type="Texture2D" uid="uid://dr8srbma5bxp4" path="res://Sprites/enemy_bullet_5.png" id="1_o183o"]
+[ext_resource type="Script" path="res://Entities/entities_script/enemy_5_bullet.gd" id="1_udvu4"]
+[ext_resource type="AudioStream" uid="uid://c0pq41602k3yt" path="res://Music/SFX/Vampire Hiss.mp3" id="2_d4ofq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hjl1p"]
+
+[sub_resource type="Animation" id="Animation_gjrcn"]
+resource_name = "attack"
+length = 1.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+
+[sub_resource type="Animation" id="Animation_r8ias"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sxecw"]
+_data = {
+"RESET": SubResource("Animation_r8ias"),
+"attack": SubResource("Animation_gjrcn")
+}
+
+[node name="enemy5_bullet" type="Area2D" groups=["enemy", "web"]]
+scale = Vector2(0.6, 0.6)
+collision_layer = 32
+collision_mask = 9
+script = ExtResource("1_udvu4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("1_o183o")
+hframes = 4
+vframes = 4
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(1.25, 1.25)
+shape = SubResource("CircleShape2D_hjl1p")
+
+[node name="anim" type="AnimationPlayer" parent="."]
+root_node = NodePath("../CollisionShape2D")
+libraries = {
+"": SubResource("AnimationLibrary_sxecw")
+}
+
+[node name="bullet_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_d4ofq")
+volume_db = -15.0
+pitch_scale = 0.9
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c0pq41602k3yt"
+path="res://.godot/imported/Vampire Hiss.mp3-762b3120559623507454f64427031cb9.mp3str"
+
+[deps]
+
+source_file="res://Music/SFX/Vampire Hiss.mp3"
+dest_files=["res://.godot/imported/Vampire Hiss.mp3-762b3120559623507454f64427031cb9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

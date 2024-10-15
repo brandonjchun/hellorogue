@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://din7jqt54m8jm"]
+[gd_scene load_steps=7 format=3 uid="uid://din7jqt54m8jm"]
 
 [ext_resource type="Script" path="res://interactables/interactable_script/ammo_1.gd" id="1_q6xj7"]
 [ext_resource type="Texture2D" uid="uid://qh0vvr1gp58s" path="res://Sprites/ammo.png" id="2_5barb"]
-[ext_resource type="AudioStream" path="res://Music/SFX/clicks/clicks/weapload.wav" id="3_0kfm3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eivke"]
 size = Vector2(21.6667, 21.6667)
@@ -68,12 +67,8 @@ libraries = {
 autoplay = "ammo"
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 5.0
 autostart = true
-
-[node name="ammopickup" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("3_0kfm3")
-volume_db = -5.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

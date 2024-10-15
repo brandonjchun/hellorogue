@@ -49,4 +49,6 @@ func _process(delta):
 		$level_number.text = "F2"
 	elif player_data.levels == 21:
 		$level_number.text = "F3"
+	elif player_data.levels == 22:
+		$level_number.text = "FINAL"
 	
