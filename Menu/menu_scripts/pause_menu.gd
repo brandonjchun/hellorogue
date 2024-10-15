@@ -54,13 +54,12 @@ func _on_quit_pressed():
 		get_tree().quit()
 
 func _on_reset_pressed():
-	
+	player_data.reset_button_hit = true
 	if player_data.pause_active:
 		get_tree().paused = false
 		player_data.toggle_loading_screen = true
 
 func _on_sounds_pressed():
-	
 	if player_data.pause_active:
 		sounds_menu.visible = true
 		color_rect.visible = false

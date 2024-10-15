@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var speed = 115
+@export var speed = 140
 var direction = Vector2.RIGHT
 var boss_multiplier = 0
 
@@ -26,6 +26,7 @@ func _ready():
 	else:
 		boss_multiplier = 200
 	speed += boss_multiplier
+		
 	$anim.play("attack")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,5 +37,5 @@ func _on_body_entered(body):
 	if body.name == "Player" and player_data.hurt_ready:
 		queue_free()
 
-func _on_timer_timeout():
+func _on_queue_free_timer_timeout():
 	queue_free()

@@ -2,7 +2,7 @@ extends Node
 
 class_name player_data
 
-static var health = 2012
+static var health = 9000
 static var ammo = 50
 static var levels = 1
 static var sound_selecter = 0
@@ -15,5 +15,8 @@ static var game_mouse = false
 static var pause_active = false
 static var game_active = true
 static var intermission_levels = false
+static var final_level = false
 static var next_scene = "res://Levels/intermission_level.tscn"
 static var screen_shake_enabled = false
+static var boss_health = 500
+static var reset_button_hit = false

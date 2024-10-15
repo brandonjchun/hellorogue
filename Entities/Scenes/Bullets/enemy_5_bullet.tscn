@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dlsrigsw4iqov"]
+[gd_scene load_steps=7 format=3 uid="uid://dlsrigsw4iqov"]
 
 [ext_resource type="Texture2D" uid="uid://dr8srbma5bxp4" path="res://Sprites/enemy_bullet_5.png" id="1_o183o"]
 [ext_resource type="Script" path="res://Entities/entities_script/enemy_5_bullet.gd" id="1_udvu4"]
-[ext_resource type="AudioStream" uid="uid://c0pq41602k3yt" path="res://Music/SFX/Vampire Hiss.mp3" id="2_d4ofq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hjl1p"]
 
@@ -44,13 +43,14 @@ _data = {
 "attack": SubResource("Animation_gjrcn")
 }
 
-[node name="enemy5_bullet" type="Area2D" groups=["enemy", "web"]]
+[node name="enemy5_bullet" type="Area2D" groups=["boss", "enemy", "web"]]
 scale = Vector2(0.6, 0.6)
 collision_layer = 32
 collision_mask = 9
 script = ExtResource("1_udvu4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("1_o183o")
 hframes = 4
@@ -67,13 +67,8 @@ libraries = {
 "": SubResource("AnimationLibrary_sxecw")
 }
 
-[node name="bullet_sound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("2_d4ofq")
-volume_db = -15.0
-pitch_scale = 0.9
-
 [node name="Timer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 20.0
 autostart = true
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

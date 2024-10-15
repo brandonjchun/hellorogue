@@ -3,7 +3,9 @@ extends CharacterBody2D
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
-@export var speed = randi_range(22,27) + player_data.levels
+var boss_multiplier = 0
+@export var speed = randi_range(22,27) + player_data.levels + boss_multiplier
+@onready var chase_box = $chase_box
 
 enum current_state {
 	FROZEN,
@@ -22,9 +24,36 @@ var change_direction
 var enemy_state = current_state.FROZEN
 
 @onready var target = get_node("../Player")
-
+func _ready():
+	if player_data.final_level:
+		$freeze_timer.wait_time = 0.3
+	if player_data.boss_health >= 400:
+		boss_multiplier = 0
+	elif player_data.boss_health >= 300:
+		boss_multiplier = 5
+	elif player_data.boss_health >= 200:
+		boss_multiplier = 10
+	elif player_data.boss_health >= 100:
+		boss_multiplier = 15
+	else:
+		boss_multiplier = 20
+	speed = randi_range(22,27) + player_data.levels + boss_multiplier
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.boss_health >= 400:
+		boss_multiplier = 0
+	elif player_data.boss_health >= 300:
+		boss_multiplier = 5
+	elif player_data.boss_health >= 200:
+		boss_multiplier = 10
+	elif player_data.boss_health >= 100:
+		boss_multiplier = 15
+	else:
+		boss_multiplier = 20
+	if player_data.final_level:
+		chase_box.scale = Vector2(2.5, 2.5)
+		
 	if enemy_state == current_state.MOVE:
 		match new_direction:
 			enemy_direction.RIGHT:
@@ -80,6 +109,7 @@ func _on_timer_timeout():
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
+		ThemePlayer.play_e1_death()
 		instance_fx()
 		if ammo_chance():
 			instance_ammo()

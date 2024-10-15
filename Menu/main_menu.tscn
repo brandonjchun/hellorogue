@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://btrg2dmcahmcp"]
+[gd_scene load_steps=8 format=3 uid="uid://btrg2dmcahmcp"]
 
 [ext_resource type="Texture2D" uid="uid://bo3o2ej5kitfg" path="res://Sprites/tocu0xmhmeca1.png" id="1_sw2pt"]
 [ext_resource type="Script" path="res://Menu/menu_scripts/main_menu.gd" id="1_u5hxl"]
 [ext_resource type="PackedScene" uid="uid://12k8mi4hc64x" path="res://Menu/control.tscn" id="4_6u2y4"]
 [ext_resource type="PackedScene" uid="uid://cyud6p1mv4gad" path="res://Menu/sounds_menu.tscn" id="5_1lquf"]
+[ext_resource type="PackedScene" uid="uid://blnqx67f43yx4" path="res://Menu/loading_screen_intermission.tscn" id="6_f6i5x"]
 [ext_resource type="PackedScene" uid="uid://beki4dg55i0a3" path="res://UI/Scenes/main_mouse_icon.tscn" id="6_oy7qh"]
 
 [sub_resource type="SystemFont" id="SystemFont_nfh2d"]
@@ -26,6 +27,27 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_sw2pt")
 expand_mode = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TextureRect"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_top = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Button" type="Button" parent="TextureRect/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 12
+text = "Test End Game"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -134,3 +156,9 @@ visible = false
 layout_mode = 1
 
 [node name="main_mouse_icon" parent="." instance=ExtResource("6_oy7qh")]
+
+[node name="loading_screen_intermission" parent="." instance=ExtResource("6_f6i5x")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="TextureRect/HBoxContainer2/Button" to="." method="_on_button_pressed"]

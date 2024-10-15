@@ -65,27 +65,7 @@ var change_scenes_once = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	player_data.game_active = true
-	player_data.levels = 20
-	player_data.hurt_ready = true
-	player_data.reached_exit = false
-	generate_level()
 	
-	ThemePlayer.theme_grand_stop()
-	ThemePlayer.theme_magma()
-	ThemePlayer.theme_makuhita_stop()
-	ThemePlayer.theme_silentchasm_stop()
-	ThemePlayer.theme_steel_stop()
-	ThemePlayer.theme_lapis_stop()
-	ThemePlayer.theme_sinister_stop()
-	ThemePlayer.theme_blazepeak_stop()
-	ThemePlayer.theme_sinister_stop()
-	
-	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
-	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
 	enemies_array = [spawner_1, 
 		spawner_2, 
 		spawner_3,
@@ -150,6 +130,29 @@ func _process(delta):
 		spawner_30
 	]
 	
+	player_data.game_active = true
+	player_data.levels = 20
+	player_data.hurt_ready = true
+	player_data.reached_exit = false
+	generate_level()
+	
+	ThemePlayer.theme_grand_stop()
+	ThemePlayer.theme_magma()
+	ThemePlayer.theme_makuhita_stop()
+	ThemePlayer.theme_silentchasm_stop()
+	ThemePlayer.theme_steel_stop()
+	ThemePlayer.theme_lapis_stop()
+	ThemePlayer.theme_sinister_stop()
+	ThemePlayer.theme_blazepeak_stop()
+	ThemePlayer.theme_sinister_stop()
+	
+	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
+	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if player_data.player_is_dead:
+		loading_screen_intermission.reset_next_scene()
 		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
@@ -176,22 +179,6 @@ func _process(delta):
 
 func generate_level():
 	instance_player()
-	
-	instance_enemy1()
-		
-	instance_enemy2()
-		
-	instance_enemy3()
-		
-	instance_enemy4()
-	
-	instance_enemy1()
-		
-	instance_enemy2()
-		
-	instance_enemy3()
-		
-	instance_enemy4()
 		
 	instance_enemy_at_spawn()
 
@@ -215,103 +202,6 @@ func instance_enemy_at_spawn():
 				enemy = enemy4_scene.instantiate()
 		enemy.position = exit.position
 		add_child(enemy)
-		add_child(enemy)
-				
-	
-func instance_enemy1():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*2))
-	for i in range(enemies_count):
-		var enemy = enemy1_scene.instantiate()
-		choose_spawn_point(enemy)
-		add_child(enemy)
-		
-func choose_spawn_point(enemy):
-	var spawn_point = randi_range(1,30)
-	match spawn_point:
-		1:
-			enemy.position = spawner_1.position
-		2:
-			enemy.position = spawner_2.position
-		3:
-			enemy.position = spawner_3.position
-		4:
-			enemy.position = spawner_4.position
-		5:
-			enemy.position = spawner_5.position
-		6:
-			enemy.position = spawner_6.position
-		7:
-			enemy.position = spawner_7.position
-		8:
-			enemy.position = spawner_8.position
-		7:
-			enemy.position = spawner_8.position
-		9:
-			enemy.position = spawner_9.position
-		10:
-			enemy.position = spawner_10.position
-		11:
-			enemy.position = spawner_11.position
-		12:
-			enemy.position = spawner_12.position
-		13:
-			enemy.position = spawner_13.position
-		14:
-			enemy.position = spawner_14.position
-		15:
-			enemy.position = spawner_15.position
-		16:
-			enemy.position = spawner_16.position
-		17:
-			enemy.position = spawner_17.position
-		18:
-			enemy.position = spawner_18.position
-		19:
-			enemy.position = spawner_19.position
-		20:
-			enemy.position = spawner_20.position
-		21:
-			enemy.position = spawner_21.position
-		22:
-			enemy.position = spawner_22.position
-		23:
-			enemy.position = spawner_23.position
-		24:
-			enemy.position = spawner_24.position
-		25:
-			enemy.position = spawner_25.position
-		26:
-			enemy.position = spawner_26.position
-		27:
-			enemy.position = spawner_27.position
-		28:
-			enemy.position = spawner_28.position
-		29:
-			enemy.position = spawner_29.position
-		30:
-			enemy.position = spawner_30.position
-		31:
-			enemy.position = exit.position
-			
-func instance_enemy2():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*2))
-	for i in range(enemies_count):
-		var enemy = enemy2_scene.instantiate()
-		choose_spawn_point(enemy)
-		add_child(enemy)
-		
-func instance_enemy3():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(5, player_data.levels*2))
-	for i in range(enemies_count):
-		var enemy = enemy3_scene.instantiate()
-		choose_spawn_point(enemy)
-		add_child(enemy)
-		
-func instance_enemy4():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*2))
-	for i in range(enemies_count):
-		var enemy = enemy4_scene.instantiate()
-		choose_spawn_point(enemy)
 		add_child(enemy)
 
 func instance_silverspikes():

@@ -82,6 +82,9 @@ func _process(delta):
 	if player_data.reached_exit:
 		$map_timer.paused = true
 		$time_running_out_timer.paused = true
+	
+	if player_data.reached_exit or player_data.toggle_loading_screen:
+		player_data.hurt_ready = false
 		
 	if player_data.toggle_loading_screen:
 		main_level.visible = false
@@ -103,6 +106,7 @@ func _process(delta):
 			$next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
+			player_data.reset_button_hit = false
 	
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
@@ -114,27 +118,49 @@ func _process(delta):
 			ThemePlayer.theme_silentchasm_stop()
 			ThemePlayer.theme_steel_stop()
 			ThemePlayer.theme_lapis_stop()
+			ThemePlayer.theme_blazepeak_stop()
 			ThemePlayer.theme_sinister_stop()
 			ThemePlayer.theme_magma_stop()
 		1:
 			ThemePlayer.theme_makuhita_stop()
 			ThemePlayer.theme_silentchasm()
+			ThemePlayer.theme_steel_stop()
+			ThemePlayer.theme_lapis_stop()
+			ThemePlayer.theme_blazepeak_stop()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma_stop()
 		2:
 			ThemePlayer.theme_makuhita_stop()
 			ThemePlayer.theme_silentchasm_stop()
 			ThemePlayer.theme_steel()
+			ThemePlayer.theme_lapis_stop()
+			ThemePlayer.theme_blazepeak_stop()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma_stop()
 		3:
 			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_silentchasm_stop()
 			ThemePlayer.theme_steel_stop()
 			ThemePlayer.theme_lapis()
+			ThemePlayer.theme_blazepeak_stop()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma_stop()
 		4:
 			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_silentchasm_stop()
+			ThemePlayer.theme_steel_stop()
 			ThemePlayer.theme_lapis_stop()
 			ThemePlayer.theme_blazepeak()
+			ThemePlayer.theme_sinister_stop()
+			ThemePlayer.theme_magma_stop()
 		5:
 			ThemePlayer.theme_makuhita_stop()
+			ThemePlayer.theme_silentchasm_stop()
+			ThemePlayer.theme_steel_stop()
+			ThemePlayer.theme_lapis_stop()
 			ThemePlayer.theme_blazepeak_stop()
 			ThemePlayer.theme_sinister()
+			ThemePlayer.theme_magma_stop()
 
 func generate_level(tilemap):
 	walker = Walker_room.new(Vector2(3 + floor(lev/3), 5 + floor(lev/3)), borders)
@@ -155,9 +181,6 @@ func generate_level(tilemap):
 	instance_player()
 	instance_exit()
 	if player_data.levels >= 0:
-		instance_enemy5()
-		instance_enemy4()
-		instance_enemy3()
 		instance_enemy1()
 	if player_data.levels >= 3:
 		instance_silverspikes()

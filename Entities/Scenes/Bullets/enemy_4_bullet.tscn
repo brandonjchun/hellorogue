@@ -26,4 +26,3 @@ bus = &"SFX"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="finished" from="bullet_sound" to="." method="_on_bullet_sound_finished"]

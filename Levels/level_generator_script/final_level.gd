@@ -350,7 +350,6 @@ extends Node2D
 @onready var player_spawn = $player_spawn
 @onready var boss_spawn = $boss_spawn
 
-@onready var exit = $exit
 @onready var main_mouse_icon = $CanvasLayer/main_mouse_icon
 @onready var pause_menu = $CanvasLayer/PauseMenu
 @onready var pause_menu_canvas = $CanvasLayer
@@ -359,7 +358,7 @@ extends Node2D
 
 @onready var loading_screen_canvas = $CanvasLayer2
 @onready var loading_screen_intermission = $CanvasLayer2/loading_screen_intermission
-@onready var next_level_timer = $next_level_timer
+@onready var boss_enemy_spawner = $boss_enemy_spawner
 
 @onready var tilemap = $TileMap
 var boss
@@ -370,9 +369,11 @@ var spikes_array
 var enemies_array
 var ground_layer = 0
 var change_scenes_once = 0
+var spawn_increaser = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player_data.final_level = true
 	player_data.game_active = true
 	player_data.levels = 22
 	player_data.hurt_ready = true
@@ -729,6 +730,27 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.player_is_dead:
+		loading_screen_intermission.reset_next_scene()
+		player_data.boss_health = 500
+	if player_data.boss_health >= 400:
+		boss_enemy_spawner.wait_time = randf_range(15,20)
+		spawn_increaser = 2
+	if player_data.boss_health >= 300:
+		boss_enemy_spawner.wait_time = randf_range(10,15)
+		spawn_increaser = 4
+	elif player_data.boss_health >= 200:
+		boss_enemy_spawner.wait_time = randf_range(7.5,12.5)
+		spawn_increaser = 6
+	elif player_data.boss_health >= 100:
+		boss_enemy_spawner.wait_time = randf_range(5,10)
+		spawn_increaser = 8
+	elif player_data.boss_health >= 50:
+		boss_enemy_spawner.wait_time = randf_range(3,8)
+		spawn_increaser = 10
+	elif player_data.boss_health <= 0:
+		boss_enemy_spawner.paused = true
+		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -744,7 +766,6 @@ func _process(delta):
 				loading_screen_intermission.reset_next_scene()
 			else:
 				loading_screen_intermission.load_next_scene()
-			next_level_timer.start()
 			change_scenes_once += 1
 			player_data.toggle_loading_screen = false
 	
@@ -760,6 +781,8 @@ func _process(delta):
 	ThemePlayer.theme_ninetales_stop()
 	ThemePlayer.theme_sinister_stop()
 	ThemePlayer.theme_grand_stop()
+	
+	
 
 func generate_level():
 	instance_player()
@@ -809,7 +832,6 @@ func _on_spikes_timer_timeout():
 				spike = silverspikes_scene.instantiate()
 			1: 
 				spike = redspikes_scene.instantiate()
-		print("spike", spike)
 		spike.position = spike_source.position
 		spikes_array.remove_at(spike_position_source)
 		add_child(spike)
@@ -820,47 +842,49 @@ func _on_enemy_spawn_timeout():
 	var enemy_position
 	match enemy_type:
 		0:
-			enemy = enemy1_scene.instantiate()
-			for i in range(8):
+			for i in range(10):
+				enemy = enemy1_scene.instantiate()
 				enemy_position = enemies_array.pick_random()
 				enemy.position = enemy_position.position
 				add_child(enemy)
 		1:
-			enemy = enemy2_scene.instantiate()
-			for i in range(6):
+			for i in range(8):
+				enemy = enemy2_scene.instantiate()
 				enemy_position = enemies_array.pick_random()
 				enemy.position = enemy_position.position
 				add_child(enemy)
 		2:
-			enemy = enemy3_scene.instantiate()
 			for i in range(2):
+				enemy = enemy3_scene.instantiate()
 				enemy_position = enemies_array.pick_random()
 				enemy.position = enemy_position.position
 				add_child(enemy)
 		3:
-			enemy = enemy4_scene.instantiate()
 			for i in range(4):
+				enemy = enemy4_scene.instantiate()
 				enemy_position = enemies_array.pick_random()
 				enemy.position = enemy_position.position
 				add_child(enemy)
 	$enemy_spawn.start()
 	
-	
-
 func _on_boss_enemy_spawner_timeout():
-	enemy = enemy1_scene.instantiate()
-	for i in range(4):
-		enemy.position = boss.position
+	for i in range(4 + spawn_increaser):
+		enemy = enemy1_scene.instantiate()
+		var variance = Vector2(randi_range(-64, 64), randi_range(-64, 64))
+		enemy.position = boss.position + variance
 		add_child(enemy)
-	enemy = enemy2_scene.instantiate()
-	for i in range(3):
-		enemy.position = boss.position
+	for i in range(3 + spawn_increaser):
+		enemy = enemy2_scene.instantiate()
+		var variance = Vector2(randi_range(-64, 64), randi_range(-64, 64))
+		enemy.position = boss.position + variance
 		add_child(enemy)
-	enemy = enemy3_scene.instantiate()
-	for i in range(1):
-		enemy.position = boss.position
+	for i in range(1 + spawn_increaser):
+		enemy = enemy3_scene.instantiate()
+		var variance = Vector2(randi_range(-64, 64), randi_range(-64, 64))
+		enemy.position = boss.position + variance
 		add_child(enemy)
-	enemy = enemy4_scene.instantiate()
-	for i in range(2):
-		enemy.position = boss.position
+	for i in range(2 + spawn_increaser):
+		enemy = enemy4_scene.instantiate()
+		var variance = Vector2(randi_range(-64, 64), randi_range(-64, 64))
+		enemy.position = boss.position + variance
 		add_child(enemy)

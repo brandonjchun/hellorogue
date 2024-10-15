@@ -166,6 +166,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if player_data.player_is_dead:
+		loading_screen_intermission.reset_next_scene()
+		
 	if player_data.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
@@ -192,14 +195,6 @@ func _process(delta):
 
 func generate_level():
 	instance_player()
-	
-	instance_enemy1()
-		
-	instance_enemy2()
-		
-	instance_enemy3()
-		
-	instance_enemy4()
 		
 	instance_enemy_at_spawn()
 	
