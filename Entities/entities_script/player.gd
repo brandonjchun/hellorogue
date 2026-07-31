@@ -31,8 +31,20 @@ var gun_ready = false
 
 var step_ready = true #for footstep osund
 
+# What the shrine's boon is worth, and what a web costs.
+const HASTE_MULTIPLIER := 1.45
+const WEB_SLOW_MULTIPLIER := 0.25
+
+# Speed before any modifier. The web slow used to divide `speed` by 4 and
+# multiply it back by 4 on a timer, which only survives as long as nothing else
+# ever writes speed -- a shrine touched while slowed would have had its boon
+# multiplied away, or quadrupled, depending on the order. Modifiers now compose
+# off this instead of off each other.
+var base_speed := 0
+
 func _ready():
-	player.speed = 500 + PlayerData.levels*5
+	base_speed = 500 + PlayerData.levels * 5
+	refresh_speed()
 	if PlayerData.final_level:
 		$hurt_timer.wait_time = 0.1
 	# Boss room is a single large arena, so it gets a tighter camera. This was
@@ -40,6 +52,16 @@ func _ready():
 	if PlayerData.levels == 22:
 		camera_2d.zoom = Vector2(3, 3)
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+
+# Recomputes speed from base_speed and whatever is currently modifying it.
+# Called by shrine.gd, which lands after this node's _ready has already run.
+func refresh_speed() -> void:
+	var multiplier := 1.0
+	if PlayerData.haste_active:
+		multiplier *= HASTE_MULTIPLIER
+	if already_slowed:
+		multiplier *= WEB_SLOW_MULTIPLIER
+	player.speed = int(base_speed * multiplier)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -176,7 +198,7 @@ func _on_hitbox_area_entered(area):
 				PlayerData.health -= 2
 			if area.is_in_group("web") and not already_slowed:
 				already_slowed = true
-				player.speed = player.speed / 4
+				refresh_speed()
 				$slow_timer.start()
 			PlayerData.hurt_ready = false
 			$hurt_timer.start()
@@ -227,5 +249,5 @@ func _on_hurt_timer_timeout():
 	PlayerData.hurt_ready = true
 
 func _on_slow_timer_timeout():
-	player.speed = player.speed * 4
 	already_slowed = false
+	refresh_speed()

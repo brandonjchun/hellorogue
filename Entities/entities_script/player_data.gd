@@ -67,6 +67,13 @@ static var cull_active := false
 static var bandolier_next := false
 static var bandolier_active := false
 
+# Shrine boon: movement speed, this floor only. Shrines are touched mid-floor
+# rather than bought between floors, so shrine.gd sets `haste_active` directly
+# and `haste_next` exists so the same boon can be granted ahead of a floor
+# later. Both are consumed in main_room._ready() alongside the pair above.
+static var haste_next := false
+static var haste_active := false
+
 # One-shot insurance. Unlike the two above it survives floors until it is spent
 # absorbing a clock that ran out.
 static var second_wind := false
@@ -118,6 +125,8 @@ static func reset_run() -> void:
 	cull_active = false
 	bandolier_next = false
 	bandolier_active = false
+	haste_next = false
+	haste_active = false
 	second_wind = false
 	shop_pending = false
 	shop_open = false

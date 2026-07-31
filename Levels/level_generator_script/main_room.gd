@@ -9,6 +9,9 @@ extends Node2D
 @onready var enemy5_scene = preload("res://Entities/Scenes/Enemies/enemy_5.tscn")
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
+@onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
+@onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
+@onready var shrine_scene = preload("res://interactables/scenes/shrine.tscn")
 @onready var shop_scene = preload("res://Menu/shop_menu.tscn")
 @onready var main_level = $"."
 @onready var gui = $GUI
@@ -57,8 +60,24 @@ var loading_screen_timeout = false
 # How much of a wave Culling Order leaves standing.
 const CULL_MULTIPLIER := 0.7
 
+# Special rooms to try for. Fewer are placed when the walk did not produce
+# enough large, well-separated stamps -- see SpecialRoomPicker.
+const SPECIAL_ROOM_TARGET := 3
+# Pickups in a treasure cache, and how far out from the room's centre they ring.
+const TREASURE_ITEMS := 6
+const TREASURE_RADIUS := 26.0
+# Ambush party size at level 1, before the per-tier growth.
+const AMBUSH_BASE := 4
+
 var shop: ShopMenu
 var _time_banked = false
+
+# Captured as they are placed so special rooms can be kept clear of both. The
+# spawn cell has to be recorded here because instance_player() pops it off the
+# front of `map`, which is the walker's own step_history -- by the time anything
+# else asks, step_history.front() is the second cell of the walk, not the spawn.
+var player_spawn_cell := Vector2.ZERO
+var exit_room := {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -71,6 +90,10 @@ func _ready():
 	PlayerData.cull_next = false
 	PlayerData.bandolier_active = PlayerData.bandolier_next
 	PlayerData.bandolier_next = false
+	# Shrines set haste_active directly, mid-floor. Overwriting it here is what
+	# stops a boon found on this floor carrying into the next one.
+	PlayerData.haste_active = PlayerData.haste_next
+	PlayerData.haste_next = false
 
 	$loading_screen_timer.wait_time = randf_range(1.5, 2.5)
 	PlayerData.hurt_ready = true
@@ -204,6 +227,7 @@ func generate_level(tilemap):
 
 	instance_player()
 	instance_exit()
+	instance_special_rooms()
 	if PlayerData.levels >= 0:
 		instance_enemy1()
 	if PlayerData.levels >= 3:
@@ -234,12 +258,96 @@ func random_floor_position() -> Vector2:
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
-	player.position = map.pop_front() * TILE_SIZE
+	player_spawn_cell = map.pop_front()
+	player.position = player_spawn_cell * TILE_SIZE
 
 func instance_exit():
 	var exit = exit_scene.instantiate()
 	add_child(exit)
-	exit.position = walker.get_end_room().position * TILE_SIZE
+	# Read once and kept. get_end_room() does not mutate `rooms` -- it used to
+	# pop_back(), which made two calls disagree -- so asking twice would be
+	# harmless, but the whole end room is needed below, not just its centre.
+	exit_room = walker.get_end_room()
+	exit.position = exit_room.position * TILE_SIZE
+
+# --- special rooms ---
+
+# Turns the walker's own room stamps into treasure caches, ambushes and shrines.
+#
+# Nothing new is carved: these are placed inside spaces the generator already
+# made, which is why the picker has to reject stamps that overlap each other. If
+# it returns fewer than SPECIAL_ROOM_TARGET, fewer get built -- there is no
+# fallback onto open floor, because a room with no walls is not a room.
+func instance_special_rooms() -> void:
+	var excluded := [
+		Rect2(player_spawn_cell, Vector2.ONE),
+		SpecialRoomPicker.tile_rect(exit_room),
+	]
+	var chosen := SpecialRoomPicker.select(
+		walker.rooms, excluded, SPECIAL_ROOM_TARGET, floor_lookup)
+
+	# Shuffled so which room becomes which type varies, and so a floor that only
+	# fits two specials does not always drop the same one.
+	var builders := [build_treasure_room, build_ambush_room, build_shrine_room]
+	builders.shuffle()
+
+	for i in chosen.size():
+		builders[i].call(chosen[i] as Dictionary)
+
+func room_centre_world(room: Dictionary) -> Vector2:
+	return SpecialRoomPicker.tile_rect(room).get_center() * TILE_SIZE
+
+# A ring of pickups that do not expire. Ordinary drops clear themselves after
+# five seconds; a cache the player has not found yet must not.
+func build_treasure_room(room: Dictionary) -> void:
+	var centre := room_centre_world(room)
+	for i in TREASURE_ITEMS:
+		var scene: PackedScene = health_scene if i % 2 == 0 else ammo_scene
+		var pickup = scene.instantiate()
+		pickup.despawns = false
+		pickup.position = centre + Vector2.RIGHT.rotated(TAU * i / TREASURE_ITEMS) * TREASURE_RADIUS
+		add_child(pickup)
+
+# Enemies waiting inside, and a barrier that drops when they are dead.
+#
+# The party deliberately ignores Culling Order. The room stays shut until it is
+# cleared, so thinning it would only make the trap open sooner -- it would read
+# as a discount on the set-piece rather than as fewer things to fight. Culling
+# thins the roaming population, which is where the player feels it.
+func build_ambush_room(room: Dictionary) -> void:
+	var rect := SpecialRoomPicker.tile_rect(room)
+
+	var ambush := AmbushRoom.new()
+	ambush.position = rect.get_center() * TILE_SIZE
+	ambush.setup(rect.size * TILE_SIZE)
+	add_child(ambush)
+
+	var party := AMBUSH_BASE + int(PlayerData.levels / 3.0)
+	# Inset by one so nobody spawns embedded in the wall the barrier lines up on.
+	var inner := rect.grow(-1.0)
+	for i in party:
+		var enemy = ambush_enemy_scene().instantiate()
+		enemy.position = Vector2(
+			randf_range(inner.position.x, inner.end.x),
+			randf_range(inner.position.y, inner.end.y)) * TILE_SIZE
+		add_child(enemy)
+		ambush.register_enemy(enemy)
+
+# Mirrors the roster generate_level() draws from at this depth.
+func ambush_enemy_scene() -> PackedScene:
+	var roster: Array[PackedScene] = [enemy1_scene]
+	if PlayerData.levels >= 3:
+		roster.append(enemy2_scene)
+	if PlayerData.levels >= 6:
+		roster.append(enemy4_scene)
+	if PlayerData.levels >= 12:
+		roster.append(enemy3_scene)
+	return roster.pick_random()
+
+func build_shrine_room(room: Dictionary) -> void:
+	var shrine = shrine_scene.instantiate()
+	shrine.position = room_centre_world(room)
+	add_child(shrine)
 
 # `cullable` is false for the spike passes: Culling Order is sold as thinning the
 # enemies, and quietly halving the hazards as well would make it strictly better

@@ -45,7 +45,7 @@ const ITEMS := [
 		"id": "cull",
 		"name": "CULLING ORDER",
 		"cost": 35.0,
-		"desc": "next floor spawns 30% fewer enemies",
+		"desc": "next floor spawns 30% fewer roaming enemies",
 		"repeatable": false,
 	},
 	{

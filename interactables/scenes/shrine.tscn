@@ -1,0 +1,67 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://interactables/interactable_script/shrine.gd" id="1_shrne"]
+[ext_resource type="Texture2D" uid="uid://c2yw7ygosx6dk" path="res://Sprites/19-191190_purple-crystal-ball-crystal-ball-pixel-art.png" id="2_shrba"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_shrne"]
+radius = 14.0
+
+[sub_resource type="Animation" id="Animation_shrrst"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_shrhov"]
+resource_name = "hover"
+length = 1.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -3), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_shrne"]
+_data = {
+"RESET": SubResource("Animation_shrrst"),
+"hover": SubResource("Animation_shrhov")
+}
+
+[node name="shrine" type="Area2D"]
+z_index = 2
+y_sort_enabled = true
+collision_mask = 1
+script = ExtResource("1_shrne")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("2_shrba")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_shrne")
+
+[node name="anim" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_shrne")
+}
+autoplay = "hover"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
