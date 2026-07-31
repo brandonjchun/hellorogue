@@ -47,21 +47,13 @@ func _ready():
 	else:
 		boss_multiplier = 20
 	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if PlayerData.boss_health >= 400:
-		boss_multiplier = 0
-	elif PlayerData.boss_health >= 300:
-		boss_multiplier = 5
-	elif PlayerData.boss_health >= 200:
-		boss_multiplier = 10
-	elif PlayerData.boss_health >= 100:
-		boss_multiplier = 15
-	else:
-		boss_multiplier = 20
 	if PlayerData.final_level:
 		chase_box.scale = Vector2(3.5, 3.5)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	# boss_multiplier and chase_box.scale were recomputed here every frame.
+	# speed is only assigned in _ready, so the multiplier update did nothing.
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
@@ -173,7 +165,7 @@ func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1
-		if enemy_health == 0:
+		if enemy_health <= 0:
 			ThemePlayer.play_e4_death()
 			current_state = enemy_state.DEAD
 			if ammo_chance():

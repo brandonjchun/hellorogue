@@ -47,21 +47,13 @@ func _ready():
 	elif PlayerData.boss_health >= 50:
 		boss_multiplier = 40
 	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
-	
+	if PlayerData.final_level:
+		chase_box.scale = Vector2(4, 4)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if PlayerData.boss_health >= 400:
-		boss_multiplier = 0
-	elif PlayerData.boss_health >= 300:
-		boss_multiplier = 5
-	elif PlayerData.boss_health >= 200:
-		boss_multiplier = 10
-	elif PlayerData.boss_health >= 100:
-		boss_multiplier = 15
-	else:
-		boss_multiplier = 20
-	if PlayerData.final_level:
-		chase_box.scale = Vector2(4,4)
+	# boss_multiplier and chase_box.scale were recomputed here every frame.
+	# speed is only assigned in _ready, so the multiplier update did nothing.
 	match current_state:
 		enemy_state.MOVE:
 			match new_direction:
@@ -171,23 +163,20 @@ func chase_state():
 	animation()
 	move_and_slide()
 	
+# Vector2 comparison is lexicographic, so `velocity > Vector2.ZERO` missed every
+# up-and-left diagonal and left the sprite on its previous animation.
 func animation():
-	if velocity > Vector2.ZERO:
-		if new_direction == enemy_direction.CHASE:
-			$anim.play("run_right")
-		else:
-			$anim.play("walk_right")
-	if velocity < Vector2.ZERO:
-		if new_direction == enemy_direction.CHASE:
-			$anim.play("run_left")
-		else:
-			$anim.play("walk_left")
+	var chasing := new_direction == enemy_direction.CHASE
+	if velocity.x > 0:
+		$anim.play("run_right" if chasing else "walk_right")
+	elif velocity.x < 0:
+		$anim.play("run_left" if chasing else "walk_left")
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1
-		if enemy_health == 0:
+		if enemy_health <= 0:
 			enemy_collider.set_deferred("disabled", true)
 			current_state = enemy_state.DEAD
 			if ammo_chance():

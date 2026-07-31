@@ -38,22 +38,16 @@ func _ready():
 	else:
 		boss_multiplier = 20
 	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if PlayerData.boss_health >= 400:
-		boss_multiplier = 0
-	elif PlayerData.boss_health >= 300:
-		boss_multiplier = 5
-	elif PlayerData.boss_health >= 200:
-		boss_multiplier = 10
-	elif PlayerData.boss_health >= 100:
-		boss_multiplier = 15
-	else:
-		boss_multiplier = 20
 	if PlayerData.final_level:
 		chase_box.scale = Vector2(2.5, 2.5)
-		
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	# The boss_multiplier if/elif chain used to be recomputed here every frame.
+	# It never went anywhere: `speed` is only assigned in _ready, so updating the
+	# multiplier afterwards had no effect on anything. Same for the chase_box
+	# scale, which was being re-assigned the same constant 60 times a second on
+	# every live enemy.
 	if enemy_state == current_state.MOVE:
 		match new_direction:
 			enemy_direction.RIGHT:
@@ -144,10 +138,14 @@ func chase_state():
 	animation()
 	move_and_slide()
 	
+# Vector2 comparison is lexicographic: `velocity > Vector2.ZERO` is only true
+# when x > 0, or x == 0 and y > 0. Chasing up-and-left satisfied neither branch,
+# so the sprite kept whatever animation it had last. Facing is horizontal only,
+# so test the x component directly.
 func animation():
-	if velocity > Vector2.ZERO:
+	if velocity.x > 0:
 		$anim.play("move_right")
-	if velocity < Vector2.ZERO:
+	elif velocity.x < 0:
 		$anim.play("move_left")
 		 
 func _on_chase_box_area_entered(area):

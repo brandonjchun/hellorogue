@@ -8,7 +8,14 @@ var was_body_entered = false
 var was_area_entered = false
 
 # Called when the node enters the scene tree for the first time.
+# Projectiles are parented to get_tree().root, which is a sibling of the level
+# scene rather than part of it -- so a scene change does not free them. Combined
+# with only ever calling queue_free() on impact, any shot that missed everything
+# flew on forever and accumulated for the whole session. This is the backstop.
+const MAX_LIFETIME := 6.0
+
 func _ready():
+	get_tree().create_timer(MAX_LIFETIME).timeout.connect(queue_free)
 	$bullet_sound.finished.connect(_on_bullet_sound_finished)
 	$bullet_sound.play()
 	

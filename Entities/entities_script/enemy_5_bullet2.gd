@@ -7,9 +7,12 @@ var boss_multiplier = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# The >= 400 test below was a second plain `if`, not an `elif`, so at full
+	# boss health both ran and the >= 450 tier was overwritten on the same
+	# frame it was chosen -- the slowest tier was unreachable.
 	if PlayerData.boss_health >= 450:
 		boss_multiplier = 20
-	if PlayerData.boss_health >= 400:
+	elif PlayerData.boss_health >= 400:
 		boss_multiplier = 40
 	elif PlayerData.boss_health >= 350:
 		boss_multiplier = 60

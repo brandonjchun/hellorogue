@@ -40,35 +40,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	match PlayerData.boss_health:
-		400:
-			$boss_roar.play()
-			speed = 55
-			$attack_timer.wait_time = randf_range(0.8, 1.0)
-			$attack_timer
-		300:
-			$boss_roar.play()
-			speed = 60
-			$attack_timer.wait_time = randf_range(0.5,0.7)
-		250:
-			$attack2_timer.stop()
-			$attack2_timer.wait_time = randf_range(0.2, 0.3)
-			$attack2_timer.start()
-		200:
-			$attack_timer.wait_time = randf_range(0.3, 0.5)
-			$boss_roar.play()
-			speed = 65
-		150:
-			$attack2_timer.wait_time = randf_range(0.1,0.2)
-		100:
-			$attack_timer.wait_time = randf_range(0.1, 0.4)
-			$boss_roar.play()
-			speed = 70
-		50:
-			$attack_timer.wait_time = randf_range(0.05, 0.15)
-			$attack2_timer.wait_time = 0.03
-			$boss_roar.play()
-			speed = 75
+	update_phase()
 	$Label.text = var_to_str(enemy_health)
 	match current_state:
 		enemy_state.MOVE:
@@ -148,6 +120,47 @@ func random_direction():
 		4:
 			new_direction = enemy_direction.DOWN
 
+# Escalating boss phases, highest health first.
+const PHASES := [
+	{"at": 400, "speed": 55, "attack": [0.8, 1.0], "roar": true},
+	{"at": 300, "speed": 60, "attack": [0.5, 0.7], "roar": true},
+	{"at": 250, "attack2": [0.2, 0.3], "restart_attack2": true},
+	{"at": 200, "speed": 65, "attack": [0.3, 0.5], "roar": true},
+	{"at": 150, "attack2": [0.1, 0.2]},
+	{"at": 100, "speed": 70, "attack": [0.1, 0.4], "roar": true},
+	{"at": 50, "speed": 75, "attack": [0.05, 0.15], "attack2": [0.03, 0.03], "roar": true},
+]
+
+var _phase := -1
+
+# This was a `match PlayerData.boss_health:` on exact values, run from _process.
+# Two problems: while health sat on a phase number the whole branch re-ran every
+# frame, so $boss_roar.play() restarted 60 times a second; and any hit that took
+# health straight past a value (two bullets landing on one frame) skipped that
+# phase entirely. Thresholds plus a "only on change" guard fix both.
+func update_phase() -> void:
+	var target := _phase
+	for i in PHASES.size():
+		if PlayerData.boss_health <= PHASES[i]["at"]:
+			target = i
+	if target == _phase:
+		return
+	_phase = target
+	apply_phase(PHASES[_phase])
+
+func apply_phase(phase: Dictionary) -> void:
+	if phase.has("speed"):
+		speed = phase["speed"]
+	if phase.has("attack"):
+		$attack_timer.wait_time = randf_range(phase["attack"][0], phase["attack"][1])
+	if phase.has("attack2"):
+		$attack2_timer.wait_time = randf_range(phase["attack2"][0], phase["attack2"][1])
+	if phase.get("restart_attack2", false):
+		$attack2_timer.stop()
+		$attack2_timer.start()
+	if phase.get("roar", false):
+		$boss_roar.play()
+
 func _on_freeze_timer_timeout():
 	current_state = enemy_state.MOVE
 	can_attack = true
@@ -168,10 +181,12 @@ func chase_state():
 	animation()
 	move_and_slide()
 	
+# Vector2 comparison is lexicographic, so `velocity > Vector2.ZERO` missed every
+# up-and-left diagonal and left the sprite on its previous animation.
 func animation():
-	if velocity > Vector2.ZERO:
+	if velocity.x > 0:
 		$anim.play("walk_right")
-	if velocity < Vector2.ZERO:
+	elif velocity.x < 0:
 		$anim.play("walk_left")
 
 func _on_hitbox_area_entered(area):
@@ -179,7 +194,7 @@ func _on_hitbox_area_entered(area):
 		instance_fx()
 		enemy_health -= 1
 		PlayerData.boss_health -= 1
-		if enemy_health == 0:
+		if enemy_health <= 0:
 			current_state = enemy_state.DEAD
 			queue_free()
 

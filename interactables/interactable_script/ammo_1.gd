@@ -7,8 +7,10 @@ func _ready():
 		ammo = 20
 		
 func _on_body_entered(body):
-	ThemePlayer.play_ammo()
+	# The pickup sound used to fire before this check, so any enemy that walked
+	# over a dropped ammo box played the collect sound without collecting it.
 	if body.name == "Player":
+		ThemePlayer.play_ammo()
 		PlayerData.ammo += ammo
 		queue_free()
 
