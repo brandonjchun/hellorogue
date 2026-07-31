@@ -9,7 +9,7 @@ func _ready():
 func _process(delta):
 	DisplayServer.mouse_set_mode(DisplayServer.MOUSE_MODE_HIDDEN)
 	global_position = get_global_mouse_position()
-	if get_tree().paused or not player_data.game_mouse:
+	if get_tree().paused or not PlayerData.game_mouse:
 		main_mouse_icon.visible = true
 	else:
 		main_mouse_icon.visible = false

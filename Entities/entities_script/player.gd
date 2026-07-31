@@ -32,20 +32,20 @@ var gun_ready = false
 var step_ready = true #for footstep osund
 
 func _ready():
-	player.speed = 500 + player_data.levels*5
-	if player_data.final_level:
+	player.speed = 500 + PlayerData.levels*5
+	if PlayerData.final_level:
 		$hurt_timer.wait_time = 0.1
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.levels == 22:
+	if PlayerData.levels == 22:
 		camera_2d.zoom = Vector2(3, 3)
 		
 	if current_state != player_states.FREEZE:
-		if player_data.health <= 0:
+		if PlayerData.health <= 0:
 			current_state = player_states.DEAD
-			player_data.player_is_dead = true
+			PlayerData.player_is_dead = true
 			
 		target_mouse()
 
@@ -65,17 +65,17 @@ func movement(delta):
 	if input_movement == Vector2.ZERO:
 		velocity = Vector2.ZERO
 	
-	if player_data.ammo > 0:
+	if PlayerData.ammo > 0:
 		gun.visible = true
 	else:
 		gun.visible = false
 		
 	if Input.is_action_just_pressed("shoot") or Input.is_action_pressed("shoot"):
-		if player_data.ammo > 0:
+		if PlayerData.ammo > 0:
 			if gun_ready:
 				gun_ready = false
-				player_data.ammo -= 1
-				if player_data.ammo == 0:
+				PlayerData.ammo -= 1
+				if PlayerData.ammo == 0:
 					$outofammo.play()
 				$bullet_reset.start()
 				instance_bullet()
@@ -111,24 +111,24 @@ func animations():
 
 
 func dead():
-	player_data.player_is_dead = true
+	PlayerData.player_is_dead = true
 	velocity = Vector2.ZERO
 	gun.visible = false
 	$anim.play("dead")
 	await get_tree().create_timer(2).timeout
 	if get_tree():
-		player_data.health = 24
-		player_data.ammo = 50
-		player_data.levels = 1
-		player_data.sound_selecter = 0
-		player_data.hurt_ready = true
-		player_data.player_is_dead = false
-		player_data.toggle_loading_screen = true
-		player_data.intermission_levels = false
+		PlayerData.health = 24
+		PlayerData.ammo = 50
+		PlayerData.levels = 1
+		PlayerData.sound_selecter = 0
+		PlayerData.hurt_ready = true
+		PlayerData.player_is_dead = false
+		PlayerData.toggle_loading_screen = true
+		PlayerData.intermission_levels = false
 			
 	
 func target_mouse():
-	if player_data.player_is_dead == false:
+	if PlayerData.player_is_dead == false:
 		var mouse_movement = get_global_mouse_position()
 		pos = global_position
 		gun.look_at(mouse_movement)
@@ -174,16 +174,16 @@ func _on_trail_timer_timeout():
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("enemy"):
-		if player_data.hurt_ready:
+		if PlayerData.hurt_ready:
 			if area.is_in_group("poison"):
-				player_data.health -= 2
+				PlayerData.health -= 2
 			if area.is_in_group("web") and not already_slowed:
 				already_slowed = true
 				player.speed = player.speed / 4
 				$slow_timer.start()
-			player_data.hurt_ready = false
+			PlayerData.hurt_ready = false
 			$hurt_timer.start()
-			if player_data.health >= 2:
+			if PlayerData.health >= 2:
 				var hurt_sound = randi_range(1,3)
 				match hurt_sound:
 					1:
@@ -195,7 +195,7 @@ func _on_hitbox_area_entered(area):
 			else:
 				$death.play()
 			flash()
-			player_data.health -= 1
+			PlayerData.health -= 1
 		
 func flash():
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
@@ -235,10 +235,10 @@ func _on_freeze_timer_timeout():
 	current_state = player_states.MOVE
 	melee_ready = true
 	gun_ready = true
-	player_data.hurt_ready = true
+	PlayerData.hurt_ready = true
 
 func _on_hurt_timer_timeout():
-	player_data.hurt_ready = true
+	PlayerData.hurt_ready = true
 
 func _on_slow_timer_timeout():
 	player.speed = player.speed * 4

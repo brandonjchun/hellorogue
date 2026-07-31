@@ -12,8 +12,8 @@ func _process(delta):
 	global_position = get_global_mouse_position()
 	if get_tree().paused:
 		mouse_icon.visible = false
-		player_data.game_mouse = false
+		PlayerData.game_mouse = false
 	else:
 		mouse_icon.visible = true
-		player_data.game_mouse = true
+		PlayerData.game_mouse = true
 	

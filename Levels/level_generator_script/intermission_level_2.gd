@@ -130,10 +130,10 @@ func _ready():
 		spawner_30
 	]
 	
-	player_data.game_active = true
-	player_data.levels = 20
-	player_data.hurt_ready = true
-	player_data.reached_exit = false
+	PlayerData.game_active = true
+	PlayerData.levels = 20
+	PlayerData.hurt_ready = true
+	PlayerData.reached_exit = false
 	generate_level()
 	
 	ThemePlayer.theme_grand_stop()
@@ -151,10 +151,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.player_is_dead:
+	if PlayerData.player_is_dead:
 		loading_screen_intermission.reset_next_scene()
 		
-	if player_data.toggle_loading_screen:
+	if PlayerData.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
 		pause_menu.visible = false
@@ -165,13 +165,13 @@ func _process(delta):
 			loading_screen_intermission.z_index = 10
 
 		if change_scenes_once == 0:
-			if player_data.player_is_dead:
+			if PlayerData.player_is_dead:
 				loading_screen_intermission.reset_next_scene()
 			else:
 				loading_screen_intermission.load_next_scene()
 			next_level_timer.start()
 			change_scenes_once += 1
-			player_data.toggle_loading_screen = false
+			PlayerData.toggle_loading_screen = false
 	
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
@@ -205,7 +205,7 @@ func instance_enemy_at_spawn():
 		add_child(enemy)
 
 func instance_silverspikes():
-	var silverspikes_count = randi_range(3*player_data.levels,8)
+	var silverspikes_count = randi_range(3*PlayerData.levels,8)
 	for i in range(silverspikes_count):
 		var silverspikes = silverspikes_scene.instantiate()
 		add_child(silverspikes)
@@ -245,7 +245,7 @@ func _on_next_level_timer_timeout():
 	loading_screen_canvas.visible = false
 	loading_screen_intermission.visible = false
 	loading_screen_intermission.z_index = -10
-	player_data.toggle_loading_screen = false
+	PlayerData.toggle_loading_screen = false
 	change_scenes_once = 0
 	
 func _on_enemy_spawn_timeout():

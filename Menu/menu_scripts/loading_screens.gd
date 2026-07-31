@@ -4,9 +4,9 @@ var next_scene = "res://Levels/main_level.tscn"
 @onready var anim = $anim
 
 func load_next_scene():
-	if player_data.intermission_levels:
+	if PlayerData.intermission_levels:
 		next_scene = "res://Levels/intermission_level.tscn"
-		player_data.levels = 19
+		PlayerData.levels = 19
 	anim.play("fly")
 	ResourceLoader.load_threaded_request(next_scene)
 	

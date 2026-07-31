@@ -144,10 +144,10 @@ func _ready():
 	]
 #endregion
 	
-	player_data.game_active = true
-	player_data.levels = 21
-	player_data.hurt_ready = true
-	player_data.reached_exit = false
+	PlayerData.game_active = true
+	PlayerData.levels = 21
+	PlayerData.hurt_ready = true
+	PlayerData.reached_exit = false
 	generate_level()
 		
 	ThemePlayer.theme_grand_stop()
@@ -166,10 +166,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.player_is_dead:
+	if PlayerData.player_is_dead:
 		loading_screen_intermission.reset_next_scene()
 		
-	if player_data.toggle_loading_screen:
+	if PlayerData.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
 		pause_menu.visible = false
@@ -180,13 +180,13 @@ func _process(delta):
 			loading_screen_intermission.z_index = 10
 
 		if change_scenes_once == 0:
-			if player_data.player_is_dead:
+			if PlayerData.player_is_dead:
 				loading_screen_intermission.reset_next_scene()
 			else:
 				loading_screen_intermission.load_next_scene()
 			$next_level_timer.start()
 			change_scenes_once += 1
-			player_data.toggle_loading_screen = false
+			PlayerData.toggle_loading_screen = false
 	
 	ThemePlayer.theme_questionairre_stop()
 	ThemePlayer.theme_fileselect_stop()
@@ -209,7 +209,7 @@ func _on_next_level_timer_timeout():
 	loading_screen_canvas.visible = false
 	loading_screen_intermission.visible = false
 	loading_screen_intermission.z_index = -10
-	player_data.toggle_loading_screen = false
+	PlayerData.toggle_loading_screen = false
 	change_scenes_once = 0
 	
 func instance_player():
@@ -237,7 +237,7 @@ func instance_enemy_at_spawn():
 				
 	
 func instance_enemy1():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(2, player_data.levels*5))
+	var enemies_count = randi_range(maxi(1, PlayerData.levels), maxi(2, PlayerData.levels*5))
 	for i in range(enemies_count):
 		var enemy = enemy1_scene.instantiate()
 		choose_spawn_point(enemy)
@@ -322,28 +322,28 @@ func choose_spawn_point(enemy):
 			enemy.position = exit.position
 			
 func instance_enemy2():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(3, player_data.levels*4))
+	var enemies_count = randi_range(maxi(1, PlayerData.levels), maxi(3, PlayerData.levels*4))
 	for i in range(enemies_count):
 		var enemy = enemy2_scene.instantiate()
 		choose_spawn_point(enemy)
 		add_child(enemy)
 		
 func instance_enemy3():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(5, player_data.levels*2))
+	var enemies_count = randi_range(maxi(1, PlayerData.levels), maxi(5, PlayerData.levels*2))
 	for i in range(enemies_count):
 		var enemy = enemy3_scene.instantiate()
 		choose_spawn_point(enemy)
 		add_child(enemy)
 		
 func instance_enemy4():
-	var enemies_count = randi_range(maxi(1, player_data.levels), maxi(4, player_data.levels*3))
+	var enemies_count = randi_range(maxi(1, PlayerData.levels), maxi(4, PlayerData.levels*3))
 	for i in range(enemies_count):
 		var enemy = enemy4_scene.instantiate()
 		choose_spawn_point(enemy)
 		add_child(enemy)
 
 func instance_silverspikes():
-	var silverspikes_count = randi_range(3*player_data.levels,8)
+	var silverspikes_count = randi_range(3*PlayerData.levels,8)
 	for i in range(silverspikes_count):
 		var silverspikes = silverspikes_scene.instantiate()
 		add_child(silverspikes)

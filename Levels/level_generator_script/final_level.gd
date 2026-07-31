@@ -373,11 +373,11 @@ var spawn_increaser = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	player_data.final_level = true
-	player_data.game_active = true
-	player_data.levels = 22
-	player_data.hurt_ready = true
-	player_data.reached_exit = false
+	PlayerData.final_level = true
+	PlayerData.game_active = true
+	PlayerData.levels = 22
+	PlayerData.hurt_ready = true
+	PlayerData.reached_exit = false
 #region spikes array
 	spikes_array = [spikes_1, 
 		spikes_2, 
@@ -730,28 +730,28 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.player_is_dead:
+	if PlayerData.player_is_dead:
 		loading_screen_intermission.reset_next_scene()
-		player_data.boss_health = 500
-	if player_data.boss_health >= 400:
+		PlayerData.boss_health = 500
+	if PlayerData.boss_health >= 400:
 		boss_enemy_spawner.wait_time = randf_range(15,20)
 		spawn_increaser = 2
-	if player_data.boss_health >= 300:
+	if PlayerData.boss_health >= 300:
 		boss_enemy_spawner.wait_time = randf_range(10,15)
 		spawn_increaser = 4
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_enemy_spawner.wait_time = randf_range(7.5,12.5)
 		spawn_increaser = 6
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_enemy_spawner.wait_time = randf_range(5,10)
 		spawn_increaser = 8
-	elif player_data.boss_health >= 50:
+	elif PlayerData.boss_health >= 50:
 		boss_enemy_spawner.wait_time = randf_range(3,8)
 		spawn_increaser = 10
-	elif player_data.boss_health <= 0:
+	elif PlayerData.boss_health <= 0:
 		boss_enemy_spawner.paused = true
 		
-	if player_data.toggle_loading_screen:
+	if PlayerData.toggle_loading_screen:
 		intermission_level.visible = false
 		gui.visible = false
 		pause_menu.visible = false
@@ -762,12 +762,12 @@ func _process(delta):
 			loading_screen_intermission.z_index = 10
 
 		if change_scenes_once == 0:
-			if player_data.player_is_dead:
+			if PlayerData.player_is_dead:
 				loading_screen_intermission.reset_next_scene()
 			else:
 				loading_screen_intermission.load_next_scene()
 			change_scenes_once += 1
-			player_data.toggle_loading_screen = false
+			PlayerData.toggle_loading_screen = false
 	
 	ThemePlayer.theme_makuhita_stop()
 	ThemePlayer.theme_silentchasm_stop()
@@ -819,7 +819,7 @@ func _on_next_level_timer_timeout():
 	loading_screen_canvas.visible = false
 	loading_screen_intermission.visible = false
 	loading_screen_intermission.z_index = -10
-	player_data.toggle_loading_screen = false
+	PlayerData.toggle_loading_screen = false
 	change_scenes_once = 0
 
 func _on_spikes_timer_timeout():

@@ -10,12 +10,12 @@ func load_next_scene():
 		ResourceLoader.load_threaded_request(next_scene)
 	
 func reset_player_data_states():
-	player_data.health = 24
-	player_data.ammo = 50
-	player_data.levels = 1
-	player_data.sound_selecter = 0
-	player_data.hurt_ready = true
-	player_data.intermission_levels = false
+	PlayerData.health = 24
+	PlayerData.ammo = 50
+	PlayerData.levels = 1
+	PlayerData.sound_selecter = 0
+	PlayerData.hurt_ready = true
+	PlayerData.intermission_levels = false
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

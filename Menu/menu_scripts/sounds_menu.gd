@@ -17,6 +17,6 @@ func on_exit_pressed() -> void:
 	
 func _on_check_button_toggled(toggled_on):
 	if toggled_on:
-		player_data.screen_shake_enabled = true
+		PlayerData.screen_shake_enabled = true
 	else:
-		player_data.screen_shake_enabled = false
+		PlayerData.screen_shake_enabled = false

@@ -6,7 +6,7 @@ extends CharacterBody2D
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet.tscn")
 @onready var final_bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_4_bullet_2.tscn")
 var boss_multiplier = 0
-@export var speed = randi_range(32,37) + player_data.levels + boss_multiplier
+@export var speed = randi_range(32,37) + PlayerData.levels + boss_multiplier
 @onready var chase_box = $chase_box
 
 var enemy_health = 3
@@ -34,33 +34,33 @@ var change_direction
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if player_data.final_level:
+	if PlayerData.final_level:
 		$freeze_timer.wait_time = 0.3
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 5
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 15
 	else:
 		boss_multiplier = 20
-	speed = randi_range(22,27) + player_data.levels + boss_multiplier
+	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 5
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 15
 	else:
 		boss_multiplier = 20
-	if player_data.final_level:
+	if PlayerData.final_level:
 		chase_box.scale = Vector2(3.5, 3.5)
 	match current_state:
 		enemy_state.MOVE:
@@ -119,7 +119,7 @@ func instance_health():
 	
 func instance_bullet():
 	var bullet
-	if not player_data.final_level:
+	if not PlayerData.final_level:
 		bullet = bullet_scene.instantiate()
 	else:
 		bullet = final_bullet_scene.instantiate()

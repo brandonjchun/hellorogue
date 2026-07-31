@@ -5,13 +5,13 @@ const HEART_OFFSET = 16
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in mini(player_data.health, 12):
+	for i in mini(PlayerData.health, 12):
 		var new_heart = Sprite2D.new()
 		new_heart.texture = $heart.texture
 		new_heart.hframes = $heart.hframes
 		$heart.add_child(new_heart)
-	if player_data.health < 12:
-		var empty_hearts = 12 - player_data.health
+	if PlayerData.health < 12:
+		var empty_hearts = 12 - PlayerData.health
 		while empty_hearts > 0:
 			var new_heart = Sprite2D.new()
 			new_heart.texture = $heart.texture
@@ -21,7 +21,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$ammo_amount.text = var_to_str(player_data.ammo)
+	$ammo_amount.text = var_to_str(PlayerData.ammo)
 		
 	for heart in $heart.get_children():
 		var index = heart.get_index()
@@ -29,26 +29,26 @@ func _process(delta):
 		var y = (index / HEART_ROW_SIZE) * HEART_OFFSET
 		heart.position = Vector2(x, y)
 		
-		var last_heart = floor(player_data.health)
+		var last_heart = floor(PlayerData.health)
 		if index > last_heart:
 			heart.frame = 0
 		if index == last_heart:
-			heart.frame = (player_data.health - last_heart) * 4
+			heart.frame = (PlayerData.health - last_heart) * 4
 		if index < last_heart:
 			heart.frame = 4
-	if player_data.health > 12:
-		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
+	if PlayerData.health > 12:
+		$extra_hearts.text = "+" + var_to_str(PlayerData.health - 12)
 	else:
 		$extra_hearts.text = ""
 		
-	if player_data.levels <= 18:
-		$level_number.text = var_to_str(player_data.levels)
-	elif player_data.levels == 19: 
+	if PlayerData.levels <= 18:
+		$level_number.text = var_to_str(PlayerData.levels)
+	elif PlayerData.levels == 19: 
 		$level_number.text = "F1"
-	elif player_data.levels == 20:
+	elif PlayerData.levels == 20:
 		$level_number.text = "F2"
-	elif player_data.levels == 21:
+	elif PlayerData.levels == 21:
 		$level_number.text = "F3"
-	elif player_data.levels == 22:
+	elif PlayerData.levels == 22:
 		$level_number.text = "FINAL"
 	

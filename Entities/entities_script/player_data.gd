@@ -1,6 +1,6 @@
 extends Node
 
-class_name player_data
+class_name PlayerData
 
 static var health = 9000
 static var ammo = 50

@@ -10,13 +10,13 @@ var was_area_entered = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$bullet_sound.finished.connect(_on_bullet_sound_finished)
-	if player_data.degrees_to_player >= 9.5 and player_data.degrees_to_player < 50.0:
+	if PlayerData.degrees_to_player >= 9.5 and PlayerData.degrees_to_player < 50.0:
 		$anim.play("fl")
-	if player_data.degrees_to_player >= -50.0 and player_data.degrees_to_player < -12.0:
+	if PlayerData.degrees_to_player >= -50.0 and PlayerData.degrees_to_player < -12.0:
 		$anim.play("fu")
-	if player_data.degrees_to_player >= -12.0 and player_data.degrees_to_player < 2.0:
+	if PlayerData.degrees_to_player >= -12.0 and PlayerData.degrees_to_player < 2.0:
 		$anim.play("fr")
-	if player_data.degrees_to_player >= 2.0 and player_data.degrees_to_player < 9.5:
+	if PlayerData.degrees_to_player >= 2.0 and PlayerData.degrees_to_player < 9.5:
 		$anim.play("fd")
 	$bullet_sound.play()
 	

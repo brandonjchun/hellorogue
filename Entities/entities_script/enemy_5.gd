@@ -40,7 +40,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	match player_data.boss_health:
+	match PlayerData.boss_health:
 		400:
 			$boss_roar.play()
 			speed = 55
@@ -178,7 +178,7 @@ func _on_hitbox_area_entered(area):
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1
-		player_data.boss_health -= 1
+		PlayerData.boss_health -= 1
 		if enemy_health == 0:
 			current_state = enemy_state.DEAD
 			queue_free()

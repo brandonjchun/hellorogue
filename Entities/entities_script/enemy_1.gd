@@ -4,7 +4,7 @@ extends CharacterBody2D
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
 var boss_multiplier = 0
-@export var speed = randi_range(22,27) + player_data.levels + boss_multiplier
+@export var speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
 @onready var chase_box = $chase_box
 
 enum current_state {
@@ -25,33 +25,33 @@ var enemy_state = current_state.FROZEN
 
 @onready var target = get_node("../Player")
 func _ready():
-	if player_data.final_level:
+	if PlayerData.final_level:
 		$freeze_timer.wait_time = 0.3
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 5
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 15
 	else:
 		boss_multiplier = 20
-	speed = randi_range(22,27) + player_data.levels + boss_multiplier
+	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 5
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 15
 	else:
 		boss_multiplier = 20
-	if player_data.final_level:
+	if PlayerData.final_level:
 		chase_box.scale = Vector2(2.5, 2.5)
 		
 	if enemy_state == current_state.MOVE:

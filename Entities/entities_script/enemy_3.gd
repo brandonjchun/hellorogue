@@ -6,7 +6,7 @@ extends CharacterBody2D
 @onready var bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_3_bullet.tscn")
 @onready var final_bullet_scene = preload("res://Entities/Scenes/Bullets/enemy_3_bullet_2.tscn")
 var boss_multiplier = 0
-@export var speed = randi_range(27,32) + player_data.levels + boss_multiplier
+@export var speed = randi_range(27,32) + PlayerData.levels + boss_multiplier
 var enemy_health = 4
 var can_attack = false
 @onready var enemy_collider = $enemy_collider
@@ -34,33 +34,33 @@ var change_direction
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if player_data.final_level:
+	if PlayerData.final_level:
 		$freeze_timer.wait_time = 0.3
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 20
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 30
-	elif player_data.boss_health >= 50:
+	elif PlayerData.boss_health >= 50:
 		boss_multiplier = 40
-	speed = randi_range(22,27) + player_data.levels + boss_multiplier
+	speed = randi_range(22,27) + PlayerData.levels + boss_multiplier
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if player_data.boss_health >= 400:
+	if PlayerData.boss_health >= 400:
 		boss_multiplier = 0
-	elif player_data.boss_health >= 300:
+	elif PlayerData.boss_health >= 300:
 		boss_multiplier = 5
-	elif player_data.boss_health >= 200:
+	elif PlayerData.boss_health >= 200:
 		boss_multiplier = 10
-	elif player_data.boss_health >= 100:
+	elif PlayerData.boss_health >= 100:
 		boss_multiplier = 15
 	else:
 		boss_multiplier = 20
-	if player_data.final_level:
+	if PlayerData.final_level:
 		chase_box.scale = Vector2(4,4)
 	match current_state:
 		enemy_state.MOVE:
@@ -121,12 +121,12 @@ func instance_health():
 	
 func instance_bullet():
 	var bullet
-	if not player_data.final_level:
+	if not PlayerData.final_level:
 		bullet = bullet_scene.instantiate()
 	else:
 		bullet = final_bullet_scene.instantiate()
 	bullet.direction = global_position.direction_to(target.global_position)
-	player_data.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
+	PlayerData.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
 	bullet.global_position = global_position
 	get_tree().root.add_child(bullet)
 	

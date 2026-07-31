@@ -9,13 +9,13 @@ const HEART_OFFSET = 16
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in mini(player_data.health, 12):
+	for i in mini(PlayerData.health, 12):
 		var new_heart = Sprite2D.new()
 		new_heart.texture = $heart.texture
 		new_heart.hframes = $heart.hframes
 		$heart.add_child(new_heart)
-	if player_data.health < 12:
-		var empty_hearts = 12 - player_data.health
+	if PlayerData.health < 12:
+		var empty_hearts = 12 - PlayerData.health
 		while empty_hearts > 0:
 			var new_heart = Sprite2D.new()
 			new_heart.texture = $heart.texture
@@ -23,17 +23,17 @@ func _ready():
 			$heart.add_child(new_heart)
 			empty_hearts -= 1
 			
-	$level_number.text = var_to_str(player_data.levels)
+	$level_number.text = var_to_str(PlayerData.levels)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$ammo_amount.text = var_to_str(player_data.ammo)
+	$ammo_amount.text = var_to_str(PlayerData.ammo)
 	if timer.time_left >= 120.0:
 		$timer_countdown.text = "120.0"
 	else:
 		$timer_countdown.text = var_to_str(timer.time_left).pad_decimals(1)
 		
-	if player_data.reached_exit or player_data.player_is_dead:
+	if PlayerData.reached_exit or PlayerData.player_is_dead:
 		timer.paused = true
 		
 	for heart in $heart.get_children():
@@ -42,15 +42,15 @@ func _process(delta):
 		var y = (index / HEART_ROW_SIZE) * HEART_OFFSET
 		heart.position = Vector2(x, y)
 		
-		var last_heart = floor(player_data.health)
+		var last_heart = floor(PlayerData.health)
 		if index > last_heart:
 			heart.frame = 0
 		if index == last_heart:
-			heart.frame = (player_data.health - last_heart) * 4
+			heart.frame = (PlayerData.health - last_heart) * 4
 		if index < last_heart:
 			heart.frame = 4
-	if player_data.health > 12:
-		$extra_hearts.text = "+" + var_to_str(player_data.health - 12)
+	if PlayerData.health > 12:
+		$extra_hearts.text = "+" + var_to_str(PlayerData.health - 12)
 	else:
 		$extra_hearts.text = ""
 	

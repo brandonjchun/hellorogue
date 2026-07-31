@@ -9,8 +9,8 @@ signal exit_pause_menu
 signal enter_pause_menu
 
 func resume():
-	player_data.pause_active = false
-	player_data.game_mouse = true
+	PlayerData.pause_active = false
+	PlayerData.game_mouse = true
 	exit_pause_menu.emit()
 	get_tree().paused = false
 	
@@ -18,8 +18,8 @@ func resume():
 	$anim.play_backwards("blur")
 
 func pause():
-	player_data.pause_active = true
-	player_data.game_mouse = false
+	PlayerData.pause_active = true
+	PlayerData.game_mouse = false
 	
 	enter_pause_menu.emit()
 	get_tree().paused = true
@@ -45,22 +45,22 @@ func _process(delta):
 	testEsc()
 
 func _on_resume_pressed():
-	if player_data.pause_active:
+	if PlayerData.pause_active:
 		resume()
 
 func _on_quit_pressed():
 	
-	if player_data.pause_active:
+	if PlayerData.pause_active:
 		get_tree().quit()
 
 func _on_reset_pressed():
-	player_data.reset_button_hit = true
-	if player_data.pause_active:
+	PlayerData.reset_button_hit = true
+	if PlayerData.pause_active:
 		get_tree().paused = false
-		player_data.toggle_loading_screen = true
+		PlayerData.toggle_loading_screen = true
 
 func _on_sounds_pressed():
-	if player_data.pause_active:
+	if PlayerData.pause_active:
 		sounds_menu.visible = true
 		color_rect.visible = false
 		panel.visible = false

@@ -1,6 +1,6 @@
 extends Node
 
-class_name Walker_room
+class_name WalkerRoom
 
 const DIRECTIONS = [Vector2.RIGHT, Vector2.UP, Vector2.LEFT, Vector2.DOWN]
 var position =  Vector2.ZERO
