@@ -35,13 +35,14 @@ func _ready():
 	player.speed = 500 + PlayerData.levels*5
 	if PlayerData.final_level:
 		$hurt_timer.wait_time = 0.1
+	# Boss room is a single large arena, so it gets a tighter camera. This was
+	# being re-applied from _process on every frame of the level.
+	if PlayerData.levels == 22:
+		camera_2d.zoom = Vector2(3, 3)
 	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if PlayerData.levels == 22:
-		camera_2d.zoom = Vector2(3, 3)
-		
 	if current_state != player_states.FREEZE:
 		if PlayerData.health <= 0:
 			current_state = player_states.DEAD
@@ -117,14 +118,10 @@ func dead():
 	$anim.play("dead")
 	await get_tree().create_timer(2).timeout
 	if get_tree():
-		PlayerData.health = 24
-		PlayerData.ammo = 50
-		PlayerData.levels = 1
-		PlayerData.sound_selecter = 0
-		PlayerData.hurt_ready = true
-		PlayerData.player_is_dead = false
+		# reset_run() also clears final_level and boss_health, which this hand
+		# written list did not.
+		PlayerData.reset_run()
 		PlayerData.toggle_loading_screen = true
-		PlayerData.intermission_levels = false
 			
 	
 func target_mouse():
@@ -197,30 +194,19 @@ func _on_hitbox_area_entered(area):
 			flash()
 			PlayerData.health -= 1
 		
+const FLASH_BLINKS := 5
+const FLASH_INTERVAL := 0.1
+
+# Blinks the hit shader on and off. This was 13 hand-unrolled await/set pairs,
+# two of which set the same value twice in a row so one "blink" silently did
+# nothing.
 func flash():
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0.5)
-	await get_tree().create_timer(0.1).timeout
-	$Sprite2D.material.set_shader_parameter("flash_modifier", 0)
+	var sprite_material: Material = $Sprite2D.material
+	for i in FLASH_BLINKS:
+		sprite_material.set_shader_parameter("flash_modifier", 0.5)
+		await get_tree().create_timer(FLASH_INTERVAL).timeout
+		sprite_material.set_shader_parameter("flash_modifier", 0)
+		await get_tree().create_timer(FLASH_INTERVAL).timeout
 	
 func _on_melee_reset_timeout():
 	melee_ready = true
