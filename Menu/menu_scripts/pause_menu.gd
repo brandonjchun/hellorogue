@@ -8,13 +8,19 @@ extends Control
 signal exit_pause_menu
 signal enter_pause_menu
 
+# Pausing swaps the level's music for the pause theme, so resuming has to know
+# what to put back. Previously resume() only stopped the pause theme, and the
+# level track came back solely because every level re-issued its play call from
+# _process on every frame. With that gone, the restore has to be explicit.
+var _theme_before_pause := ""
+
 func resume():
 	PlayerData.pause_active = false
 	PlayerData.game_mouse = true
 	exit_pause_menu.emit()
 	get_tree().paused = false
 	
-	ThemePlayer.theme_ninetales_stop()
+	ThemePlayer.play_only(_theme_before_pause)
 	$anim.play_backwards("blur")
 
 func pause():
@@ -23,8 +29,9 @@ func pause():
 	
 	enter_pause_menu.emit()
 	get_tree().paused = true
-	
-	ThemePlayer.theme_ninetales()
+
+	_theme_before_pause = ThemePlayer.current_theme
+	ThemePlayer.play_only("ninetales")
 	$anim.play("blur")
 	
 func testEsc():
