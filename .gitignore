@@ -1,2 +1,40 @@
-# Godot 4+ specific ignores
+# ---- Godot ----
 .godot/
+*.translation
+
+# Godot writes these when a scene save is interrupted (crash, force-quit).
+# They are never source; they are recovery scratch files.
+*.tmp
+
+# Export output
+build/
+export/
+*.pck
+*.exe
+*.x86_64
+*.dmg
+*.apk
+*.aab
+
+# ---- Binary assets ----
+# This repository is published as a *code* showcase. Art and audio are
+# intentionally untracked: together they are ~330 MB, and the music is
+# third-party material that is not ours to redistribute.
+#
+# A fresh clone will NOT run without these directories present.
+Sprites/
+Music/
+
+# Loose asset archives / editor sources
+*.zip
+*.xcf
+*.aseprite
+*.psd
+
+# ---- OS / editor noise ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
