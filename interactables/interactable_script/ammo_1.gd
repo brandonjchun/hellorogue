@@ -5,7 +5,10 @@ extends Area2D
 func _ready():
 	if PlayerData.levels >= 12:
 		ammo = 20
-		
+	if PlayerData.bandolier_active:
+		ammo *= 2
+
+
 func _on_body_entered(body):
 	# The pickup sound used to fire before this check, so any enemy that walked
 	# over a dropped ammo box played the collect sound without collecting it.

@@ -9,6 +9,7 @@ extends Node2D
 @onready var enemy5_scene = preload("res://Entities/Scenes/Enemies/enemy_5.tscn")
 @onready var silverspikes_scene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene = preload("res://interactables/scenes/redspikes.tscn")
+@onready var shop_scene = preload("res://Menu/shop_menu.tscn")
 @onready var main_level = $"."
 @onready var gui = $GUI
 
@@ -53,8 +54,24 @@ var ground_layer = 0
 var change_scenes_once = 0
 var loading_screen_timeout = false
 
+# How much of a wave Culling Order leaves standing.
+const CULL_MULTIPLIER := 0.7
+
+var shop: ShopMenu
+var _time_banked = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# One-floor purchases are consumed the moment their floor loads, so they
+	# cannot leak into the floor after it. This has to happen before
+	# generate_level(), which reads cull_active while spawning.
+	PlayerData.floor_bonus_time = PlayerData.bonus_time_next
+	PlayerData.bonus_time_next = 0.0
+	PlayerData.cull_active = PlayerData.cull_next
+	PlayerData.cull_next = false
+	PlayerData.bandolier_active = PlayerData.bandolier_next
+	PlayerData.bandolier_next = false
+
 	$loading_screen_timer.wait_time = randf_range(1.5, 2.5)
 	PlayerData.hurt_ready = true
 	PlayerData.reached_exit = false
@@ -80,18 +97,36 @@ func _ready():
 	# run a seven-branch play/stop cascade inside _process, 60 times a second.
 	ThemePlayer.play_only(LEVEL_THEMES[PlayerData.sound_selecter])
 
-	$map_timer.start()
-	$time_running_out_timer.wait_time = $map_timer.wait_time - 10
-	$time_running_out_timer.start()
+	start_floor_clock($map_timer.wait_time + PlayerData.floor_bonus_time)
+
+	shop = shop_scene.instantiate()
+	add_child(shop)
+	shop.closed.connect(on_shop_closed)
 
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
+
+# Both timers are driven from one place because the warning has to track the
+# clock: Overclock and Second Wind both change how long the floor runs for, and
+# a fixed "wait_time - 10" computed once in _ready would fire at the wrong
+# moment -- or, on a 60s Second Wind refill, have fired already.
+func start_floor_clock(duration: float) -> void:
+	$map_timer.start(duration)
+	$time_running_out_timer.start(maxf(1.0, duration - 10.0))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if PlayerData.reached_exit:
 		$map_timer.paused = true
 		$time_running_out_timer.paused = true
+		bank_floor_time()
+
+	if PlayerData.shop_pending:
+		PlayerData.shop_pending = false
+		# The exit handed the run to us instead of the loading screen, so a shop
+		# that declines to open has to hand it back.
+		if not shop.open():
+			PlayerData.toggle_loading_screen = true
 
 	if PlayerData.reached_exit or PlayerData.toggle_loading_screen:
 		PlayerData.hurt_ready = false
@@ -123,7 +158,9 @@ func _process(_delta):
 # from level 15 on the walk ran off the end of it: no wall tiles had ever been
 # placed out there, nothing got drawn, and the player could stroll off the map.
 func compute_borders(tilemap: TileMap) -> Rect2:
-	var growth := borders_growth_per_tier * floor(lev / 3.0)
+	# Annotated rather than inferred: `lev` derives from the untyped PlayerData.levels,
+	# so `:=` here is a hard parse error in 4.2 and the whole script fails to load.
+	var growth: float = borders_growth_per_tier * floor(lev / 3.0)
 	var desired := Rect2(base_borders.position,
 		base_borders.size + Vector2(growth, growth))
 
@@ -204,7 +241,12 @@ func instance_exit():
 	add_child(exit)
 	exit.position = walker.get_end_room().position * TILE_SIZE
 
-func spawn_enemies(scene: PackedScene, count: int) -> void:
+# `cullable` is false for the spike passes: Culling Order is sold as thinning the
+# enemies, and quietly halving the hazards as well would make it strictly better
+# than it reads.
+func spawn_enemies(scene: PackedScene, count: int, cullable := true) -> void:
+	if cullable and PlayerData.cull_active:
+		count = maxi(1, int(round(count * CULL_MULTIPLIER)))
 	for i in range(count):
 		var enemy = scene.instantiate()
 		enemy.position = random_floor_position()
@@ -226,12 +268,38 @@ func instance_enemy5():
 	spawn_enemies(enemy5_scene, 1)
 
 func instance_silverspikes():
-	spawn_enemies(silverspikes_scene, randi_range(PlayerData.levels, 2 * PlayerData.levels))
+	spawn_enemies(silverspikes_scene, randi_range(PlayerData.levels, 2 * PlayerData.levels), false)
 
 func instance_redspikes():
-	spawn_enemies(redspikes_scene, randi_range(PlayerData.levels, 2 * PlayerData.levels))
+	spawn_enemies(redspikes_scene, randi_range(PlayerData.levels, 2 * PlayerData.levels), false)
+
+# Deposits what is left on the clock into the bank.
+#
+# Bonus seconds bought at the shop are subtracted first. They are pressure
+# relief for one floor, not currency: banking them would mean Overclock refunded
+# 40s for the 25s it cost, and the only wrong answer would be not buying it.
+func bank_floor_time() -> void:
+	if _time_banked:
+		return
+	_time_banked = true
+	var earned = maxf(0.0, $map_timer.time_left - PlayerData.floor_bonus_time)
+	PlayerData.banked_time = minf(PlayerData.banked_time + earned, PlayerData.bank_cap)
+
+func on_shop_closed() -> void:
+	# The exit deliberately did not set this, so the run waits on the shop
+	# rather than loading the next floor out from under it.
+	PlayerData.toggle_loading_screen = true
 
 func _on_timer_timeout():
+	# Second Wind turns the one moment the clock could still end a run into
+	# another 60 seconds. Those seconds are booked as bonus time so they cannot
+	# be banked -- surviving on the refill should not also pay out.
+	if PlayerData.second_wind:
+		PlayerData.second_wind = false
+		PlayerData.floor_bonus_time += PlayerData.SECOND_WIND_SECONDS
+		start_floor_clock(PlayerData.SECOND_WIND_SECONDS)
+		return
+
 	PlayerData.toggle_loading_screen = true
 	PlayerData.levels = 1
 	PlayerData.reached_exit = false

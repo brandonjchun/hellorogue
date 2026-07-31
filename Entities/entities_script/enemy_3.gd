@@ -166,7 +166,9 @@ func chase_state():
 # Vector2 comparison is lexicographic, so `velocity > Vector2.ZERO` missed every
 # up-and-left diagonal and left the sprite on its previous animation.
 func animation():
-	var chasing := new_direction == enemy_direction.CHASE
+	# Annotated rather than inferred: `new_direction` is untyped, so `:=` here is a
+	# hard parse error in 4.2 and the whole script fails to load.
+	var chasing: bool = new_direction == enemy_direction.CHASE
 	if velocity.x > 0:
 		$anim.play("run_right" if chasing else "walk_right")
 	elif velocity.x < 0:

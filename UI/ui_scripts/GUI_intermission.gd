@@ -3,8 +3,18 @@ extends CanvasLayer
 const HEART_ROW_SIZE = 12
 const HEART_OFFSET = 16
 
+var bank_label: Label
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# These rooms have no clock, but the bank still has to be readable: what the
+	# player is holding here is exactly what the health exchange at the exit will
+	# let them spend.
+	bank_label = Label.new()
+	bank_label.position = Vector2(16, 98)
+	bank_label.add_theme_font_size_override("font_size", 24)
+	add_child(bank_label)
+
 	for i in mini(PlayerData.health, 12):
 		var new_heart = Sprite2D.new()
 		new_heart.texture = $heart.texture
@@ -22,7 +32,9 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$ammo_amount.text = var_to_str(PlayerData.ammo)
-		
+	bank_label.text = "BANK: %.1f" % PlayerData.banked_time
+
+
 	for heart in $heart.get_children():
 		var index = heart.get_index()
 		var x = (index % HEART_ROW_SIZE) * HEART_OFFSET

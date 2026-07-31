@@ -18,6 +18,7 @@ class_name ArenaLevel
 @onready var enemy5_scene: PackedScene = preload("res://Entities/Scenes/Enemies/enemy_5.tscn")
 @onready var silverspikes_scene: PackedScene = preload("res://interactables/scenes/dead_area.tscn")
 @onready var redspikes_scene: PackedScene = preload("res://interactables/scenes/redspikes.tscn")
+@onready var shop_scene: PackedScene = preload("res://Menu/shop_menu.tscn")
 
 @onready var gui := $GUI_intermission
 @onready var pause_menu_canvas := $CanvasLayer
@@ -48,6 +49,12 @@ var enemy_markers: Array = []
 # effect, and unbounded they will bury the frame rate within a minute.
 @export var max_live_enemies := 120
 
+# These rooms have no clock of their own, so there is nothing here to bank.
+# What banked time buys instead is health -- and only health. A last chance to
+# convert a rushed early run into survivability before the boss.
+const ARENA_STOCK := ["medkit"]
+
+var shop: ShopMenu
 var change_scenes_once := 0
 var _live_enemies := 0
 var _reset_requested := false
@@ -68,10 +75,27 @@ func _ready() -> void:
 	if theme_track != "":
 		ThemePlayer.play_only(theme_track)
 
+	# The boss room has no exit, so it can never reach the shop -- but it costs
+	# nothing to let it hold one, and skipping it here would be a special case
+	# that only reads as an omission.
+	shop = shop_scene.instantiate()
+	add_child(shop)
+	shop.closed.connect(on_shop_closed)
+
 	pause_menu.exit_pause_menu.connect(on_exit_pause_menu)
 	pause_menu.enter_pause_menu.connect(on_enter_pause_menu)
 
+func on_shop_closed() -> void:
+	PlayerData.toggle_loading_screen = true
+
 func _process(_delta: float) -> void:
+	if PlayerData.shop_pending:
+		PlayerData.shop_pending = false
+		# The exit handed the run to us instead of the loading screen, so a shop
+		# that declines to open has to hand it back.
+		if not shop.open(ARENA_STOCK):
+			PlayerData.toggle_loading_screen = true
+
 	# reset_next_scene() issues a threaded load request. The original called it
 	# from _process with no guard, so once the player died it fired a fresh
 	# request every single frame until the scene actually swapped.

@@ -35,6 +35,11 @@ func pause():
 	$anim.play("blur")
 	
 func testEsc():
+	# The shop pauses the tree too. Without this, ESC in the shop takes the
+	# `paused` branch and calls resume(), which unpauses the game and leaves the
+	# panel sitting on top of a running floor.
+	if PlayerData.shop_open:
+		return
 	if Input.is_action_just_pressed("esc") and not get_tree().paused:
 		pause()
 	elif Input.is_action_just_pressed("esc") and get_tree().paused:

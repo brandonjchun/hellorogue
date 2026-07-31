@@ -9,6 +9,8 @@ func _ready():
 		health = 3
 	if PlayerData.levels >= 19:
 		health = 4
+	if PlayerData.bandolier_active:
+		health *= 2
 
 func _on_body_entered(body):
 	if body.name == "Player":
