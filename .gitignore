@@ -6,6 +6,9 @@
 # They are never source; they are recovery scratch files.
 *.tmp
 
+# Godot rewrites project.godot on settings changes and leaves the old copy.
+*.bak
+
 # Export output
 build/
 export/
