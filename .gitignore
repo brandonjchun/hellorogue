@@ -1,5 +1,7 @@
 # ---- Godot ----
 .godot/
+# Engine binary downloaded by tools/ci.sh.
+.godot-bin/
 *.translation
 
 # Godot writes these when a scene save is interrupted (crash, force-quit).

@@ -53,7 +53,14 @@ func _process(delta: float) -> void:
 			card_current_index = _index
 
 
-func scroll() -> void:	
+func scroll() -> void:
+	# create_tween() returns null on a node that is not in the tree, and this is
+	# reached from a call_deferred() in _ready() -- so anything that adds this
+	# menu and drops it again before the frame ends arrives here detached and
+	# null-dereferences. Nothing in the game does that today; the headless deep
+	# smoke pass does, which is how it surfaced.
+	if not is_inside_tree():
+		return
 	scroll_tween = create_tween().set_parallel(true)
 	scroll_tween.tween_property(
 		self,
@@ -74,7 +81,10 @@ func scroll() -> void:
 func _on_ScrollContainer_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
-			scroll_tween.stop()
+			# Null until the first scroll() has run, and scroll() now declines to
+			# run at all while detached.
+			if scroll_tween != null:
+				scroll_tween.stop()
 		else:
 			scroll()
 

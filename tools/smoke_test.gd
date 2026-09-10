@@ -8,6 +8,12 @@ extends Node
 
 const SKIP_DIRS := ["res://.godot", "res://tools"]
 
+# Addon scenes are still loaded and instantiated, but never added to the tree.
+# GUT ships editor panels whose _ready() reaches for editor-only state, so the
+# deep pass gets "Invalid get index 'hide_settings'" and a null set_parallel()
+# from them -- noise about the test framework's own UI, not about the game.
+const NO_DEEP_DIRS := ["res://addons"]
+
 var _failures: Array[String] = []
 var _scenes_ok := 0
 var _scripts_ok := 0
@@ -66,13 +72,20 @@ func _check_scene(path: String, deep: bool) -> void:
 		_failures.append("scene failed to instantiate: %s" % path)
 		return
 
-	if deep:
+	if deep and not _skips_deep(path):
 		# _ready() runs on add_child, so a bad get_node() surfaces here.
 		add_child(instance)
 		remove_child(instance)
 
 	instance.queue_free()
 	_scenes_ok += 1
+
+
+func _skips_deep(path: String) -> bool:
+	for dir_path in NO_DEEP_DIRS:
+		if path.begins_with(dir_path):
+			return true
+	return false
 
 
 func _find_files(root: String, suffix: String) -> Array[String]:

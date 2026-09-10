@@ -44,6 +44,12 @@ committed, and running it where the real assets are present does nothing.
 .\tools\smoke.ps1 -All      # smoke + tests + a real boot
 ```
 
+On Linux and in CI the same checks run through `tools/ci.sh`, which stubs the
+assets, fetches Godot if it has to, and decides pass/fail by scanning output --
+Godot's exit code is unusable, it returns non-zero for harmless leaks at
+shutdown. `.github/workflows/verify` runs it on every push, so a commit carries
+a green tick or a red cross and a red one names the stage that broke.
+
 The game is *playable* only with the real assets. The placeholders are for
 verification, not for looking at.
 

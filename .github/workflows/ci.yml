@@ -1,0 +1,44 @@
+name: verify
+
+# Runs the whole headless check on every push. The point is that a change can be
+# judged from a phone: the commit gets a green tick or a red cross, and a red one
+# names the stage that broke.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: scripts, scenes, tests, level boots
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Sprites/ and Music/ are untracked, so the level scenes cannot load in a
+      # fresh clone. tools/ci.sh writes placeholders first; without them five
+      # scenes fail to build and every integration test reports pending.
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: .godot-bin
+          key: godot-4.2.2-stable-linux
+
+      - name: Run verification
+        run: tools/ci.sh
+
+      # The import cache and the placeholder assets are build output. Uploading
+      # them on failure makes a red run diagnosable without a machine.
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-import-log
+          path: |
+            .godot/*.log
+            *.log
+          if-no-files-found: ignore
+          retention-days: 7
