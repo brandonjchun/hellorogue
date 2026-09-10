@@ -30,19 +30,27 @@ const OFFSETS := [
 	Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
 ]
 
-# The old whole-block match measured 7.4-8.9s. Generous enough not to fail on a
-# slow machine while still failing loudly if the frontier logic is lost.
-const BUDGET_MS := 2500
-
-# Judged against what the tile set can actually express, not an absolute
-# percentage.
+# The whole-block match measured 7.4-8.9s; the table lookup measures 53-77ms.
+# Loose enough not to fail on slower hardware, tight enough that handing the
+# whole block to the engine matcher again fails here rather than shipping.
 #
-# It renders only 48 of the 256 possible neighbourhoods, so some cells have no
-# exact tile and no algorithm can place one -- and how many depends on how
-# convoluted the walk was, which moves with the tier. Measured as a ratio of that
-# floor the painter is a stable 1.6-1.8x across every tier, where the old
-# whole-block match was 8-11x. Three is clear of one and nowhere near the other.
-const MAX_ERROR_RATIO := 3.0
+# Reverting only the *matcher* (engine solver on the frontier alone, ~280ms) does
+# not trip this on fast hardware -- test_the_tiles_match_the_walls_they_sit_in is
+# what catches that, and it catches it on correctness rather than on a stopwatch.
+const BUDGET_MS := 1000
+
+# The painter is exact, so the bar is exactness rather than a tolerance.
+#
+# Every frontier cell gets the tile whose eight peering bits equal its eight real
+# neighbours. The only cells that end up with a tile that does not fit are the
+# ones the tile set has nothing for -- it renders 48 of the 256 possible
+# neighbourhoods -- and those are counted independently below. So the number of
+# wrong cells should equal that floor and not exceed it by one.
+#
+# For reference, the engine matcher lands at 1.6-1.8x the floor on the frontier
+# alone and 8-11x when handed the whole block: its propagation between
+# neighbouring decisions is what pushes compromise tiles into rock that plainly
+# wants the surrounded tile.
 
 var _room: Node2D
 var _tilemap: TileMap
@@ -148,14 +156,14 @@ func _cells_no_tile_could_satisfy() -> int:
 	return impossible
 
 
-func _assert_tiling_is_near_optimal(level_number: int) -> void:
+func _assert_tiling_is_exact(level_number: int) -> void:
 	var wrong := _cells_with_a_wrong_tile()
 	var unavoidable := _cells_no_tile_could_satisfy()
-	var ratio := float(wrong) / maxf(1.0, float(unavoidable))
-	assert_lt(ratio, MAX_ERROR_RATIO,
+	assert_eq(wrong, unavoidable,
 		("level %d: %d of %d cells hold a tile that does not match their " +
-		"neighbours, against %d that no tile could satisfy -- %.1fx the floor") %
-		[level_number, wrong, _solid.size(), unavoidable, ratio])
+		"neighbours, but only %d of them have a shape the tile set cannot " +
+		"render -- the matcher is approximating where it could be exact") %
+		[level_number, wrong, _solid.size(), unavoidable])
 
 
 # --- the whole point ------------------------------------------------------
@@ -201,7 +209,7 @@ func test_no_carved_cell_was_painted_over():
 
 func test_the_tiles_match_the_walls_they_sit_in():
 	if not _paint(): return
-	_assert_tiling_is_near_optimal(1)
+	_assert_tiling_is_exact(1)
 
 
 func test_it_holds_up_on_the_largest_floor():
@@ -210,12 +218,12 @@ func test_it_holds_up_on_the_largest_floor():
 	if not _paint(18): return
 	assert_eq(_tilemap.get_used_cells(0).size(), _solid.size(),
 		"the largest floor came out with holes in it")
-	_assert_tiling_is_near_optimal(18)
+	_assert_tiling_is_exact(18)
 
 
 func test_it_holds_up_mid_run_where_the_theme_is_two_tile_sets():
 	if not _paint(12): return
-	_assert_tiling_is_near_optimal(12)
+	_assert_tiling_is_exact(12)
 
 
 # --- the claim the optimisation rests on ----------------------------------
@@ -248,3 +256,50 @@ func test_surrounded_tiles_survives_a_missing_tile_set():
 		return
 	assert_eq(_room.surrounded_tiles(null).size(), 0,
 		"a null tile set should yield no fill candidates, not an error")
+
+
+# --- shapes the tile set has no tile for ----------------------------------
+
+func test_unrenderable_shapes_still_get_a_tile():
+	# A one-cell spur or a diagonal pinch has a neighbourhood the tile set cannot
+	# render. Those cells must still come out solid -- leaving them empty would be
+	# a hole in the wall the player can walk through.
+	if not _paint(12): return
+	assert_gt(_cells_no_tile_could_satisfy(), 0,
+		"this floor has no unrenderable shapes, so the fallback is untested here")
+	for cell in _solid:
+		assert_gte(_tilemap.get_cell_source_id(0, cell), 0,
+			"solid cell %s was left empty" % cell)
+
+
+func test_the_fallback_picks_the_closest_shape_not_an_arbitrary_one():
+	if not _paint(12): return
+	var tile_set := _tilemap.tile_set
+	# Built once. Annotated rather than inferred: _room is a Node2D, so anything
+	# read off it is a Variant and `:=` is a hard parse error here.
+	var patterns: Dictionary = _room.terrain_patterns(tile_set)
+	var checked := 0
+	for cell in _solid:
+		var wanted := []
+		for offset in OFFSETS:
+			wanted.append(0 if _solid.has(cell + offset) else -1)
+		# Only look at cells whose exact shape is missing from the tile set.
+		if patterns.has(_room.neighbourhood_key(cell, _solid)):
+			continue
+		var source := tile_set.get_source(
+			_tilemap.get_cell_source_id(0, cell)) as TileSetAtlasSource
+		var data := source.get_tile_data(
+			_tilemap.get_cell_atlas_coords(0, cell),
+			_tilemap.get_cell_alternative_tile(0, cell))
+		var matched := 0
+		for i in BITS.size():
+			if data.get_terrain_peering_bit(BITS[i]) == wanted[i]:
+				matched += 1
+		# Eight bits, no exact tile, so at most seven can match. Anything below
+		# half would mean the fallback grabbed something unrelated.
+		assert_gte(matched, 4,
+			"fallback at %s matched only %d of 8 neighbours" % [cell, matched])
+		checked += 1
+		if checked >= 40:
+			break
+	assert_gt(checked, 0, "no unrenderable cells were found to check")

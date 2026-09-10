@@ -112,13 +112,26 @@ in whichever room is furthest from the spawn. `main_room.gd` then subtracts
 those cells from a pre-authored solid block of tiles, so the level is *carved
 out of rock* rather than built up from nothing.
 
-The rock is put back by `paint_walls()`, which terrain-matches only the cells
-that can show an edge -- rock touching carved floor, plus the outer rim of the
-block -- and fills the ~85k cells between them with the single tile a
-fully-surrounded cell can resolve to. Handing all 88k cells to
-`set_cells_terrain_connect` instead cost ~8.7s, which was the entire freeze
-between floors. `test/integration/test_wall_painting.gd` pins both the cost and
-the tiling accuracy.
+The rock is put back by `paint_walls()`. Only the cells that can show an edge --
+rock touching carved floor, plus the outer rim of the block -- get their tile
+computed; the ~85k cells between them are filled with the single tile a
+fully-surrounded cell can resolve to. Those edge cells are matched by looking
+their eight neighbours up in a table built from the tile set, not by
+`set_cells_terrain_connect`.
+
+That call was the entire freeze between floors: ~8.7s for the whole block, and
+still ~280ms when handed the frontier alone, because it expands whatever it is
+given with all of its neighbours and constraint-solves the region. Which tile a
+wall cell wants is a pure function of its eight neighbours, so it is a lookup.
+Dropping the solver also made the tiling exact -- the propagation between
+neighbouring decisions is what used to push compromise tiles into rock that
+plainly wanted the surrounded tile.
+
+A floor now generates in ~115ms, from ~8.7s.
+`test/integration/test_wall_painting.gd` pins the cost and asserts the tiling is
+exact: the only cells left holding a tile that does not fit are the ones whose
+shape the tile set cannot render at all (it covers 48 of the 256 possible
+neighbourhoods).
 
 **`arena_level.gd`** holds everything the four hand-built levels share: loading
 screen transitions, pause menu wiring, marker collection, and wave spawning.

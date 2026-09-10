@@ -55,20 +55,24 @@ const TILE_SIZE := 16
 # an opening the player can walk out through.
 const WALL_MARGIN := 2
 
-# The eight cells a terrain match looks at when picking a tile.
-const NEIGHBOURHOOD := [
-	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
-	Vector2i(-1, 0), Vector2i(1, 0),
-	Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
-]
-
-# The same eight, as the peering bits a TileData exposes them under.
+# The eight neighbours a tile's appearance depends on, as the peering bits a
+# TileData exposes them under and as the matching coordinate offsets. The two
+# arrays are index-paired and must stay that way. y+ is down.
 const NEIGHBOUR_BITS := [
 	TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
 	TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 	TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
 	TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 ]
+const NEIGHBOUR_OFFSETS := [
+	Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1),
+	Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
+]
+
+# neighbourhood_key() for a cell with the wall terrain on all eight sides -- the
+# interior of the map. Eight base-8 digits of 1, which is (8**8 - 1) / 7;
+# GDScript has no octal literal to write it more plainly.
+const ALL_SOLID := 2396745
 
 # Music tier -> ThemePlayer track name. Index is PlayerData.sound_selecter.
 const LEVEL_THEMES := ["makuhita", "silentchasm", "steel", "lapis", "blazepeak",
@@ -110,6 +114,9 @@ var _time_banked = false
 # spawn cell has to be recorded here because instance_player() pops it off the
 # front of `map`, which is the walker's own step_history -- by the time anything
 # else asks, step_history.front() is the second cell of the walk, not the spawn.
+# Tile lookup table for the tile set in use, built once per floor by paint_walls.
+var _patterns := {}
+
 var player_spawn_cell := Vector2.ZERO
 var exit_room := {}
 
@@ -325,15 +332,17 @@ func paint_walls(tilemap: TileMap, solid: Dictionary, authored_rect: Rect2i) -> 
 	# of those against ~88k solid cells, and only they can create an edge.
 	for cell in floor_lookup:
 		var carved := Vector2i(cell)
-		for offset in NEIGHBOURHOOD:
+		for offset in NEIGHBOUR_OFFSETS:
 			var neighbour: Vector2i = carved + offset
 			if solid.has(neighbour):
 				frontier[neighbour] = true
 
-	var fill := surrounded_tiles(tilemap.tile_set)
+	var patterns := terrain_patterns(tilemap.tile_set)
+	var fill: Array = patterns.get(ALL_SOLID, [])
 	# An empty or unrecognised tile set. Match everything rather than painting
 	# the map with nothing.
 	var can_fill := not fill.is_empty()
+	_patterns = patterns
 	# The common case is one candidate, and picking at random per cell over ~85k
 	# cells is not free, so that case skips the roll entirely.
 	var only: Array = fill[0] if can_fill else []
@@ -351,9 +360,105 @@ func paint_walls(tilemap: TileMap, solid: Dictionary, authored_rect: Rect2i) -> 
 			var tile: Array = only if fill.size() == 1 else fill.pick_random()
 			tilemap.set_cell(ground_layer, cell, tile[0], tile[1], tile[2])
 
-	# Matched last, so every interior cell it reads is already in place.
-	tilemap.set_cells_terrain_connect(
-		ground_layer, frontier.keys(), ground_layer, ground_layer, false)
+	match_frontier(tilemap, solid, frontier)
+
+# Gives every frontier cell the tile that actually fits it.
+#
+# This replaces set_cells_terrain_connect for the frontier. That call was still
+# 271ms for 1,587 cells -- 171us each, worse per cell than when it was handed all
+# 88k -- because it expands the cells it is given with all of their neighbours and
+# then constraint-solves that whole scattered region.
+#
+# None of that search is needed. Which tile a wall cell wants is a pure function
+# of the eight cells around it, so it is a table lookup. Dropping the solver is
+# also what makes the tiling exact rather than approximate: the propagation
+# between neighbouring decisions is precisely what used to push compromise tiles
+# inward across rock that plainly wanted the surrounded tile.
+func match_frontier(tilemap: TileMap, solid: Dictionary, frontier: Dictionary) -> void:
+	if _patterns.is_empty():
+		# Unrecognised tile set. Fall back to the engine matcher, slow but not our
+		# problem to second-guess.
+		tilemap.set_cells_terrain_connect(
+			ground_layer, frontier.keys(), ground_layer, ground_layer, false)
+		return
+
+	for cell in frontier:
+		var candidates: Array = _patterns.get(neighbourhood_key(cell, solid), [])
+		if candidates.is_empty():
+			# The tile set has nothing for this shape -- a one-cell spur, a
+			# diagonal pinch. It renders 48 of the 256 possible neighbourhoods, so
+			# a few hundred cells a floor land here and take the closest thing.
+			candidates = closest_patterns(cell, solid)
+			if candidates.is_empty():
+				continue
+		var tile: Array = candidates[0] if candidates.size() == 1 else candidates.pick_random()
+		tilemap.set_cell(ground_layer, cell, tile[0], tile[1], tile[2])
+
+# The eight neighbours of `cell` encoded as one integer, in NEIGHBOUR_BITS order.
+#
+# Each neighbour contributes its terrain index plus one, so empty (-1) encodes as
+# 0 and the wall terrain as 1. Base 8 leaves room for a tile set with several
+# terrains without the digits colliding.
+func neighbourhood_key(cell: Vector2i, solid: Dictionary) -> int:
+	var key := 0
+	for offset in NEIGHBOUR_OFFSETS:
+		key = key * 8 + (1 if solid.has(cell + offset) else 0)
+	return key
+
+# The tiles matching the most of a cell's eight neighbours, for the shapes the
+# tile set cannot render exactly. Scanning the whole table is fine: there are 48
+# entries and only a few hundred cells a floor ever get here.
+func closest_patterns(cell: Vector2i, solid: Dictionary) -> Array:
+	var wanted: Array[int] = []
+	for offset in NEIGHBOUR_OFFSETS:
+		wanted.append(1 if solid.has(cell + offset) else 0)
+
+	var best: Array = []
+	var best_score := -1
+	for key in _patterns:
+		var score := 0
+		var digits: int = key
+		# Walk the digits back out, least significant first, so compare from the
+		# end of `wanted`.
+		for i in range(NEIGHBOUR_OFFSETS.size() - 1, -1, -1):
+			if digits % 8 == wanted[i]:
+				score += 1
+			digits /= 8
+		if score > best_score:
+			best_score = score
+			best = _patterns[key]
+	return best
+
+# Every tile in the tile set, grouped by the exact neighbourhood it fits.
+#
+# Keys are neighbourhood_key() values; values are lists of
+# [source_id, atlas_coords, alternative_tile]. Lists rather than single tiles
+# because a tile set usually offers several interchangeable tiles per shape --
+# that is its decorative variation, and picking among them at random is what the
+# engine matcher does too.
+func terrain_patterns(tile_set: TileSet) -> Dictionary:
+	var by_pattern := {}
+	if tile_set == null:
+		return by_pattern
+	for i in tile_set.get_source_count():
+		var source_id := tile_set.get_source_id(i)
+		var source := tile_set.get_source(source_id) as TileSetAtlasSource
+		if source == null:
+			continue
+		for t in source.get_tiles_count():
+			var coords := source.get_tile_id(t)
+			for a in source.get_alternative_tiles_count(coords):
+				var alt := source.get_alternative_tile_id(coords, a)
+				var data := source.get_tile_data(coords, alt)
+				if data == null or data.terrain != ground_layer:
+					continue
+				var key := 0
+				for bit in NEIGHBOUR_BITS:
+					key = key * 8 + (data.get_terrain_peering_bit(bit) + 1)
+				if not by_pattern.has(key):
+					by_pattern[key] = []
+				by_pattern[key].append([source_id, coords, alt])
+	return by_pattern
 
 # Every tile that terrain matching could pick for a cell surrounded on all eight
 # sides, as [source_id, atlas_coords, alternative_tile] triples.
@@ -370,31 +475,7 @@ func paint_walls(tilemap: TileMap, solid: Dictionary, authored_rect: Rect2i) -> 
 # Returning all of them is what keeps that blend instead of flattening the
 # interior to whichever one happened to be found first.
 func surrounded_tiles(tile_set: TileSet) -> Array:
-	var found: Array = []
-	if tile_set == null:
-		return found
-	for i in tile_set.get_source_count():
-		var source_id := tile_set.get_source_id(i)
-		var source := tile_set.get_source(source_id) as TileSetAtlasSource
-		if source == null:
-			continue
-		for t in source.get_tiles_count():
-			var coords := source.get_tile_id(t)
-			for a in source.get_alternative_tiles_count(coords):
-				var alt := source.get_alternative_tile_id(coords, a)
-				var data := source.get_tile_data(coords, alt)
-				if data == null or data.terrain != ground_layer:
-					continue
-				if _is_surrounded_by(data, ground_layer):
-					found.append([source_id, coords, alt])
-	return found
-
-# Whether every one of a tile's eight peering bits is `terrain`.
-func _is_surrounded_by(data: TileData, terrain: int) -> bool:
-	for neighbour in NEIGHBOUR_BITS:
-		if data.get_terrain_peering_bit(neighbour) != terrain:
-			return false
-	return true
+	return terrain_patterns(tile_set).get(ALL_SOLID, [])
 
 # Picks a carved floor cell and converts it to world space.
 # The old call was `map.pick_random() * borders.position * TILE_SIZE`, which only
