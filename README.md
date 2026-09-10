@@ -30,6 +30,23 @@ hellorogue/
 └── project.godot
 ```
 
+### Verifying a clone without the assets
+
+`tools/stub_assets.py` writes structurally valid placeholders — magenta squares
+and silence — at every missing asset path, which is enough for Godot to import
+the project and build all 57 scenes. It is what makes the level scenes loadable,
+and therefore what makes the integration tests and `-Deep` mean anything on a
+fresh clone. Both asset directories are gitignored, so the placeholders are never
+committed, and running it where the real assets are present does nothing.
+
+```
+.\tools\smoke.ps1 -Stub     # once per clone
+.\tools\smoke.ps1 -All      # smoke + tests + a real boot
+```
+
+The game is *playable* only with the real assets. The placeholders are for
+verification, not for looking at.
+
 ---
 
 ## Controls
@@ -98,6 +115,12 @@ out of rock* rather than built up from nothing.
 **`arena_level.gd`** holds everything the four hand-built levels share: loading
 screen transitions, pause menu wiring, marker collection, and wave spawning.
 Each concrete level is 25–80 lines of configuration on top of it.
+
+**Tests.** `test/unit/` works on detached nodes and pure functions -- it never
+boots a level, by design. `test/integration/` boots the real scenes and covers
+what `_ready()` puts back and what a state transition leaves behind, which is
+where the level-lifecycle bugs lived. The integration tests need the assets (or
+the placeholders above) and report as pending without them.
 
 **`PlayerData`** is deliberately all `static` — it persists across scene changes,
 which is how progress carries between levels. Anything added there must also be

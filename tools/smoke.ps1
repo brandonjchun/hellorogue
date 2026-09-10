@@ -3,11 +3,20 @@
     Headless verification for hellorogue. No editor, no window.
 
       .\tools\smoke.ps1            # every script compiles, every scene builds
-      .\tools\smoke.ps1 -Tests     # the GUT unit suite
+      .\tools\smoke.ps1 -Tests     # the GUT suite (unit + integration)
       .\tools\smoke.ps1 -All       # smoke + tests + a real boot   <- use this one
       .\tools\smoke.ps1 -Deep      # also runs _ready() on every scene (noisy)
       .\tools\smoke.ps1 -Boot      # boots the real main scene for 180 frames
+      .\tools\smoke.ps1 -Stub      # placeholder Sprites/ and Music/ (see below)
       .\tools\smoke.ps1 -Rescan    # rebuild Godot's class-name cache (see below)
+
+    -Stub: Sprites/ and Music/ are untracked, so on a fresh clone the five level
+    scenes cannot load and nothing past "every script compiles" can be checked --
+    the smoke test reports 5 scene failures and the integration tests all go
+    pending. This writes structurally valid placeholder files at every missing
+    asset path so the project boots. They are magenta squares and silence, both
+    directories are gitignored, and running it where the real assets are present
+    does nothing. Needed once per clone, before -Deep or -Tests are worth much.
 
     Set $env:GODOT to override the engine path.
 
@@ -22,6 +31,7 @@ param(
     [switch]$Deep,
     [switch]$Boot,
     [switch]$All,
+    [switch]$Stub,
     [switch]$Rescan
 )
 
@@ -82,6 +92,22 @@ function Invoke-Stage {
     }
 }
 
+if ($Stub) {
+    Write-Host "== generating placeholder assets ==" -ForegroundColor Cyan
+    $stub = Join-Path $PSScriptRoot "stub_assets.py"
+    & python $stub
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "-> stub generation FAILED" -ForegroundColor Red
+        exit 2
+    }
+    # Godot needs two import passes: the first writes the .import files, the
+    # second resolves the resources that referenced them.
+    & $godot --headless --path $projectDir --import 2>&1 | Out-Null
+    & $godot --headless --path $projectDir --import 2>&1 | Out-Null
+    Write-Host "-> placeholders imported" -ForegroundColor Green
+    if (-not ($Tests -or $Deep -or $Boot -or $All -or $Rescan)) { exit 0 }
+}
+
 if ($Rescan) {
     Write-Host "== rebuilding class-name cache ==" -ForegroundColor Cyan
     & $godot --headless --path $projectDir --editor --quit-after 1500 2>&1 | Out-Null
@@ -103,7 +129,7 @@ if ($runSmoke) {
 }
 
 if ($runTests) {
-    Invoke-Stage -Name "unit tests" -GodotArgs @(
+    Invoke-Stage -Name "unit + integration tests" -GodotArgs @(
         "--headless", "--path", $projectDir,
         "-s", "res://addons/gut/gut_cmdln.gd",
         # -glog=1 prints scripts, totals and failures, but not a line per
