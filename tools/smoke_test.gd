@@ -1,7 +1,7 @@
 extends Node
 
 ## Headless smoke test: proves every script compiles and every scene can be
-## built. Run it with tools/smoke.sh -- it is not part of the game.
+## built. Run it with tools/smoke.ps1 -- it is not part of the game.
 ##
 ## Pass --deep to also add each scene to the tree, which runs _ready() and
 ## catches null node references that plain instantiation misses.

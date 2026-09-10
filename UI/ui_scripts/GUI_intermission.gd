@@ -41,13 +41,12 @@ func _process(delta):
 		var y = (index / HEART_ROW_SIZE) * HEART_OFFSET
 		heart.position = Vector2(x, y)
 		
-		var last_heart = floor(PlayerData.health)
-		if index > last_heart:
-			heart.frame = 0
-		if index == last_heart:
-			heart.frame = (PlayerData.health - last_heart) * 4
-		if index < last_heart:
-			heart.frame = 4
+		# Full or empty, nothing in between. The middle branch here used to read
+		# `heart.frame = (health - floor(health)) * 4` for a partial heart, but
+		# health is an integer and every source of damage is whole numbers, so
+		# that fractional part was always zero and the branch was dead code
+		# indistinguishable from the empty case.
+		heart.frame = 4 if index < PlayerData.health else 0
 	if PlayerData.health > 12:
 		$extra_hearts.text = "+" + var_to_str(PlayerData.health - 12)
 	else:

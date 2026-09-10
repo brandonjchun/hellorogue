@@ -321,3 +321,113 @@ func test_spikes_can_be_drawn_from_anywhere_in_the_list():
 	assert_gt(highest, 7,
 		"markers past index %d were never drawn; the reserve is unreachable, not held back"
 			% highest)
+
+
+# --- the floor enemy budget ----------------------------------------------
+#
+# The per-pass counts are open-ended in `levels`: at level 18 the passes ask for
+# up to 90 + 72 + 2x36 + 2x54 CharacterBody2Ds, every one running move_and_slide
+# from _process. ArenaLevel has had max_live_enemies since the wave-spawn fix;
+# the procedural floors never got the same treatment.
+
+func test_a_floor_stops_at_the_enemy_budget():
+	var room := _level()
+	room.spawn_enemies(dummy_scene, MainRoom.MAX_FLOOR_ENEMIES + 50)
+	assert_eq(room.get_child_count(), MainRoom.MAX_FLOOR_ENEMIES,
+		"a single pass spawned past the floor budget")
+
+
+func test_the_budget_is_spent_across_passes_not_per_pass():
+	var room := _level()
+	for i in 5:
+		room.spawn_enemies(dummy_scene, 50)
+	assert_eq(room.get_child_count(), MainRoom.MAX_FLOOR_ENEMIES,
+		"each pass got its own budget instead of sharing the floor's")
+
+
+func test_hazards_are_not_charged_against_the_enemy_budget():
+	# The spike passes come through with cullable false. A floor that quietly
+	# stopped laying hazards once the enemies filled up would be a difficulty
+	# cliff with nothing on screen to explain it.
+	var room := _level()
+	room.spawn_enemies(dummy_scene, MainRoom.MAX_FLOOR_ENEMIES)
+	room.spawn_enemies(dummy_scene, 12, false)
+	assert_eq(room.get_child_count(), MainRoom.MAX_FLOOR_ENEMIES + 12,
+		"hazards were refused because the enemy budget was spent")
+
+
+func test_an_ordinary_wave_is_untouched_by_the_budget():
+	var room := _level()
+	room.spawn_enemies(dummy_scene, 12)
+	assert_eq(room.get_child_count(), 12,
+		"the budget clipped a wave nowhere near it")
+
+
+# --- keeping roamers out of the special rooms -----------------------------
+#
+# Roaming enemies are spawned after the special rooms are built, from the whole
+# carved-cell list. One landing inside an ambush is not registered with it, so it
+# does not hold the door shut -- but the player gets sealed in with more than the
+# room was built to hold.
+
+func _room_with_reserved_area() -> Node2D:
+	var room := _level()
+	room.map = []
+	# A 6x6 block of carved cells, of which the middle 4x4 is spoken for.
+	for y in range(0, 6):
+		for x in range(0, 6):
+			room.map.append(Vector2(x, y))
+	# Typed on the way in: reserved_rects is an Array[Rect2], and assigning an
+	# untyped literal to it throws rather than converting.
+	var reserved: Array[Rect2] = [Rect2(1, 1, 4, 4)]
+	room.reserved_rects = reserved
+	return room
+
+
+func test_roaming_enemies_avoid_a_reserved_room():
+	var room := _room_with_reserved_area()
+	room.spawn_enemies(dummy_scene, 40)
+	for child in room.get_children():
+		var cell: Vector2 = (child as Node2D).position / room.TILE_SIZE
+		assert_false(room.reserved_rects[0].has_point(cell),
+			"a roaming enemy spawned inside a special room at %s" % cell)
+
+
+func test_hazards_ignore_the_reservation():
+	# Spikes inside a treasure cache are part of the risk; they do not follow the
+	# player into a sealed room the way an unregistered enemy does.
+	var room := _room_with_reserved_area()
+	room.spawn_enemies(dummy_scene, 20, false)
+	assert_eq(room.get_child_count(), 20, "hazards were refused a placement")
+
+
+func test_placement_gives_up_rather_than_hanging_when_everything_is_reserved():
+	# No carved cell is legal. The pick has to fall back, not spin.
+	var room := _level()
+	var everything: Array[Rect2] = [Rect2(0, 0, 100, 100)]
+	room.reserved_rects = everything
+	room.spawn_enemies(dummy_scene, 5)
+	assert_eq(room.get_child_count(), 5,
+		"spawning stalled or dropped enemies when every cell was reserved")
+
+
+# --- one tier formula -----------------------------------------------------
+
+func test_the_first_three_floors_are_tier_zero():
+	for level in [1, 2, 3]:
+		assert_eq(MainRoom.tier(level), 0, "level %d is not in the first tier" % level)
+
+
+func test_a_tier_is_three_floors_wide():
+	assert_eq(MainRoom.tier(4), 1)
+	assert_eq(MainRoom.tier(6), 1)
+	assert_eq(MainRoom.tier(7), 2)
+
+
+func test_the_tier_climbs_with_the_run():
+	var seen := MainRoom.tier(1)
+	for level in range(2, 19):
+		var now: int = MainRoom.tier(level)
+		assert_true(now >= seen, "the tier went backwards at level %d" % level)
+		seen = now
+	assert_eq(MainRoom.tier(18), 5, "the last procedural floor is not in the last tier")

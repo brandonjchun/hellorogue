@@ -64,6 +64,15 @@ func _ready() -> void:
 	PlayerData.levels = level_number
 	PlayerData.hurt_ready = true
 	PlayerData.reached_exit = false
+	# Cleared here rather than trusting whatever set it.
+	#
+	# The only writer that ever cleared this was reset_run(), and the death path
+	# calls that and then immediately re-asserts the flag so the outgoing level
+	# can pick the restart scene. Nothing put it back down afterwards, so every
+	# floor loaded after a death ran with player_is_dead still true: GUI._process
+	# reads it to pause the floor clock, and player.target_mouse() returns early
+	# on it, so the clock never ran and the gun never aimed again.
+	PlayerData.player_is_dead = false
 	# Every level asserts this, so the flag cannot stay stuck on from a previous
 	# run no matter which path got us here. It was only ever set true, never
 	# cleared, and it is a static -- so one visit to the boss room permanently
@@ -96,13 +105,12 @@ func _process(_delta: float) -> void:
 		if not shop.open(ARENA_STOCK):
 			PlayerData.toggle_loading_screen = true
 
-	# reset_next_scene() issues a threaded load request. The original called it
-	# from _process with no guard, so once the player died it fired a fresh
-	# request every single frame until the scene actually swapped.
-	if PlayerData.player_is_dead and not _reset_requested:
-		_reset_requested = true
-		loading_screen_intermission.reset_next_scene()
-
+	# The eager `if player_is_dead: reset_next_scene()` that used to sit here is
+	# gone. It fired the load request the instant the player's health hit zero --
+	# while player.dead() was still on its two-second await -- and the loading
+	# screen swapped the scene as soon as the resource resolved, cutting the
+	# death animation short and skipping the screen itself. The request now waits
+	# for toggle_loading_screen below, which dead() sets when it is finished.
 	if not PlayerData.toggle_loading_screen:
 		return
 
@@ -118,6 +126,7 @@ func _process(_delta: float) -> void:
 
 	if change_scenes_once == 0:
 		if PlayerData.player_is_dead:
+			_reset_requested = true
 			loading_screen_intermission.reset_next_scene()
 		else:
 			loading_screen_intermission.load_next_scene()

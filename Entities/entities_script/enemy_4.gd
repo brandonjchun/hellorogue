@@ -97,17 +97,17 @@ func choose_direction():
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func instance_ammo():
 	var ammo = ammo_scene.instantiate()
 	ammo.global_position = global_position
-	get_tree().root.add_child(ammo)
+	Globals.spawn_transient(ammo)
 	
 func instance_health():
 	var health = health_scene.instantiate()
 	health.global_position = global_position
-	get_tree().root.add_child(health)
+	Globals.spawn_transient(health)
 	
 func instance_bullet():
 	var bullet
@@ -117,7 +117,7 @@ func instance_bullet():
 		bullet = final_bullet_scene.instantiate()
 	bullet.direction = (target.global_position - global_position).normalized()
 	bullet.global_position = global_position
-	get_tree().root.add_child(bullet)
+	Globals.spawn_transient(bullet)
 	
 func random_direction():
 	match change_direction:
@@ -162,6 +162,11 @@ func animation():
 	$anim.play("move")
 
 func _on_hitbox_area_entered(area):
+	# DEAD is set here but the free happens on the next _process, so the hitbox
+	# stays live in between -- long enough for another bullet in the same frame
+	# to run the drop roll and the death sound a second time.
+	if current_state == enemy_state.DEAD:
+		return
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1

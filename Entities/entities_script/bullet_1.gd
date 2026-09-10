@@ -9,10 +9,12 @@ var left_screen = false
 @onready var bullet_1 = $"."
 
 # Called when the node enters the scene tree for the first time.
-# Projectiles are parented to get_tree().root, which is a sibling of the level
-# scene rather than part of it -- so a scene change does not free them. Combined
-# with only ever calling queue_free() on impact, any shot that missed everything
-# flew on forever and accumulated for the whole session. This is the backstop.
+# Projectiles used to be parented to get_tree().root -- a sibling of the level
+# scene rather than part of it -- so a scene change never freed them and any shot
+# that missed everything flew on forever, accumulating for the whole session.
+# They are parented to the level now (Globals.spawn_transient), which ends the
+# cross-floor leak; this stays as the within-floor backstop, since a shot that
+# hits nothing still has no other reason to stop.
 const MAX_LIFETIME := 6.0
 
 func _ready():
@@ -42,7 +44,7 @@ func _on_body_entered(body):
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func on_sfx_finished():
 	sfx_finished = true

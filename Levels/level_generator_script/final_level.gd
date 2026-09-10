@@ -6,6 +6,14 @@ extends ArenaLevel
 const SPIKE_RESERVE := 5
 const BOSS_START_HEALTH := 500
 
+# How long the room is left standing after the boss dies, before the run is
+# handed back to the menu. Long enough to see the escorts stop coming.
+const VICTORY_HOLD := 4.0
+
+# Where a finished run goes. There is no victory scene to send it to, so the
+# menu is the ending: the run resets and the title track comes back up.
+const AFTER_THE_RUN := "res://Menu/main_menu.tscn"
+
 # boss_health floor -> [min summon delay, max summon delay, extra escorts]
 const BOSS_PHASES := [
 	[400, 15.0, 20.0, 2],
@@ -21,6 +29,7 @@ const BOSS_PHASES := [
 var boss
 var spike_markers: Array = []
 var spawn_increaser := 2
+var _won := false
 
 func _ready() -> void:
 	level_number = 22
@@ -36,14 +45,53 @@ func _ready() -> void:
 	$spikes_timer.start()
 
 func _process(delta: float) -> void:
+	# Once the run is over this node is only waiting out VICTORY_HOLD. Letting
+	# the base _process keep running would hand the same finished run to the
+	# loading screen as well.
+	if _won:
+		return
 	super._process(delta)
-	if PlayerData.player_is_dead:
+	# Guarded: this used to re-stamp the boss's health 60 times a second for the
+	# whole death sequence. It only ever needs doing once, on the way out.
+	if PlayerData.player_is_dead and PlayerData.boss_health != BOSS_START_HEALTH:
 		PlayerData.boss_health = BOSS_START_HEALTH
 
 func spawn_boss() -> void:
 	boss = enemy5_scene.instantiate()
 	boss.position = boss_spawn.position
+	boss.defeated.connect(on_boss_defeated)
 	add_child(boss)
+
+# The run's only ending.
+#
+# Killing the boss used to do nothing at all: the boss freed itself, the escort
+# spawner noticed boss_health was zero and paused, and the room stayed up with
+# nothing left in it and no way out -- final_level has no exit node and no
+# next_level_timer. The run now closes itself out and returns to the menu.
+func on_boss_defeated() -> void:
+	if _won:
+		return
+	_won = true
+
+	boss_enemy_spawner.stop()
+	$spikes_timer.stop()
+	$enemy_spawn.stop()
+	if next_level_timer:
+		next_level_timer.stop()
+	ThemePlayer.play_only("")
+
+	await get_tree().create_timer(VICTORY_HOLD).timeout
+	if not is_inside_tree():
+		return
+	PlayerData.reset_run()
+	# The chain cursor is owned by loading_screen_intermission, so reset_run()
+	# deliberately leaves it alone (see test_reset_leaves_next_scene_alone) --
+	# which means finishing a run is the one exit that has to rewind it here.
+	# Left pointing at final_level.tscn, the next run's F1 exit would find no
+	# branch to advance and drop straight back into the boss room, skipping F2
+	# and F3.
+	PlayerData.next_scene = PlayerData.FIRST_SCENE
+	get_tree().change_scene_to_file(AFTER_THE_RUN)
 
 # Phase lookup used to live in _process, which meant re-rolling the summon timer
 # 60 times a second. It also opened with a stray `if boss_health >= 400` before

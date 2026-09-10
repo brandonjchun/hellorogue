@@ -1,5 +1,11 @@
 extends CharacterBody2D
 
+# Emitted once, as the boss dies. Nothing used to observe the boss dying at all:
+# it queue_free()d itself, the escort spawner noticed boss_health had hit zero
+# and paused, and the room then sat there forever. This is what final_level
+# hangs the run's only ending on.
+signal defeated
+
 @onready var fx_scene = preload("res://Entities/Scenes/FX/fx_scene.tscn")
 @onready var ammo_scene = preload("res://interactables/scenes/ammo_1.tscn")
 @onready var health_scene = preload("res://interactables/scenes/health_1.tscn")
@@ -94,20 +100,20 @@ func choose_direction():
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func instance_bullet():
 	var bullet = bullet_scene.instantiate()
 	bullet.direction = (target.global_position - global_position).normalized()
 	bullet.global_position = global_position
-	get_tree().root.add_child(bullet)
+	Globals.spawn_transient(bullet)
 	
 func instance_bullet2():
 	var bullet2 = bullet2_scene.instantiate()
 	var variance = Vector2(randi_range(-64, 64), randi_range(-64, 64))
 	bullet2.direction = (target.global_position - global_position + variance).normalized()
 	bullet2.global_position = global_position
-	get_tree().root.add_child(bullet2)
+	Globals.spawn_transient(bullet2)
 	
 func random_direction():
 	match change_direction:
@@ -190,12 +196,19 @@ func animation():
 		$anim.play("walk_left")
 
 func _on_hitbox_area_entered(area):
+	# Two bullets can land on the same frame, and queue_free() does not stop the
+	# signals already queued behind them -- so without this the boss could take
+	# its last point of health twice and emit `defeated` twice.
+	if current_state == enemy_state.DEAD:
+		return
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1
 		PlayerData.boss_health -= 1
 		if enemy_health <= 0:
 			current_state = enemy_state.DEAD
+			PlayerData.boss_health = 0
+			defeated.emit()
 			queue_free()
 
 func _on_attack_timer_timeout():

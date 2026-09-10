@@ -31,6 +31,16 @@ var gun_ready = false
 
 var step_ready = true #for footstep osund
 
+# dead() is dispatched from _process, which keeps running while current_state is
+# DEAD -- so without this it was entered once per frame, each call opening its
+# own two-second await. That is ~120 overlapping coroutines, every one of them
+# due to call PlayerData.reset_run() and set toggle_loading_screen. Worse, the
+# first reset put health back to 24 and player_is_dead back to false while
+# current_state was still DEAD, so the next frame's call flipped the flag on
+# again -- and ArenaLevel branches on exactly that flag to decide where the run
+# goes next, making the outcome depend on sibling _process order.
+var _dying = false
+
 # What the shrine's boon is worth, and what a web costs.
 const HASTE_MULTIPLIER := 1.45
 const WEB_SLOW_MULTIPLIER := 0.25
@@ -133,17 +143,30 @@ func animations():
 		$anim.play("idle")
 
 
+const DEATH_HOLD := 2.0
+
 func dead():
+	if _dying:
+		return
+	_dying = true
+
 	PlayerData.player_is_dead = true
 	velocity = Vector2.ZERO
 	gun.visible = false
 	$anim.play("dead")
-	await get_tree().create_timer(2).timeout
-	if get_tree():
-		# reset_run() also clears final_level and boss_health, which this hand
-		# written list did not.
-		PlayerData.reset_run()
-		PlayerData.toggle_loading_screen = true
+	await get_tree().create_timer(DEATH_HOLD).timeout
+	if not is_inside_tree():
+		return
+	# reset_run() also clears final_level and boss_health, which this hand
+	# written list did not.
+	#
+	# player_is_dead is put back afterwards: the level reads it on the frame it
+	# hands the run to the loading screen, to choose the restart scene over the
+	# next one in the chain. reset_run() clears it, so setting it again here is
+	# what keeps that decision correct.
+	PlayerData.reset_run()
+	PlayerData.player_is_dead = true
+	PlayerData.toggle_loading_screen = true
 			
 	
 func target_mouse():
@@ -167,17 +190,17 @@ func instance_bullet():
 	var bullet = bullet_scene.instantiate()
 	bullet.direction = bullet_point.global_position - global_position
 	bullet.global_position = bullet_point.global_position
-	get_tree().root.add_child(bullet)
+	Globals.spawn_transient(bullet)
 	
 func instance_meleeleft():
 	var melee = meleeleft_scene.instantiate()
 	melee.global_position = bullet_point.global_position
-	get_tree().root.add_child(melee)
+	Globals.spawn_transient(melee)
 	
 func instance_meleeright():
 	var melee = meleeright_scene.instantiate()
 	melee.global_position = bullet_point.global_position
-	get_tree().root.add_child(melee)
+	Globals.spawn_transient(melee)
 
 func reset_states():
 	current_state = player_states.MOVE
@@ -185,7 +208,7 @@ func reset_states():
 func instance_trail():
 	var trail = trail_scene.instantiate()
 	trail.global_position = global_position
-	get_tree().root.add_child(trail)
+	Globals.spawn_transient(trail)
 
 func _on_trail_timer_timeout():
 	instance_trail()

@@ -25,6 +25,10 @@ var new_direction
 var change_direction
 var enemy_state = current_state.FROZEN
 
+# See enemy_1: queue_free() does not cancel the signals already queued behind
+# it, so a second bullet landing on the same frame ran the death branch twice.
+var _dead = false
+
 @onready var target = get_node("../Player")
 
 func _ready():
@@ -101,10 +105,13 @@ func _on_timer_timeout():
 	$Timer.start()
 
 func _on_hitbox_area_entered(area):
+	if _dead:
+		return
 	if area.is_in_group("Bullet"):
 		enemy_health -= 1
 		instance_fx()
 		if enemy_health <= 0:
+			_dead = true
 			ThemePlayer.play_e2_death()
 			if ammo_chance():
 				instance_ammo()
@@ -115,17 +122,17 @@ func _on_hitbox_area_entered(area):
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func instance_ammo():
 	var ammo = ammo_scene.instantiate()
 	ammo.global_position = global_position
-	get_tree().root.add_child(ammo)
+	Globals.spawn_transient(ammo)
 	
 func instance_health():
 	var health = health_scene.instantiate()
 	health.global_position = global_position
-	get_tree().root.add_child(health)
+	Globals.spawn_transient(health)
 	
 func ammo_chance():
 	return randi_range(1, 5) == 5

@@ -66,10 +66,18 @@ func _on_quit_pressed():
 		get_tree().quit()
 
 func _on_reset_pressed():
+	if not PlayerData.pause_active:
+		return
 	PlayerData.reset_button_hit = true
-	if PlayerData.pause_active:
-		get_tree().paused = false
-		PlayerData.toggle_loading_screen = true
+	PlayerData.pause_active = false
+	PlayerData.game_mouse = true
+	# The panel used to be left on screen and the menu left flagged active, so
+	# the reset played out behind a pause menu that was still up. The level's
+	# loading branch happened to hide it a frame later on the procedural floors;
+	# nothing did in the arenas.
+	exit_pause_menu.emit()
+	get_tree().paused = false
+	PlayerData.toggle_loading_screen = true
 
 func _on_sounds_pressed():
 	if PlayerData.pause_active:

@@ -39,6 +39,15 @@ func _enemy() -> Node:
 	return enemy
 
 
+# A party member with a position, for the recall tests. The plain _enemy() above
+# is deliberately position-less: recall has to tolerate it.
+func _enemy_at(where: Vector2) -> Node2D:
+	var enemy := Node2D.new()
+	add_child(enemy)
+	enemy.global_position = where
+	return enemy
+
+
 # --- geometry -------------------------------------------------------------
 
 func test_the_ring_has_four_walls():
@@ -203,3 +212,83 @@ func test_enemies_dying_before_the_player_arrives_leave_nothing_to_seal():
 	room._on_trigger_body_entered(_player())
 	assert_false(room._sealed, "the room sealed around no enemies at all")
 	assert_true(room._spent)
+
+
+# --- recalling strays -----------------------------------------------------
+#
+# The room this was built for: the barrier does not exist until the player walks
+# in, and the party start roaming 1.5s after the floor loads. Over a 121-second
+# floor they leave. The player then triggers the seal, kills everything still
+# inside, and the door never opens -- the count is still waiting on enemies that
+# are outside the walls, and bullet_1 masks the layer the barrier sits on, so
+# they cannot be shot from in here either.
+
+func test_a_stray_is_pulled_back_inside_when_the_room_seals():
+	var stray := _enemy_at(Vector2(4000, 4000))
+	room.register_enemy(stray)
+	room._on_trigger_body_entered(_player())
+
+	assert_true(_interior().has_point(room.to_local(stray.global_position)),
+		"an enemy that wandered off was sealed out of the room it is holding shut")
+
+
+func test_a_recalled_stray_is_clear_of_the_walls():
+	var stray := _enemy_at(Vector2(4000, 4000))
+	room.register_enemy(stray)
+	room._on_trigger_body_entered(_player())
+
+	var local := room.to_local(stray.global_position)
+	for wall in room._wall_rects():
+		assert_false(wall.has_point(local),
+			"a recalled enemy was dropped inside wall %s" % wall)
+
+
+func test_an_enemy_already_inside_is_left_where_it_stands():
+	var inside := _enemy_at(Vector2(8, 8))
+	room.register_enemy(inside)
+	room._on_trigger_body_entered(_player())
+
+	assert_eq(inside.global_position, Vector2(8, 8),
+		"an enemy that never left was teleported anyway")
+
+
+func test_recall_tolerates_a_party_member_with_no_position():
+	# register_enemy() takes a Node. Nothing guarantees a Node2D, and a party
+	# member that has already been freed is the common case mid-fight.
+	room.register_enemy(_enemy())
+	var freed := _enemy_at(Vector2(4000, 4000))
+	room.register_enemy(freed)
+	freed.free()
+
+	room._on_trigger_body_entered(_player())
+	assert_true(room._sealed, "recall threw instead of sealing the room")
+
+
+func test_every_stray_is_recalled_not_just_the_first():
+	var strays := [_enemy_at(Vector2(4000, 0)), _enemy_at(Vector2(0, -4000)),
+		_enemy_at(Vector2(-4000, 4000))]
+	for stray in strays:
+		room.register_enemy(stray)
+	room._on_trigger_body_entered(_player())
+
+	for stray in strays:
+		assert_true(_interior().has_point(room.to_local((stray as Node2D).global_position)),
+			"stray %s was left outside" % stray)
+
+
+func test_recall_leaves_the_count_alone():
+	# Recall moves enemies; it must not quietly forgive any of them.
+	room.register_enemy(_enemy_at(Vector2(4000, 4000)))
+	room.register_enemy(_enemy_at(Vector2(0, 0)))
+	room._on_trigger_body_entered(_player())
+	assert_eq(room._live_enemies, 2)
+
+
+func test_a_recalled_stray_still_opens_the_room_when_it_dies():
+	var stray := _enemy_at(Vector2(4000, 4000))
+	room.register_enemy(stray)
+	room._on_trigger_body_entered(_player())
+	assert_true(room._sealed)
+
+	stray.free()
+	assert_false(room._sealed, "the room stayed shut after its last enemy died")

@@ -16,7 +16,17 @@ extends Node2D
 @onready var main_level = $"."
 @onready var gui = $GUI
 
-var lev = PlayerData.levels - 1
+# Difficulty tier: one per three floors, counting from zero on level 1.
+#
+# There used to be three different formulas for this in this file -- borders and
+# walk length off floor((levels - 1) / 3), music off int(levels / 3.0), and the
+# enemy roster off raw `levels` -- so level 3 was simultaneously size-tier 0,
+# music-tier 1 and enemy-tier 1. The roster gates stay on raw `levels` because
+# that is what reads at the call site ("enemy 3 arrives at level 12"); the two
+# that are genuinely per-tier now share this.
+static func tier(level: int) -> int:
+	return int(floor((level - 1) / 3.0))
+
 @onready var pause_menu_canvas = $pause_menu
 @onready var pause_menu = $pause_menu/PauseMenu
 @onready var main_mouse_icon = $pause_menu/main_mouse_icon
@@ -60,6 +70,15 @@ var loading_screen_timeout = false
 # How much of a wave Culling Order leaves standing.
 const CULL_MULTIPLIER := 0.7
 
+# Ceiling on roaming enemies for one floor.
+#
+# The spawn counts are open-ended in `levels`: at level 18 the passes ask for up
+# to 90 + 72 + 2x36 + 2x54 enemies, every one of them a CharacterBody2D running
+# move_and_slide() from _process. ArenaLevel has had max_live_enemies since the
+# wave-spawn fix landed; the procedural floors never got the same treatment.
+# Hazards are not charged against this -- see spawn_enemies().
+const MAX_FLOOR_ENEMIES := 160
+
 # Special rooms to try for. Fewer are placed when the walk did not produce
 # enough large, well-separated stamps -- see SpecialRoomPicker.
 const SPECIAL_ROOM_TARGET := 3
@@ -78,6 +97,14 @@ var _time_banked = false
 # else asks, step_history.front() is the second cell of the walk, not the spawn.
 var player_spawn_cell := Vector2.ZERO
 var exit_room := {}
+
+# Tile-space footprints of the special rooms, so the roaming passes can be kept
+# out of them. Roaming enemies used to be able to spawn inside a sealed ambush:
+# they are not registered with it, so they do not hold the door shut, but the
+# player gets locked in with more than the room was built to hold.
+var reserved_rects: Array[Rect2] = []
+
+var _enemies_spawned := 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -99,6 +126,15 @@ func _ready():
 	PlayerData.hurt_ready = true
 	PlayerData.reached_exit = false
 	PlayerData.game_active = true
+	# Cleared here rather than trusting whatever set it.
+	#
+	# The only writer that ever cleared this was reset_run(), and the death path
+	# calls that and then immediately re-asserts the flag so the outgoing level
+	# can pick the restart scene. Nothing put it back down afterwards, so every
+	# floor loaded after a death ran with player_is_dead still true: GUI._process
+	# reads it to pause the floor clock, and player.target_mouse() returns early
+	# on it, so the clock never ran and the gun never aimed again.
+	PlayerData.player_is_dead = false
 	# The boss room sets this true and nothing ever cleared it. Because it is a
 	# static it survived scene changes, so every procedural level after a boss
 	# visit silently ran with boss-room enemy aggression and a 0.1s player
@@ -115,7 +151,7 @@ func _ready():
 		tilemap_water.tile_set = tilemap_hell.tile_set
 		generate_level(tilemap_water)
 
-	PlayerData.sound_selecter = clampi(int(PlayerData.levels / 3.0), 0, LEVEL_THEMES.size() - 1)
+	PlayerData.sound_selecter = clampi(tier(PlayerData.levels), 0, LEVEL_THEMES.size() - 1)
 	# Selecting the track is level-load state, not per-frame state. This used to
 	# run a seven-branch play/stop cascade inside _process, 60 times a second.
 	ThemePlayer.play_only(LEVEL_THEMES[PlayerData.sound_selecter])
@@ -181,9 +217,10 @@ func _process(_delta):
 # from level 15 on the walk ran off the end of it: no wall tiles had ever been
 # placed out there, nothing got drawn, and the player could stroll off the map.
 func compute_borders(tilemap: TileMap) -> Rect2:
-	# Annotated rather than inferred: `lev` derives from the untyped PlayerData.levels,
-	# so `:=` here is a hard parse error in 4.2 and the whole script fails to load.
-	var growth: float = borders_growth_per_tier * floor(lev / 3.0)
+	# Annotated rather than inferred: borders_growth_per_tier is an untyped
+	# @export, so `:=` here is a hard parse error in 4.2 and the whole script
+	# fails to load.
+	var growth: float = borders_growth_per_tier * tier(PlayerData.levels)
 	var desired := Rect2(base_borders.position,
 		base_borders.size + Vector2(growth, growth))
 
@@ -199,12 +236,13 @@ func generate_level(tilemap):
 	# get_used_rect() has to be read before clear() wipes the authored block.
 	borders = compute_borders(tilemap)
 
-	var start := Vector2(3 + floor(lev / 3.0), 5 + floor(lev / 3.0))
+	var floor_tier := tier(PlayerData.levels)
+	var start := Vector2(3 + floor_tier, 5 + floor_tier)
 	if not borders.has_point(start):
 		start = borders.position + Vector2.ONE
 
 	walker = WalkerRoom.new(start, borders)
-	map = walker.walk(int(600 + 900 * floor(lev / 3.0)))
+	map = walker.walk(600 + 900 * floor_tier)
 	floor_lookup = walker.get_floor_lookup()
 
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
@@ -255,6 +293,28 @@ func generate_level(tilemap):
 func random_floor_position() -> Vector2:
 	return map.pick_random() * TILE_SIZE
 
+# A carved cell that is not inside a special room.
+#
+# Falls back to an unfiltered pick after ATTEMPTS tries rather than looping until
+# it finds one: on a small floor whose rooms happen to cover much of the carved
+# space an unbounded retry is a hang, and one enemy in the wrong room is a much
+# smaller problem than a frozen level load.
+const PLACEMENT_ATTEMPTS := 12
+
+func random_open_position() -> Vector2:
+	if reserved_rects.is_empty():
+		return random_floor_position()
+	for _i in PLACEMENT_ATTEMPTS:
+		var cell: Vector2 = map.pick_random()
+		var clear := true
+		for rect in reserved_rects:
+			if rect.has_point(cell):
+				clear = false
+				break
+		if clear:
+			return cell * TILE_SIZE
+	return random_floor_position()
+
 func instance_player():
 	var player = player_scene.instantiate()
 	add_child(player)
@@ -292,7 +352,11 @@ func instance_special_rooms() -> void:
 	builders.shuffle()
 
 	for i in chosen.size():
-		builders[i].call(chosen[i] as Dictionary)
+		var room: Dictionary = chosen[i]
+		# Grown by one so a roaming enemy cannot spawn flush against the outside
+		# of an ambush wall and end up inside it when the barrier goes up.
+		reserved_rects.append(SpecialRoomPicker.tile_rect(room).grow(1.0))
+		builders[i].call(room)
 
 func room_centre_world(room: Dictionary) -> Vector2:
 	return SpecialRoomPicker.tile_rect(room).get_center() * TILE_SIZE
@@ -355,9 +419,15 @@ func build_shrine_room(room: Dictionary) -> void:
 func spawn_enemies(scene: PackedScene, count: int, cullable := true) -> void:
 	if cullable and PlayerData.cull_active:
 		count = maxi(1, int(round(count * CULL_MULTIPLIER)))
+	# Only enemies are budgeted. The spike passes come through with cullable
+	# false, and a floor that quietly stopped laying hazards once the enemy count
+	# filled up would be a difficulty cliff nothing on screen explains.
+	if cullable:
+		count = mini(count, maxi(0, MAX_FLOOR_ENEMIES - _enemies_spawned))
+		_enemies_spawned += count
 	for i in range(count):
 		var enemy = scene.instantiate()
-		enemy.position = random_floor_position()
+		enemy.position = random_open_position() if cullable else random_floor_position()
 		add_child(enemy)
 
 func instance_enemy1():
@@ -408,9 +478,16 @@ func _on_timer_timeout():
 		start_floor_clock(PlayerData.SECOND_WIND_SECONDS)
 		return
 
+	# A full reset, not just the level counter.
+	#
+	# This used to set `levels = 1` and nothing else, so health, ammo, the bank,
+	# the purchased bank_cap and every pending one-floor flag survived the clock
+	# running out. Since the shop's currency *is* banked seconds, that made
+	# timing out the cheapest move in the game: push to a high tier, let the
+	# clock go, and start again at level 1 with the whole bank and an expanded
+	# vault intact.
+	PlayerData.reset_run()
 	PlayerData.toggle_loading_screen = true
-	PlayerData.levels = 1
-	PlayerData.reached_exit = false
 
 func _on_next_level_timer_timeout():
 	main_level.visible = true

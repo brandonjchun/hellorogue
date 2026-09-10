@@ -23,6 +23,11 @@ var new_direction
 var change_direction
 var enemy_state = current_state.FROZEN
 
+# queue_free() does not cancel signals already queued behind it, so two bullets
+# landing on the same frame both ran the death branch: two drop rolls, two death
+# sounds, from one enemy.
+var _dead = false
+
 @onready var target = get_node("../Player")
 func _ready():
 	if PlayerData.final_level:
@@ -102,7 +107,10 @@ func _on_timer_timeout():
 
 
 func _on_hitbox_area_entered(area):
+	if _dead:
+		return
 	if area.is_in_group("Bullet"):
+		_dead = true
 		ThemePlayer.play_e1_death()
 		instance_fx()
 		if ammo_chance():
@@ -114,17 +122,17 @@ func _on_hitbox_area_entered(area):
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func instance_ammo():
 	var ammo = ammo_scene.instantiate()
 	ammo.global_position = global_position
-	get_tree().root.add_child(ammo)
+	Globals.spawn_transient(ammo)
 	
 func instance_health():
 	var health = health_scene.instantiate()
 	health.global_position = global_position
-	get_tree().root.add_child(health)
+	Globals.spawn_transient(health)
 	
 func ammo_chance():
 	return randi_range(1, 6) == 1

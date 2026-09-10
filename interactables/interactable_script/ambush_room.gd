@@ -37,6 +37,18 @@ var _sealed := false
 var _spent := false
 var _live_enemies := 0
 
+# The party, kept as nodes rather than only as a count.
+#
+# The count alone is what made the room a run-ender: the barrier does not exist
+# until the player walks in, and the party start roaming 1.5s after the floor
+# loads (freeze_timer, then Timer, both autostart). Over a 121-second floor they
+# reliably wander out of the open room. The player then triggers the seal, kills
+# everything still inside, and `_live_enemies` never reaches zero because the
+# strays are outside -- and cannot be shot through the barrier either, since
+# bullet_1 masks the Tilemap layer the barrier sits on. Holding the nodes lets
+# _seal() put the strays back before the walls go up.
+var _party: Array[Node] = []
+
 var _barrier: StaticBody2D
 var _trigger: Area2D
 
@@ -52,7 +64,8 @@ func _ready() -> void:
 # world space like every other enemy. This only needs to know when they die.
 func register_enemy(enemy: Node) -> void:
 	_live_enemies += 1
-	enemy.tree_exited.connect(_on_enemy_freed)
+	_party.append(enemy)
+	enemy.tree_exited.connect(_on_enemy_freed.bind(enemy))
 
 func _build_trigger() -> void:
 	var inner := Vector2(
@@ -115,20 +128,46 @@ func _on_trigger_body_entered(body: Node) -> void:
 
 func _seal() -> void:
 	_sealed = true
+	_recall_strays()
 	# Deferred because this runs inside a physics callback.
 	_barrier.set_deferred("collision_layer", TILEMAP_LAYER)
 	queue_redraw()
 
-func _on_enemy_freed() -> void:
+# Puts any of the party that wandered off back inside, so every enemy the seal
+# is waiting on is one the player can actually reach and kill.
+#
+# Placed on the interior inset by one wall thickness: dropping a stray exactly
+# on the boundary would leave it overlapping a wall the moment that wall goes up.
+func _recall_strays() -> void:
+	var interior := Rect2(-_world_size / 2.0, _world_size).grow(-WALL_THICKNESS)
+	for enemy in _party:
+		if not is_instance_valid(enemy) or not (enemy is Node2D):
+			continue
+		var body := enemy as Node2D
+		if interior.has_point(to_local(body.global_position)):
+			continue
+		body.global_position = to_global(Vector2(
+			randf_range(interior.position.x, interior.end.x),
+			randf_range(interior.position.y, interior.end.y)))
+
+func _on_enemy_freed(enemy: Node = null) -> void:
 	_live_enemies -= 1
+	if enemy != null:
+		_party.erase(enemy)
+	# The whole level is being torn down: the barrier is on its way out too, and
+	# opening a room nobody is standing in is not worth touching freed nodes for.
+	if not is_instance_valid(_barrier):
+		return
 	if _sealed and _live_enemies <= 0:
 		_open()
 
 func _open() -> void:
 	_sealed = false
 	_spent = true
+	_party.clear()
 	_barrier.set_deferred("collision_layer", 0)
-	_trigger.set_deferred("monitoring", false)
+	if is_instance_valid(_trigger):
+		_trigger.set_deferred("monitoring", false)
 	queue_redraw()
 
 func _draw() -> void:

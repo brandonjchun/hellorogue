@@ -228,3 +228,63 @@ func test_without_second_wind_the_clock_ends_the_run():
 	assert_true(PlayerData.toggle_loading_screen, "the run did not end")
 	assert_eq(PlayerData.levels, 1, "the run did not restart from the first floor")
 	assert_false(PlayerData.reached_exit)
+
+
+# --- what running the clock out costs -------------------------------------
+#
+# This used to set `levels = 1` and nothing else. Since the shop's currency is
+# banked seconds, that made timing out the cheapest move available: push to a
+# high tier, let the clock go, and start again on level 1 holding the whole
+# bank, the purchased bank_cap, full health and every pending purchase.
+
+func test_running_the_clock_out_wipes_the_bank():
+	PlayerData.banked_time = 90.0
+	room._on_timer_timeout()
+	assert_eq(PlayerData.banked_time, 0.0,
+		"the bank survived the clock running out, so timing out pays")
+
+
+func test_running_the_clock_out_gives_back_the_bought_bank_cap():
+	PlayerData.bank_cap = 240.0
+	room._on_timer_timeout()
+	assert_eq(PlayerData.bank_cap, PlayerData.STARTING_BANK_CAP,
+		"Vault Expansion survived the run that bought it")
+
+
+func test_running_the_clock_out_drops_pending_purchases():
+	# Deliberately without Second Wind held: holding it takes the branch above
+	# and the clock never ends the run at all.
+	PlayerData.cull_next = true
+	PlayerData.bandolier_next = true
+	PlayerData.bonus_time_next = 40.0
+	room._on_timer_timeout()
+
+	assert_false(PlayerData.cull_next, "Culling Order carried into the next run")
+	assert_false(PlayerData.bandolier_next, "Bandolier carried into the next run")
+	assert_eq(PlayerData.bonus_time_next, 0.0, "Overclock carried into the next run")
+
+
+func test_a_spent_second_wind_does_not_survive_the_run_that_spent_it():
+	PlayerData.second_wind = true
+	room._on_timer_timeout()   # absorbed; the run continues
+	room._on_timer_timeout()   # nothing left to absorb it, so the run ends
+	assert_false(PlayerData.second_wind, "Second Wind carried into the next run")
+
+
+func test_running_the_clock_out_restores_health_and_ammo():
+	PlayerData.health = 3
+	PlayerData.ammo = 0
+	room._on_timer_timeout()
+	assert_eq(PlayerData.health, PlayerData.STARTING_HEALTH)
+	assert_eq(PlayerData.ammo, PlayerData.STARTING_AMMO)
+
+
+func test_second_wind_still_absorbs_the_expiry_without_resetting_anything():
+	# The reset must sit behind the Second Wind branch, not in front of it.
+	PlayerData.second_wind = true
+	PlayerData.banked_time = 90.0
+	PlayerData.levels = 12
+	room._on_timer_timeout()
+
+	assert_eq(PlayerData.banked_time, 90.0, "Second Wind cost the player their bank")
+	assert_eq(PlayerData.levels, 12, "Second Wind sent the run back to level 1")

@@ -99,17 +99,17 @@ func choose_direction():
 func instance_fx():
 	var fx = fx_scene.instantiate()
 	fx.global_position = global_position
-	get_tree().root.add_child(fx)
+	Globals.spawn_transient(fx)
 	
 func instance_ammo():
 	var ammo = ammo_scene.instantiate()
 	ammo.global_position = global_position
-	get_tree().root.add_child(ammo)
+	Globals.spawn_transient(ammo)
 	
 func instance_health():
 	var health = health_scene.instantiate()
 	health.global_position = global_position
-	get_tree().root.add_child(health)
+	Globals.spawn_transient(health)
 	
 func instance_bullet():
 	var bullet
@@ -118,9 +118,18 @@ func instance_bullet():
 	else:
 		bullet = final_bullet_scene.instantiate()
 	bullet.direction = global_position.direction_to(target.global_position)
-	PlayerData.degrees_to_player = rad_to_deg(global_position.angle_to(target.global_position))
+	# The bearing from this enemy to the player, in -180..180.
+	#
+	# This used to be `global_position.angle_to(target.global_position)`, which
+	# is the angle *between the two position vectors measured at the world
+	# origin* -- not a bearing at all. For two points a few hundred pixels apart
+	# out at world coordinates in the thousands it is a couple of degrees, which
+	# is why the bullet's facing thresholds were the unexplainable 9.5 / 2 / -12
+	# / -50. Both ends are fixed together; see enemy_3_bullet.gd.
+	PlayerData.degrees_to_player = rad_to_deg(
+		(target.global_position - global_position).angle())
 	bullet.global_position = global_position
-	get_tree().root.add_child(bullet)
+	Globals.spawn_transient(bullet)
 	
 func random_direction():
 	match change_direction:
@@ -145,7 +154,10 @@ func _on_timer_timeout():
 func _on_chase_box_area_entered(area):
 	if area.is_in_group("follow"):
 		if can_attack and not current_state == enemy_state.DEAD:
-			enemy_collider.set_deferred("disabled", true)
+			# The body collider used to be disabled here and never re-enabled, so
+			# this enemy walked through walls for the rest of its life after its
+			# first shot. Nothing needed it: the bullet is an Area2D on layer 32
+			# masking 11, and this body is layer 32 -- they cannot collide.
 			instance_bullet()
 			can_attack = false
 			$attack_timer.start()
@@ -175,6 +187,11 @@ func animation():
 		$anim.play("run_left" if chasing else "walk_left")
 
 func _on_hitbox_area_entered(area):
+	# Two bullets landing on the same frame both reach here, and the hitbox is
+	# still live until _process runs -- so without this the drop roll and the
+	# death sound fired once per bullet.
+	if current_state == enemy_state.DEAD:
+		return
 	if area.is_in_group("Bullet"):
 		instance_fx()
 		enemy_health -= 1
