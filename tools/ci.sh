@@ -53,14 +53,49 @@ godot_bin() {
 	echo "$exe"
 }
 
+# stage <name> <required success marker> <command...>
+#
+# A stage passes only when it produced the marker it is supposed to produce.
+# Checking for the absence of error text is not enough on its own: a stage that
+# died before printing anything, or a binary that could not be executed, emits no
+# error pattern either and would sail through as a pass. That is the failure mode
+# that makes CI worth less than nothing, so every stage has to say the words.
 stage() {
-	local name="$1"; shift
+	local name="$1"
+	local expect="$2"
+	shift 2
 	echo ""
 	echo "== $name =="
+
+	local raw
+	raw="$(mktemp)"
+	"$@" >"$raw" 2>&1
+	local code=$?
+
 	local out
-	out="$("$@" 2>&1 | grep -Ev "$NOISE" | grep -v '^[[:space:]]*$')"
+	out="$(grep -Ev "$NOISE" "$raw" | grep -v '^[[:space:]]*$')"
+	rm -f "$raw"
 	echo "$out"
+
+	local bad=0
+	# 126/127 are "found but not executable" and "not found".
+	if [ "$code" -ge 126 ]; then
+		echo "   !! could not execute (exit $code)"
+		bad=1
+	fi
+	if [ -z "$out" ]; then
+		echo "   !! produced no output at all"
+		bad=1
+	fi
 	if echo "$out" | grep -Eq "$FAIL"; then
+		bad=1
+	fi
+	if [ -n "$expect" ] && ! echo "$out" | grep -Eq "$expect"; then
+		echo "   !! missing expected result: $expect"
+		bad=1
+	fi
+
+	if [ "$bad" -ne 0 ]; then
 		echo "-> $name FAILED"
 		failures=$((failures + 1))
 	else
@@ -81,19 +116,21 @@ python3 "$PROJECT_DIR/tools/stub_assets.py" || exit 2
 "$GODOT_EXE" --headless --path "$PROJECT_DIR" --import >/dev/null 2>&1
 echo "-> imported"
 
-stage "smoke test" \
+stage "smoke test" "SMOKE TEST PASSED" \
 	"$GODOT_EXE" --headless --path "$PROJECT_DIR" res://tools/smoke_test.tscn
 
-stage "smoke test (deep)" \
+stage "smoke test (deep)" "SMOKE TEST PASSED" \
 	"$GODOT_EXE" --headless --path "$PROJECT_DIR" res://tools/smoke_test.tscn -- --deep
 
-stage "unit + integration tests" \
+stage "unit + integration tests" "All tests passed" \
 	"$GODOT_EXE" --headless --path "$PROJECT_DIR" \
 		-s res://addons/gut/gut_cmdln.gd \
 		-gdir=res://test -ginclude_subdirs -gexit -glog=1
 
+# A level boot prints nothing of its own when it goes well, so the engine banner
+# is the marker: it proves the binary ran rather than the stage being skipped.
 for scene in main_level intermission_level intermission_level_2 intermission_level_1 final_level; do
-	stage "boot $scene" \
+	stage "boot $scene" "Godot Engine v" \
 		"$GODOT_EXE" --headless --path "$PROJECT_DIR" "res://Levels/$scene.tscn" --quit-after 240
 done
 
