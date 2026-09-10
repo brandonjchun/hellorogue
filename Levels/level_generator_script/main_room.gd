@@ -55,6 +55,21 @@ const TILE_SIZE := 16
 # an opening the player can walk out through.
 const WALL_MARGIN := 2
 
+# The eight cells a terrain match looks at when picking a tile.
+const NEIGHBOURHOOD := [
+	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
+	Vector2i(-1, 0), Vector2i(1, 0),
+	Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
+]
+
+# The same eight, as the peering bits a TileData exposes them under.
+const NEIGHBOUR_BITS := [
+	TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+	TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+	TileSet.CELL_NEIGHBOR_LEFT_SIDE, TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+	TileSet.CELL_NEIGHBOR_TOP_SIDE, TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
+]
+
 # Music tier -> ThemePlayer track name. Index is PlayerData.sound_selecter.
 const LEVEL_THEMES := ["makuhita", "silentchasm", "steel", "lapis", "blazepeak",
 	"sinister"]
@@ -245,19 +260,22 @@ func generate_level(tilemap):
 	map = walker.walk(600 + 900 * floor_tier)
 	floor_lookup = walker.get_floor_lookup()
 
+	# Annotated rather than inferred: generate_level takes `tilemap` untyped, so
+	# get_used_rect() reads as Variant here and `:=` is a hard parse error.
+	var authored_rect: Rect2i = tilemap.get_used_rect()
 	var all_cells: Array = tilemap.get_used_cells(ground_layer)
 	tilemap.clear()
 
 	# `map` is an Array. Testing membership with map.has() scanned it linearly
 	# for every authored cell -- roughly 88k cells x ~14k entries, which is
-	# where the multi-second freeze on level load came from. The walker now
+	# where the first multi-second freeze on level load came from. The walker now
 	# hands back a Dictionary so this is a hash lookup instead.
-	var using_cells: Array = []
+	var solid := {}
 	for tile in all_cells:
 		if not floor_lookup.has(Vector2(tile.x, tile.y)):
-			using_cells.append(tile)
+			solid[tile] = true
 
-	tilemap.set_cells_terrain_connect(ground_layer, using_cells, ground_layer, ground_layer, false)
+	paint_walls(tilemap, solid, authored_rect)
 	# set_cells_terrain_path used to run here as well, over the same cells. It
 	# treats its argument as an ordered path, which is meaningless for an
 	# unordered cell soup, and it doubled the cost of the most expensive call
@@ -285,6 +303,98 @@ func generate_level(tilemap):
 	if PlayerData.levels >= 15:
 		instance_enemy3()
 		instance_enemy4()
+
+# Lays the solid rock back down, terrain-matching only the cells that can show.
+#
+# set_cells_terrain_connect costs roughly 100us per cell, and the authored block
+# is ~88k cells, so matching all of them was 8.9 of the 9 seconds every floor
+# load used to stall for. It does not need to: a solid cell whose eight
+# neighbours are all solid can only ever resolve to the one fully-surrounded
+# tile, whatever the rest of the map does. 87,480 of the 87,743 authored solid
+# cells were exactly that tile.
+#
+# So only two sets need matching -- the rock that touches carved floor, and the
+# outer edge of the block, which borders nothing. Everything between them is
+# filled directly. That is a few thousand matched cells instead of eighty-eight
+# thousand, for a tilemap that comes out identical.
+func paint_walls(tilemap: TileMap, solid: Dictionary, authored_rect: Rect2i) -> void:
+	var frontier := {}
+
+	# Rock that borders open floor, found by growing out from the carved cells.
+	# Walking the carved set is what keeps this cheap: there are a few thousand
+	# of those against ~88k solid cells, and only they can create an edge.
+	for cell in floor_lookup:
+		var carved := Vector2i(cell)
+		for offset in NEIGHBOURHOOD:
+			var neighbour: Vector2i = carved + offset
+			if solid.has(neighbour):
+				frontier[neighbour] = true
+
+	var fill := surrounded_tiles(tilemap.tile_set)
+	# An empty or unrecognised tile set. Match everything rather than painting
+	# the map with nothing.
+	var can_fill := not fill.is_empty()
+	# The common case is one candidate, and picking at random per cell over ~85k
+	# cells is not free, so that case skips the roll entirely.
+	var only: Array = fill[0] if can_fill else []
+
+	var low := authored_rect.position
+	var high := authored_rect.position + authored_rect.size - Vector2i.ONE
+	for cell in solid:
+		# The block edge has no neighbours outside it, so its tiles are edge
+		# tiles and it has to be matched like the carved frontier.
+		if cell.x <= low.x or cell.x >= high.x or cell.y <= low.y or cell.y >= high.y:
+			frontier[cell] = true
+		elif not can_fill:
+			frontier[cell] = true
+		elif not frontier.has(cell):
+			var tile: Array = only if fill.size() == 1 else fill.pick_random()
+			tilemap.set_cell(ground_layer, cell, tile[0], tile[1], tile[2])
+
+	# Matched last, so every interior cell it reads is already in place.
+	tilemap.set_cells_terrain_connect(
+		ground_layer, frontier.keys(), ground_layer, ground_layer, false)
+
+# Every tile that terrain matching could pick for a cell surrounded on all eight
+# sides, as [source_id, atlas_coords, alternative_tile] triples.
+#
+# Asked of the tile set rather than hardcoded, because the three visual themes
+# swap tile_set wholesale and the same atlas coordinate means something different
+# in each. A tile qualifies when it is in the wall terrain and all eight of its
+# peering bits are that terrain too -- which is exactly the constraint set an
+# interior cell produces.
+#
+# There is usually one, but the mid-run "mix" theme is two atlas sources in one
+# tile set and has two: 1:(1,1) and 2:(1,1). Terrain matching picks among equal
+# candidates at random, so the rock interior there is a blend of both textures.
+# Returning all of them is what keeps that blend instead of flattening the
+# interior to whichever one happened to be found first.
+func surrounded_tiles(tile_set: TileSet) -> Array:
+	var found: Array = []
+	if tile_set == null:
+		return found
+	for i in tile_set.get_source_count():
+		var source_id := tile_set.get_source_id(i)
+		var source := tile_set.get_source(source_id) as TileSetAtlasSource
+		if source == null:
+			continue
+		for t in source.get_tiles_count():
+			var coords := source.get_tile_id(t)
+			for a in source.get_alternative_tiles_count(coords):
+				var alt := source.get_alternative_tile_id(coords, a)
+				var data := source.get_tile_data(coords, alt)
+				if data == null or data.terrain != ground_layer:
+					continue
+				if _is_surrounded_by(data, ground_layer):
+					found.append([source_id, coords, alt])
+	return found
+
+# Whether every one of a tile's eight peering bits is `terrain`.
+func _is_surrounded_by(data: TileData, terrain: int) -> bool:
+	for neighbour in NEIGHBOUR_BITS:
+		if data.get_terrain_peering_bit(neighbour) != terrain:
+			return false
+	return true
 
 # Picks a carved floor cell and converts it to world space.
 # The old call was `map.pick_random() * borders.position * TILE_SIZE`, which only

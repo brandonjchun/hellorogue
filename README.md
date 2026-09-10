@@ -112,6 +112,14 @@ in whichever room is furthest from the spawn. `main_room.gd` then subtracts
 those cells from a pre-authored solid block of tiles, so the level is *carved
 out of rock* rather than built up from nothing.
 
+The rock is put back by `paint_walls()`, which terrain-matches only the cells
+that can show an edge -- rock touching carved floor, plus the outer rim of the
+block -- and fills the ~85k cells between them with the single tile a
+fully-surrounded cell can resolve to. Handing all 88k cells to
+`set_cells_terrain_connect` instead cost ~8.7s, which was the entire freeze
+between floors. `test/integration/test_wall_painting.gd` pins both the cost and
+the tiling accuracy.
+
 **`arena_level.gd`** holds everything the four hand-built levels share: loading
 screen transitions, pause menu wiring, marker collection, and wave spawning.
 Each concrete level is 25–80 lines of configuration on top of it.
