@@ -24,8 +24,13 @@ func _ready() -> void:
 
 	for path in _find_files("res://", ".gd"):
 		_check_script(path)
-	for path in _find_files("res://", ".tscn"):
+
+	var scenes := _find_files("res://", ".tscn")
+	for path in scenes:
 		_check_scene(path, deep)
+
+	if deep:
+		await _drain_threaded_loads(scenes)
 
 	print("")
 	print("scripts compiled: %d" % _scripts_ok)
@@ -79,6 +84,25 @@ func _check_scene(path: String, deep: bool) -> void:
 
 	instance.queue_free()
 	_scenes_ok += 1
+
+
+# Waits out any background load a scene started while it was in the tree.
+#
+# The loading screens call ResourceLoader.load_threaded_request() from _ready(),
+# so the deep pass sets a loader thread going on the next level and then walks
+# away. Quitting with one in flight races the loader against engine shutdown, and
+# it reports a parse error against a scene file that is perfectly fine -- after
+# this test has already printed its own verdict. Intermittent, because whether it
+# happens depends on how far the thread got.
+func _drain_threaded_loads(paths: Array[String]) -> void:
+	for path in paths:
+		var status := ResourceLoader.load_threaded_get_status(path)
+		while status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			await get_tree().process_frame
+			status = ResourceLoader.load_threaded_get_status(path)
+		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			# Taking the result is what releases the request.
+			ResourceLoader.load_threaded_get(path)
 
 
 func _skips_deep(path: String) -> bool:

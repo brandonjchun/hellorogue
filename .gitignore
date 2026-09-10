@@ -1,7 +1,8 @@
 # ---- Godot ----
 .godot/
-# Engine binary downloaded by tools/ci.sh.
+# Engine binary downloaded by tools/ci.sh, and its combined stage output.
 .godot-bin/
+ci-output.log
 *.translation
 
 # Godot writes these when a scene save is interrupted (crash, force-quit).

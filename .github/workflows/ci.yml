@@ -30,15 +30,13 @@ jobs:
       - name: Run verification
         run: tools/ci.sh
 
-      # The import cache and the placeholder assets are build output. Uploading
-      # them on failure makes a red run diagnosable without a machine.
-      - name: Upload logs on failure
+      # Everything every stage printed, unfiltered. A red run is then
+      # diagnosable from a phone without a checkout.
+      - name: Upload full output on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: godot-import-log
-          path: |
-            .godot/*.log
-            *.log
-          if-no-files-found: ignore
-          retention-days: 7
+          name: ci-output
+          path: ci-output.log
+          if-no-files-found: warn
+          retention-days: 14

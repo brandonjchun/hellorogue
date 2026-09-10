@@ -22,6 +22,12 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CACHE_DIR="${GODOT_CACHE:-$PROJECT_DIR/.godot-bin}"
 
 failures=0
+failed_stages=()
+
+# Everything every stage printed, kept for the failure artifact so a red run is
+# diagnosable from a phone.
+RUN_LOG="${PROJECT_DIR}/ci-output.log"
+: > "$RUN_LOG"
 
 # Output that is an artifact of running headless with placeholder assets, not a
 # problem with the game.
@@ -74,12 +80,17 @@ stage() {
 
 	local out
 	out="$(grep -Ev "$NOISE" "$raw" | grep -v '^[[:space:]]*$')"
+	{ echo ""; echo "===== $name (exit $code) ====="; cat "$raw"; } >> "$RUN_LOG"
 	rm -f "$raw"
 	echo "$out"
 
 	local bad=0
-	# 126/127 are "found but not executable" and "not found".
-	if [ "$code" -ge 126 ]; then
+	# Exactly 126 and 127 -- "found but not executable" and "not found". Not
+	# >=128, which is "killed by signal N": Godot heaadless can die during its own
+	# shutdown after the work is done and the result printed, and this script's
+	# whole premise is that its exit code says nothing about whether the run
+	# succeeded. The marker check below is what decides that.
+	if [ "$code" -eq 126 ] || [ "$code" -eq 127 ]; then
 		echo "   !! could not execute (exit $code)"
 		bad=1
 	fi
@@ -96,8 +107,9 @@ stage() {
 	fi
 
 	if [ "$bad" -ne 0 ]; then
-		echo "-> $name FAILED"
+		echo "-> $name FAILED (exit $code)"
 		failures=$((failures + 1))
+		failed_stages+=("$name")
 	else
 		echo "-> $name ok"
 	fi
@@ -136,7 +148,13 @@ done
 
 echo ""
 if [ "$failures" -gt 0 ]; then
-	echo "FAILED - $failures stage(s) had problems."
+	# Named, not counted: the point of this running in CI is that a red tick on a
+	# phone says what broke without opening a log.
+	echo "FAILED - $failures stage(s):"
+	for name in "${failed_stages[@]}"; do
+		echo "    - $name"
+	done
+	echo "(full output in ci-output.log)"
 	exit 1
 fi
 echo "PASSED"
